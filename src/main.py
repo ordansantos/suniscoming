@@ -12,6 +12,7 @@ def eventos():
     event = pygame.event.poll()
     if event.type == pygame.QUIT:
         running = False
+        
     print event
 
 while running:
