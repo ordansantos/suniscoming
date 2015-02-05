@@ -4,11 +4,14 @@ import pygame
 screen = pygame.display.set_mode((300, 300));
 print pygame.version.ver
 
-running = 1 
+global running
+running = True
+
 def eventos():
+    global running
     event = pygame.event.poll()
     if event.type == pygame.QUIT:
-        running = 0
+        running = False
     print event
 
 while running:
