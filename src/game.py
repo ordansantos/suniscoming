@@ -1,19 +1,32 @@
-
+# coding: utf-8
 import pygame
+import myScreen
+import player
+
+from pygame.locals import *
+from pygame.event import Event
 
 class Game:
     
-    running = True
+    def __init__(self):
+        pygame.init()
+        self.running = True
+        self.screen = myScreen.Screen()
+        self.character = player.Character()
     
     def begin(self):
-        
-        pygame.init()
-        pygame.display.set_mode((640, 640))
-        
         while self.running:
-            self.eventos();
-        
-    def eventos(self):
-        event = pygame.event.poll()
-        if event.type == pygame.QUIT:
+            pygame.time.Clock().tick(30)
+            self.handle_events()
+            self.screen.surface_fill()
+            self.screen.surface_character(self.character)
+            self.screen.draw()
+    
+    def handle_events(self):
+        e = pygame.event.poll()
+        if e.type == QUIT:
             self.running = False
+        if e.type == KEYDOWN:
+            self.character.move(e.key)
+        if e.type == KEYUP:
+            self.character.move(e.key)
