@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="150" height="150" tilewidth="32" tileheight="32" nextobjectid="28">
+ <tileset firstgid="1" name="outsidea5forest" tilewidth="32" tileheight="32">
+  <image source="../tiles/Ancient Forest/outsidea5forest.png" width="256" height="512"/>
+ </tileset>
+ <tileset firstgid="129" name="TileA2" tilewidth="32" tileheight="32">
+  <image source="../tiles/rpg maker/TileA2.png" width="512" height="384"/>
+ </tileset>
+ <tileset firstgid="321" name="tilecn" tilewidth="32" tileheight="32">
+  <image source="../tiles/Ancient Forest/tilecn.png" width="512" height="512"/>
+ </tileset>
+ <tileset firstgid="577" name="TileA3" tilewidth="32" tileheight="32">
+  <image source="../tiles/rpg maker/TileA3.png" width="512" height="256"/>
+ </tileset>
+ <tileset firstgid="705" name="TileA1" tilewidth="32" tileheight="32">
+  <image source="../tiles/rpg maker/TileA1.png" width="512" height="384"/>
+ </tileset>
+ <tileset firstgid="897" name="TileA2" tilewidth="32" tileheight="32">
+  <image source="../tiles/rpg maker/TileA2.png" width="512" height="384"/>
+ </tileset>
+ <layer name="Camada de Tiles 1" width="150" height="150">
+  <data encoding="base64" compression="zlib">
+   eJzt2bENwCAUQ0EGSMP+y6bJCFifWFdcjZBfg9hrrc1Vns/U2dP3p29fXXXTFU376qqbrmjaV1fddEXTvrrqpiua9tUVCboiQVecNvkvSS9NkaArEnRFgq5I0BWneQuSoCkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD+4AXMI9XL
+  </data>
+ </layer>
+ <layer name="Camada de Tiles 2" width="150" height="150">
+  <data encoding="base64" compression="zlib">
+   eJzt2ElKQ0EQgOHkcA4XcLiAA5itA+g26oUUPIq3sUIINEVbr4U8IfB9ULssf6rzarGofSy387mc+CH8ga6Yi7aYw64rbbFPbVdVW9+aIzmKJo5jTmJOUx+jXUF2Fq2cx1zEXHa6yV312vrSG8lVNHEdcxNz+0sfbVNtW5v3zxtIz3108RDzGPNUdJXbgso6GnmNeYt5L3rRFvtwF92sOv/je+8hjHqOZl6K70NdUWn3UnVzaGmLKe1emro57OS7FmTtvhq5OWTaoqfdVyM3hx5dURm9OcB/sK+Yg64AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAODQ/ke9H8Q==
+  </data>
+ </layer>
+ <layer name="Camada de Tiles 3" width="150" height="150">
+  <data encoding="base64" compression="zlib">
+   eJzt2MkNwlAQRMFxcCwJYJwASwLYJAA4bDoG9L+QoEp69zn0aaoAAACgajNUbdMu7YdvX8OvOGRLYzqmya5o5JQtndMlXe2KRm7Z0pyWdLcrGnlkS8/0SqtdAfCn/Bvowb+BHvwb6MG/gR78GwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPvMGv+IQLQ==
+  </data>
+ </layer>
+ <layer name="Camada de Tiles 4" width="150" height="150">
+  <data encoding="base64" compression="zlib">
+   eJzt0scNAkEURMHZrDYBTAKYBDAJLJAAJmw6gj2g+SChKqnvfXhja22cGXxCU1TQFBU0RQU9UUFTVNAUAMB3LYbWltkqWw+/fsO/2KSlbbbL9rqik0NaOman7KwrOpnS0iW7Zjdd0ck9LT2yZ/bSFQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADDjDaT1Dxc=
+  </data>
+ </layer>
+ <objectgroup name="Camada de Objetos 1" opacity="0">
+  <object id="6" x="0" y="192" width="30" height="33"/>
+  <object id="7" x="33" y="165" width="30" height="26"/>
+  <object id="8" x="64" y="133" width="30" height="27"/>
+  <object id="9" x="97" y="106" width="59" height="20"/>
+  <object id="10" x="147" y="74" width="13" height="29"/>
+  <object id="11" x="164" y="76" width="26" height="18"/>
+  <object id="12" x="188" y="42" width="35" height="22"/>
+  <object id="13" x="223" y="6" width="33" height="26"/>
+  <object id="14" x="209" y="11" width="15" height="29"/>
+  <object id="21" x="245" y="532" width="29" height="41"/>
+  <object id="22" x="307" y="434" width="31" height="45"/>
+  <object id="23" x="69" y="460" width="54" height="47"/>
+  <object id="24" x="71" y="391" width="51" height="51"/>
+  <object id="25" x="257" y="337" width="55" height="47"/>
+  <object id="26" x="608" y="194" width="33" height="29"/>
+ </objectgroup>
+</map>
