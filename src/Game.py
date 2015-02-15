@@ -3,6 +3,7 @@
 import pygame
 import Screen
 import Person
+import Walls
 
 
 class Game:
@@ -18,6 +19,9 @@ class Game:
         self.p.setPosition((self.width / 2 , self.height / 2))
         
         self.key_states= {pygame.K_UP:False, pygame.K_DOWN:False, pygame.K_LEFT:False, pygame.K_RIGHT:False}
+        
+        
+        walls = Walls.Walls()
         
     def setScreenWidth(self, width):
         self.width = width

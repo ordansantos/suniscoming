@@ -1,4 +1,6 @@
 
+import Walls
+import pygame
 
 class Person:
 	
@@ -6,6 +8,7 @@ class Person:
 		self.x = 0;
 		self.y = 0;
 		self.path = '../characters/dante.png'
+		self.image = pygame.image.load(self.path)
 		self.px = 8
 
 		
@@ -14,19 +17,23 @@ class Person:
 		self.y = y
 		
 	def moveUp(self):
-		self.y += -self.px
-		
+		if (not Walls.Walls.isThereWall((self.x + 400, self.y - self.px + 300))):
+			self.y += -self.px
+		print str(self.x) + ' + ' + str(self.y)
 	def moveDown(self):
-		self.y += self.px
-		
+		if (not Walls.Walls.isThereWall((self.x + 400, self.y + self.px + 300))):
+			self.y += self.px
+		print str(self.x) + ' + ' + str(self.y)
 	def moveLeft(self):
-		self.x += -self.px
-	
+		if (not Walls.Walls.isThereWall((self.x - self.px + 400, self.y + 300))):
+			self.x += -self.px
+		print str(self.x) + ' + ' + str(self.y)
 	def moveRight(self):
-		self.x += self.px
-	
-	def getPath(self):
-		return self.path;
+		if (not Walls.Walls.isThereWall((self.x + self.px + 400, self.y + 300))):
+			self.x += self.px
+		print str(self.x) + ' + ' + str(self.y)
+	def getImage(self):
+		return self.image;
 	
 	def getPosition(self):	
 		return (self.x, self.y)

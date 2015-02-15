@@ -4,14 +4,21 @@ sys.path.append("../")
 import pygame
 import pytmx
 from pytmx.util_pygame import load_pygame
+import Walls
 
 class Screen:
     a = 1 
     #Matrix = [[0 for x in range(1000)] for x in range(1000)] 
+
     
     def __init__(self, screen_width, screen_height):
-        
+        self.k = 1
         self.screen = pygame.display.set_mode((screen_width, screen_height))
+        
+        spritesheet = pygame.image.load ('person')
+        spritesheet.convert()
+        self.p = spritesheet.subsurface ((17, 15, 30, 47))
+        
         self.screen_width = screen_width
         self.screen_height = screen_height
         
@@ -25,19 +32,22 @@ class Screen:
   
     def blitPerson(self, p):
         
-        img_person = pygame.image.load(p.getPath())
+        img_person = p.getImage()
         self.screen.fill((255, 0, 0))
         
-        
-        render_tiles_to_screen(self, p.getPosition())
+        #self.screen.blit(img_person, (self.screen_width / 2, self.screen_height / 2))
+
         self.screen.blit(img_person, (self.screen_width / 2, self.screen_height / 2))
+        render_tiles_to_screen(self, p.getPosition())
         pygame.display.update()
         
 rect_color = (255, 255, 0)
 poly_color = (0, 255, 0)
 
+
+
 def render_tiles_to_screen(self, (offx, offy)):
-    print offx;
+    #print offx;
     tmx_data = self.t
     if tmx_data.background_color:
         self.screen.fill(pygame.Color(self.tmx_data.background_color))
@@ -67,18 +77,28 @@ def render_tiles_to_screen(self, (offx, offy)):
                 # some object have an image
                 elif obj.image:
                     self.screen.blit(obj.image, (obj.x -offx, obj.y - offy))
-
+                    
                 # draw a rect for everything else
                 else:
-                    pygame.draw.rect(self.screen, rect_color,
-                            (obj.x -offx, obj.y - offy, obj.width, obj.height), 3)
 
+                    
+                    pygame.draw.rect(self.screen, rect_color,
+                        (obj.x -offx, obj.y - offy, obj.width, obj.height), 3)
+                    if self.k == 1:
+                        Walls.Walls.pushWall( (obj.x, obj.y), (obj.width, obj.height) )
+                        print 'entrou'
         # draw image layers
         elif isinstance(layer, pytmx.TiledImageLayer):
             if layer.image:
                 self.screen.blit(layer.image, (0, 0))
 
-    
+ #   if (self.k == 1):
+  #      for i in xrange (1, 300):
+   #         for j in xrange (1, 300):
+    #            print Walls.Walls.Matrix[i][j],
+     #       print ' '
+            
+    self.k += 1
                 
                 
                 
