@@ -21,20 +21,21 @@ class Screen:
         self.screen_height = screen_height
         
         # self.screen.fill((255, 0, 0))
-        self.background = pygame.image.load(file('../characters/fill.png')).convert()
+        self.background = pygame.image.load(file('../tiles/background.png')).convert()
         self.tiles  = load_pygame('tile_map.tmx')
-        self.render_tiles_to_screen((0,0))
+        self.render_tiles_to_screen((0, 0))
         
         pygame.display.flip()
         
     def clear(self, (x, y)):
-        # self.screen.fill((255, 0, 0))
-        self.screen.blit(self.background, (-x, -y))
+        self.screen.fill((255, 0, 0))
+        self.screen.blit(self.background, (-x + self.screen_width / 2, -y + self.screen_height / 2))
+        print '-'+str (x) + str(y)
     
     def blitPerson(self, p, millis):
         img_person = p.getImage(millis)
-        self.screen.blit(img_person, ((self.screen_width / 2) - 16, (self.screen_height / 2) - 48))
-    
+        #self.screen.blit(img_person, (-16, -48))
+        self.screen.blit(img_person, (-16 + self.screen_width / 2, -48 + self.screen_height / 2))
     def draw(self, position):
         self.render_tiles_to_screen(position)
         pygame.display.flip()

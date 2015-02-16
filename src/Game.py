@@ -4,7 +4,6 @@ import pygame
 import Screen
 import Character
 import Walls
-import Human1
 
 
 class Game:
@@ -19,7 +18,7 @@ class Game:
         # self.p = Character.Character()
         self.p = Character.Character()
         
-        self.p.setPosition((self.width / 2 , self.height / 2))
+        self.p.setPosition((108 , 196))
         
         walls = Walls.Walls()
         self.millis = 0
