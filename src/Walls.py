@@ -4,7 +4,7 @@ from pytmx.util_pygame import load_pygame
 
 class Walls:
     
-    Matrix = [[0 for i in xrange(8000)] for j in xrange(8000)] 
+    Matrix = [[None for i in xrange(7210)] for j in xrange(7210)] 
     
     def __init__(self):
         pass

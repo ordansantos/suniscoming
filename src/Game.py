@@ -3,12 +3,11 @@
 import pygame
 import Screen
 import Character
-import Walls
-
 
 class Game:
     
     def __init__(self):
+        
         pygame.init()
         self.width = 800
         self.height =  600
@@ -20,7 +19,6 @@ class Game:
         
         self.p.setPosition((108 , 196))
         
-        walls = Walls.Walls()
         self.millis = 0
         
     def setScreenWidth(self, width):
@@ -36,8 +34,9 @@ class Game:
             self.millis = self.clock.tick(30)
             self.p.move()
             self.screen.clear(self.p.getPosition())
+            self.screen.draw(self.p.getPosition(), self.millis)
             self.screen.blitPerson(self.p, self.millis)
-            self.screen.draw(self.p.getPosition())
+            
             self.doEvent()
     
     def doEvent(self):

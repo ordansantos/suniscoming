@@ -136,6 +136,9 @@ class TiledElement(object):
 
     def cast_and_set_attributes_from_node_items(self, items):
         for key, value in items:
+                        #before without
+            if (key == 'width' or key == 'height'):
+                value = float (value)
             casted_value = types[key](value)
             setattr(self, key, casted_value)
 
