@@ -2,7 +2,7 @@
 
 import pygame
 import Screen
-import Character
+import Person
 
 class Game:
     
@@ -15,9 +15,9 @@ class Game:
         self.clock = pygame.time.Clock()
         self.screen = Screen.Screen(self.width, self.height)     
         # self.p = Character.Character()
-        self.p = Character.Character()
+        self.p = Person.Person.getNewPerson(1000, 1000)
         
-        self.p.setPosition((108 , 196))
+        self.p.setPosition((1000 , 400))
         
         self.millis = 0
         
@@ -52,3 +52,6 @@ class Game:
                     self.p.setArrow(e.key, True)
                 if e.key in self.p.attack_keys.keys():
                     self.p.attack(e.key)
+                    
+                    
+                    

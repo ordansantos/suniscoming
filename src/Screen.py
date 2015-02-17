@@ -32,11 +32,11 @@ class Screen:
     def blitPerson(self, p, millis):
         img_person = p.getImage(millis)
         self.screen.blit(img_person, (-16 + self.screen_width / 2, -48 + self.screen_height / 2))
-        pygame.display.flip();
+        pygame.display.flip()
         
     def draw(self, position, miles):
         self.renderTilesToScreen(position)
-        pygame.display.flip()
+        
 
     def renderTilesToScreen(self, heroPosition):
   
@@ -51,6 +51,12 @@ class Screen:
         
         if (inix < 0): inix = 0
         if (iniy < 0): iniy = 0
+        
+        if (fimx > 7200):
+            fimx = 7200
+            
+        if (fimy > 7200):
+            fimy = 7200
         
         for i in xrange (inix, fimx, 16):
             for j in xrange (iniy, fimy, 16):
