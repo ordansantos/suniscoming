@@ -34,11 +34,11 @@ class Game:
         
         while self.running:
             self.millis = self.clock.tick(30)
-            self.screen.clear(self.p.getPosition())
             self.p.move()
-            self.doEvent()
+            self.screen.clear(self.p.getPosition())
             self.screen.blitPerson(self.p, self.millis)
             self.screen.draw(self.p.getPosition())
+            self.doEvent()
     
     def doEvent(self):
         for e in pygame.event.get():
@@ -51,3 +51,5 @@ class Game:
             if e.type == pygame.KEYDOWN:
                 if e.key in self.p.arrow_states.keys():
                     self.p.setArrow(e.key, True)
+                if e.key in self.p.attack_keys.keys():
+                    self.p.attack(e.key)
