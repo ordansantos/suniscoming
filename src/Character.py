@@ -5,9 +5,13 @@ import Person
 
 class Character:
 	
-	def __init__(self):
+	def __init__(self, id):
 		# essential
+<<<<<<< HEAD
 		self.id = 0
+=======
+		self.id = id
+>>>>>>> ae3c4df93c29fe4cbc57ee0763e448b61d79dafa
 		self.name = ''
 		self.life = 100
 		self.stranger = 5
@@ -42,11 +46,19 @@ class Character:
 
 	""" utilities for the id
 	"""
+<<<<<<< HEAD
 	def setId(self, p_id):
 		self.id = p_id
 	
 	def getId(self):
 		return self.id
+=======
+	def getId(self):
+		return id
+	
+	def setId(self, id):
+		self.id = id
+>>>>>>> ae3c4df93c29fe4cbc57ee0763e448b61d79dafa
 	
 	""" utilities for the position
 	"""
@@ -88,7 +100,11 @@ class Character:
 				self.picnr[1] += 1
 				if self.picnr[1] == self.lenPic:
 					self.updateAttack()
+<<<<<<< HEAD
 					self.picnr[1] = 0
+=======
+					self.updatePicnr()
+>>>>>>> ae3c4df93c29fe4cbc57ee0763e448b61d79dafa
 				self.cycletime = 0
 		return self.sprites[self.picnr[0]][self.picnr[1]]
 	
@@ -136,7 +152,10 @@ class Character:
 			self.x += self.px
 		# print str(self.x) + ' + ' + str(self.y)
 	
+<<<<<<< HEAD
 	
+=======
+>>>>>>> ae3c4df93c29fe4cbc57ee0763e448b61d79dafa
 	""" handle arrow
 	"""
 	def setArrow(self, key, state):
