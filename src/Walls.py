@@ -31,7 +31,7 @@ class Walls:
     
     @staticmethod
     def pushPerson (x, y, p):
-        if (not Walls.isThereWall((x, y))):
+        if (not Walls.isThereWall((x, y)) and not Walls.isTherePerson(x, y)):
             Walls.Matrix[x][y] = p.getId()
             return True
         return False;

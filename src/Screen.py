@@ -19,27 +19,39 @@ class Screen:
         self.tile_map  = load_pygame('tile_map.tmx')
         Walls.Walls.pushWalls(self.tile_map)    
         self.preLoadTiles()
-        
-    def getScreenPosition(self, (objx, objy), (herox, heroy)):
+    
+    def getObjectPosition(self, (objx, objy), (herox, heroy)):
         x = -herox + objx + (self.screen_width / 2)
         y = -heroy + objy + (self.screen_height / 2)
+        return (x, y)
+    
+    def getPersonPosition(self, master, person):
+        x = -32 - master.x + person.x + (self.screen_width / 2)
+        y = -64 - master.y + person.y + (self.screen_height / 2)
         return (x, y)
     
     def clear(self, (x, y)):
         self.screen.fill((255, 0, 0))
         self.screen.blit(self.background, (-x + self.screen_width / 2, -y + self.screen_height / 2))
-        
-    def blitPerson(self, p, millis):
-        img_person = p.getImage(millis)
-        self.screen.blit(img_person, (-16 + self.screen_width / 2, -48 + self.screen_height / 2))
+    
+    def blitMaster(self, person, millis):
+        img_person = person.getImage(millis)
+        self.screen.blit(img_person, (-32 + self.screen_width / 2, -64 + self.screen_height / 2))
         pygame.display.flip()
-        
-    def draw(self, position, miles):
-        self.renderTilesToScreen(position)
-        
+    
+    def blitPerson(self, master, person, millis):
+        img_person = person.getImage(millis)
+        self.screen.blit(img_person, self.getPersonPosition(master, person))
+        pygame.display.flip()
+    
+    def draw(self, person, millis):
+        self.clear(person.getPosition())
+        self.renderTilesToScreen(person.getPosition())
+        self.blitMaster(person, millis)
+        # millis for to the future
 
     def renderTilesToScreen(self, heroPosition):
-  
+        
         hx, hy = heroPosition
         middlex = self.screen_width / 2
         middley = self.screen_height / 2
@@ -62,7 +74,7 @@ class Screen:
             for j in xrange (iniy, fimy, 16):
                     #imagem
                     if (self.objectMatrix[i][j] != None):
-                        self.screen.blit (self.objectMatrix[i][j], (self.getScreenPosition((i, j), heroPosition)))
+                        self.screen.blit (self.objectMatrix[i][j], (self.getObjectPosition((i, j), heroPosition)))
      
     def preLoadTiles(self):
         

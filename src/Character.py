@@ -1,5 +1,4 @@
 
-import Walls
 import pygame
 import Person
 
@@ -67,7 +66,7 @@ class Character:
 		# one full day to do this function
 		spritesheet = pygame.image.load(file(self.path))
 		spritesheet.convert()
-		sprites = [[0 for i in range(10)] for i in range(8)]
+		sprites = [[0 for i in range(10)] for i in range(12)]
 		
 		# walk
 		for x in range(4):
@@ -78,6 +77,11 @@ class Character:
 		for x in range(4):
 			for y in range(6):
 				sprites[x+4][y] = (spritesheet.subsurface((y * 64, (x + 12) * 64, 64, 64)))
+		
+		# rebuke
+		for x in range(4):
+			for y in range(7):
+				sprites[x+8][y] = (spritesheet.subsurface((y * 64, x * 64, 64, 64)))
 		
 		return sprites
 	
@@ -109,7 +113,8 @@ class Character:
 	""" handle movement
 	"""
 	def move(self):
-		#if self.attackNow(): return
+		if self.attackNow():
+			return
 		if self.arrow[1] == -1:
 			self.moveUp()
 		if self.arrow[0] == -1:
@@ -120,22 +125,21 @@ class Character:
 			self.moveRight()
 	
 	def moveUp(self):
-		if (not Person.Person.changePersonLocation(self, self.x, self.y - self.px)):
+		if ( Person.Person.changePersonLocation(self, self.x, self.y - self.px)):
 			self.y += -self.px
 		# print str(self.x) + ' + ' + str(self.y)
 	def moveLeft(self):
-		if (not Person.Person.changePersonLocation(self, self.x - self.px, self.y )):
+		if ( Person.Person.changePersonLocation(self, self.x - self.px, self.y )):
 			self.x += -self.px
 		# print str(self.x) + ' + ' + str(self.y)
 	def moveDown(self):
-		if (not Person.Person.changePersonLocation(self, self.x, self.y + self.px)):
+		if ( Person.Person.changePersonLocation(self, self.x, self.y + self.px)):
 			self.y += self.px
 		# print str(self.x) + ' + ' + str(self.y)
 	def moveRight(self):
-		if (not Person.Person.changePersonLocation(self, self.x  + self.px , self.y)):
+		if ( Person.Person.changePersonLocation(self, self.x  + self.px , self.y)):
 			self.x += self.px
 		# print str(self.x) + ' + ' + str(self.y)
-	
 	
 	""" handle arrow
 	"""
@@ -159,13 +163,13 @@ class Character:
 	""" handle attack
 	"""
 	def attack(self, key):
-		if key == pygame.K_SPACE:
+		if self.attackKey == 0:
 			self.attack_keys[key] = True
 			self.attackKey = key
-			self.lenPic = 6
-			self.interval = 80
-			self.slash()
-			self.hit()
+			if key == pygame.K_SPACE:
+				self.slash()
+			elif key == pygame.K_e:
+				self.rebuke()
 	
 	def updateAttack(self):
 		if self.attackKey != 0:
@@ -181,11 +185,37 @@ class Character:
 			self.lenPic = 9
 			self.interval = 150
 			self.attackKey = 0
+			self.updateArrows()
 	
 	def attackNow(self):
 		if True in self.attack_keys.values():
 			return True
 		return False
+	
+	def hit(self):
+		if self.side == 'up':
+			for x in xrange(self.x - 32, self.x + 32):
+				for y in xrange(self.y - 48, self.y):
+					self.checkAttack(x, y)
+		elif self.side == 'left':
+			for x in xrange(self.x - 48, self.x):
+				for y in xrange(self.y - 32, self.y + 32):
+					self.checkAttack(x, y)
+		elif self.side == 'down':
+			for x in xrange(self.x - 32, self.x + 32):
+				for y in xrange(self.y, self.y + 48):
+					self.checkAttack(x, y)
+		elif self.side == 'right':
+			for x in xrange(self.x, self.x + 48):
+				for y in xrange(self.y - 32, self.y + 32):
+					self.checkAttack(x, y)
+	
+	def checkAttack(self, x, y):
+		enemy = Person.Person.getPersonByPosition(x, y)
+		if enemy != None:
+			enemy.life -= 5
+			self.life += 5
+			print 'LIFE!'
 	
 	def slash(self):
 		if self.side == 'up':  # up
@@ -196,24 +226,22 @@ class Character:
 			self.picnr = [6, 0]
 		elif self.side == 'right':   # right
 			self.picnr = [7, 0]
+		self.lenPic = 6
+		self.interval = 80
+		self.hit()
 	
-	def hit(self):
+	def rebuke(self):
 		if self.side == 'up':  # up
-			for x in range(self.x - 32, self.x + 32):
-				for y in range(self.y - 64, self.y):
-					print 'collide down'
+			self.picnr = [8, 0]
 		elif self.side == 'left':  # left
-			for x in range(self.x - 64, self.x):
-				for y in range(self.y - 32, self.y + 32):
-					print 'collide left'
+			self.picnr = [9, 0]
 		elif self.side == 'down': # down
-			for x in range(self.x - 32, self.x + 32):
-				for y in range(self.y, self.y + 64):
-					print 'collide down'
+			self.picnr = [10, 0]
 		elif self.side == 'right':   # right
-			for x in range(self.x, self.x + 64):
-				for y in range(self.y - 32, self.y + 32):
-					print 'collide right'
+			self.picnr = [11, 0]
+		self.lenPic = 7
+		self.interval = 100
+		self.hit()
 	
 	""" methods for bots """
 	def up(self):

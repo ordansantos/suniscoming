@@ -18,7 +18,8 @@ class Person:
         
     @staticmethod
     def getPersonById(p_id):
-        if (len(Person.person_list) >= p_id):
+        
+        if (len(Person.person_list) <= p_id):
             return None
         return Person.person_list[p_id]
     
@@ -32,6 +33,6 @@ class Person:
     
     @staticmethod
     def changePersonLocation (p, x, y):
-        Walls.Walls.changePersonLocation(p, x, y)
+        return Walls.Walls.changePersonLocation(p, x, y)
         
         
