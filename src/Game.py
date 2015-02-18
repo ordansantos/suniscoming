@@ -15,11 +15,9 @@ class Game:
         self.clock = pygame.time.Clock()
         self.screen = Screen.Screen(self.width, self.height)     
         
-        self.p = Person.Person.getNewPerson(400, 1000)
-        self.p2 = Person.Person.getNewPerson(400, 1001)
-        
-        
-        # self.p.setPosition((1000 , 400))
+        self.p = Person.Person.getNewPerson(100, 250)
+        self.p2 = Person.Person.getNewPerson(110, 275, '../characters/kauan.png')
+
         
         self.millis = 0
     
@@ -31,13 +29,15 @@ class Game:
     
     def run(self):
         self.running = True
-        
+  
         while self.running:
             self.millis = self.clock.tick(30)
-            pygame.display.set_caption('Sun Is Coming - Master(%d) - Person(%d)' %(self.p.life, self.p2.life))
+            pygame.display.set_caption('%d %d - Sun Is Coming - Master(%d) - Person(%d)' %(self.p.x, self.p.y, self.p.life, self.p2.life))
+            
             self.p.move()
+        
             self.screen.draw(self.p, self.millis)
-            self.screen.blitPerson(self.p, self.p2, self.millis)
+        
             self.doEvent()
     
     def doEvent(self):

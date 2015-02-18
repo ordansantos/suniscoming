@@ -4,7 +4,7 @@ import Person
 
 class Character:
 	
-	def __init__(self):
+	def __init__(self, image = '../characters/human1.png'):
 		# essential
 		self.id = 0
 		self.name = ''
@@ -14,10 +14,11 @@ class Character:
 		self.x = 0
 		self.y = 0
 		# velocity
-		self.px = 4
+		self.px = 1
 		# sprites
-		self.path = '../characters/human1.png'
+		self.path = image
 		self.sprites = self.readSprites()
+		self.lifeBar = pygame.image.load(file('../characters/blood.png')).convert()
 		# sprites controller
 		self.interval = 150
 		self.cycletime = 0
@@ -96,6 +97,9 @@ class Character:
 				self.cycletime = 0
 		return self.sprites[self.picnr[0]][self.picnr[1]]
 	
+	def getLifeBar(self):
+		return self.lifeBar.subsurface(32 - int(self.life * 0.32), 0, 32, 3)
+    
 	def updatePicnr(self):
 		if self.arrow == [0, -1]:  # up
 			self.picnr = [0, 0]
@@ -113,32 +117,32 @@ class Character:
 	""" handle movement
 	"""
 	def move(self):
-		if self.attackNow():
-			return
-		if self.arrow[1] == -1:
-			self.moveUp()
-		if self.arrow[0] == -1:
-			self.moveLeft()
-		if self.arrow[1] == 1:
-			self.moveDown()
-		if self.arrow[0] == 1:
-			self.moveRight()
+		if not self.attackNow():
+			if self.arrow[1] == -1:
+				self.moveUp()
+			if self.arrow[0] == -1:
+				self.moveLeft()
+			if self.arrow[1] == 1:
+				self.moveDown()
+			if self.arrow[0] == 1:
+				self.moveRight()
 	
 	def moveUp(self):
-		if ( Person.Person.changePersonLocation(self, self.x, self.y - self.px)):
-			self.y += -self.px
+		position = Person.Person.changePersonLocation(self, self.x, self.y - self.px);
+		self.setPosition(position)
+	
 		# print str(self.x) + ' + ' + str(self.y)
 	def moveLeft(self):
-		if ( Person.Person.changePersonLocation(self, self.x - self.px, self.y )):
-			self.x += -self.px
+		position = Person.Person.changePersonLocation(self, self.x - self.px, self.y )
+		self.setPosition(position)
 		# print str(self.x) + ' + ' + str(self.y)
 	def moveDown(self):
-		if ( Person.Person.changePersonLocation(self, self.x, self.y + self.px)):
-			self.y += self.px
+		position = Person.Person.changePersonLocation(self, self.x, self.y + self.px);
+		self.setPosition(position)
 		# print str(self.x) + ' + ' + str(self.y)
 	def moveRight(self):
-		if ( Person.Person.changePersonLocation(self, self.x  + self.px , self.y)):
-			self.x += self.px
+		position = Person.Person.changePersonLocation(self, self.x  + self.px , self.y);
+		self.setPosition(position)
 		# print str(self.x) + ' + ' + str(self.y)
 	
 	""" handle arrow
@@ -194,28 +198,29 @@ class Character:
 	
 	def hit(self):
 		if self.side == 'up':
-			for x in xrange(self.x - 32, self.x + 32):
-				for y in xrange(self.y - 48, self.y):
+			for x in xrange(self.x - 8, self.x + 8):
+				for y in xrange(self.y - 12, self.y):
 					self.checkAttack(x, y)
 		elif self.side == 'left':
-			for x in xrange(self.x - 48, self.x):
-				for y in xrange(self.y - 32, self.y + 32):
+			for x in xrange(self.x - 12, self.x):
+				for y in xrange(self.y - 8, self.y + 8):
 					self.checkAttack(x, y)
 		elif self.side == 'down':
-			for x in xrange(self.x - 32, self.x + 32):
-				for y in xrange(self.y, self.y + 48):
+			for x in xrange(self.x - 8, self.x + 8):
+				for y in xrange(self.y, self.y + 12):
 					self.checkAttack(x, y)
 		elif self.side == 'right':
-			for x in xrange(self.x, self.x + 48):
-				for y in xrange(self.y - 32, self.y + 32):
+			for x in xrange(self.x, self.x + 12):
+				for y in xrange(self.y - 8, self.y + 8):
 					self.checkAttack(x, y)
 	
 	def checkAttack(self, x, y):
 		enemy = Person.Person.getPersonByPosition(x, y)
 		if enemy != None:
-			enemy.life -= 5
-			self.life += 5
-			print 'LIFE!'
+			if enemy.life >= 5:
+				enemy.life -= 5
+			if self.life <= 95:
+				self.life += 5
 	
 	def slash(self):
 		if self.side == 'up':  # up

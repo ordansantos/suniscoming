@@ -1,29 +1,48 @@
 
 import pytmx
-from pytmx.util_pygame import load_pygame
 
 class Walls:
     
-    Matrix = [[None for i in xrange(7210)] for j in xrange(7210)] 
+    CONST_MAP_PX = 4
+    CONST_MAP_WH = 1800
+    
+    Matrix = [[None for i in xrange(1810)] for j in xrange(1810)]
     
     def __init__(self):
         pass
+    
+    @staticmethod
+    def getTileByPXMap((x, y)):
+        
+        if (x % Walls.CONST_MAP_PX >= 2):
+            x = x / Walls.CONST_MAP_PX + 1
+        else:
+            x = x / Walls.CONST_MAP_PX
+            
+        if (y % Walls.CONST_MAP_PX >= 2):
+            y = y / Walls.CONST_MAP_PX + 1
+        else:
+            y = y / Walls.CONST_MAP_PX
+        
+        return (x, y)
     
     @staticmethod
     def pushWalls (tile_map):
         for layer in tile_map.visible_layers:
             if isinstance(layer, pytmx.TiledObjectGroup):
                 for obj in layer:
-                    Walls.putAMagicWall (obj.x, obj.y, obj.width, obj.height)
+                    Walls.putAMagicWall ( Walls.getTileByPXMap( (obj.x, obj.y)), Walls.getTileByPXMap ((obj.width, obj.height)) )
                     
     @staticmethod
     def isThereWall ((x, y)):
+        if (x < 0 or y < 0 or x > Walls.CONST_MAP_WH or y > Walls.CONST_MAP_WH):
+            return False
         if (Walls.Matrix[x][y] != None and Walls.Matrix[x][y] == -1):
             return True
         return False
     
     @staticmethod
-    def putAMagicWall (x, y, w, h):
+    def putAMagicWall ((x, y), (w, h)):
         for i in xrange (int(x), int(x + w)):
             for j in xrange (int(y), int(y + h)):
                 Walls.Matrix[i][j] = -1
@@ -31,18 +50,55 @@ class Walls:
     
     @staticmethod
     def pushPerson (x, y, p):
+        if (x < 0 or y < 0 or x > Walls.CONST_MAP_WH or y > Walls.CONST_MAP_WH):
+            return False
         if (not Walls.isThereWall((x, y)) and not Walls.isTherePerson(x, y)):
             Walls.Matrix[x][y] = p.getId()
             return True
         return False;
     
     @staticmethod
+    def doChange(id, (x0, y0), (x, y)):
+        Walls.Matrix[x0][y0] = None
+        Walls.Matrix[x][y] = id
+        
+    @staticmethod
     def changePersonLocation (p, x, y):
-        x0, y0 = p.getPosition()
-        if ( Walls.pushPerson(x, y, p)):
-            Walls.Matrix[x0][y0] = None
-            return True
-        return False
+        
+        x0, y0 = final_position = p.getPosition()
+            
+        k = 1
+        # It's done for any k's
+        if (y0 == y):
+            
+            if (x < x0):
+                k *= -1
+            
+            while ( x0 != x ):
+                x0 += k
+                if (Walls.isThereWall((x0, y0)) or Walls.isTherePerson(x0, y0)):
+                    return final_position
+            
+                final_position = (x0, y0)
+                
+            Walls.doChange(p.getId(), p.getPosition(), (x0, y0))
+            
+            return final_position
+        
+        if (x0 == x):
+            #print x0, y0, x, y
+            if (y < y0):
+                k *= -1
+            
+            while ( y0 != y ):
+                y0 += k
+                if (Walls.isThereWall((x0, y0)) or Walls.isTherePerson(x0, y0)):
+                    return final_position
+                final_position = (x0, y0)
+                
+            Walls.doChange(p.getId(), p.getPosition(), (x0, y0))
+                
+        return final_position
         
         
     @staticmethod
