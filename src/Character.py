@@ -4,7 +4,7 @@ import Person
 
 class Character:
 	
-	def __init__(self, image = '../characters/human1.png'):
+	def __init__(self, image = '../characters/ordan.png'):
 		# essential
 		self.id = 0
 		self.name = ''
@@ -39,7 +39,9 @@ class Character:
 		}
 		self.side = 'right'
 		self.attackKey = 0
-
+		# furtiveness
+		self.furtive = False
+		
 	""" utilities for the id
 	"""
 	def setId(self, p_id):
@@ -245,8 +247,12 @@ class Character:
 		elif self.side == 'right':   # right
 			self.picnr = [11, 0]
 		self.lenPic = 7
-		self.interval = 100
+		self.interval = 150
 		self.hit()
+	
+	""" furtiveness """
+	def updateFurtiveness(self):
+		self.furtive = not self.furtive
 	
 	""" methods for bots """
 	def up(self):

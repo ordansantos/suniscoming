@@ -2,6 +2,7 @@
 import pygame
 import Screen
 import Person
+import Sun
 
 class Game:
     
@@ -15,9 +16,10 @@ class Game:
         self.clock = pygame.time.Clock()
         self.screen = Screen.Screen(self.width, self.height)     
         
-        self.p = Person.Person.getNewPerson(100, 250, '../characters/ordan.png')
+        self.sun = Sun.Sun()
+        
+        self.p = Person.Person.getNewPerson(100, 250)
         self.p2 = Person.Person.getNewPerson(110, 275, '../characters/kauan.png')
-
         
         self.millis = 0
     
@@ -33,11 +35,8 @@ class Game:
         while self.running:
             self.millis = self.clock.tick(30)
             pygame.display.set_caption('%d %d - Sun Is Coming - Master(%d) - Person(%d)' %(self.p.x, self.p.y, self.p.life, self.p2.life))
-            
             self.p.move()
-        
-            self.screen.draw(self.p, self.millis)
-        
+            self.screen.draw(self.p, self.sun, self.millis)
             self.doEvent()
     
     def doEvent(self):
@@ -53,3 +52,5 @@ class Game:
                     self.p.setArrow(e.key, True)
                 if e.key in self.p.attack_keys.keys():
                     self.p.attack(e.key)
+                if e.key == pygame.K_f:
+                    self.p.updateFurtiveness()

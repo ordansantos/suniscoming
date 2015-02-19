@@ -1,5 +1,4 @@
 import sys
-
 sys.path.append("../")
 
 import pygame
@@ -9,6 +8,12 @@ import Walls
 import Person
 import math
 
+import sys, os, traceback
+if sys.platform in ["win32","win64"]: os.environ["SDL_VIDEO_CENTERED"]="1"
+
+import PAdLib.occluder as occluder
+import PAdLib.shadow as shadow
+
 class Screen:
 
     CONST_TILE = 16
@@ -17,7 +22,7 @@ class Screen:
     
     def __init__(self, screen_width, screen_height):
         
-        self.objectMatrix = [[None for i in xrange(450)] for j in xrange(450)] 
+        self.objectMatrix = [[None for i in xrange(450)] for j in xrange(450)]
         
         self.screen = pygame.display.set_mode((screen_width, screen_height))
         self.screen_width = screen_width
@@ -26,6 +31,15 @@ class Screen:
         self.tile_map  = load_pygame('tile_map.tmx')
         Walls.Walls.pushWalls(self.tile_map)    
         self.preLoadTiles()
+        
+        self.surf_lighting = pygame.Surface((screen_width, screen_height))
+        self.shad = shadow.Shadow()
+        self.shad.set_radius(150.0)
+        self.surf_falloff = pygame.image.load("../characters/light_falloff100.png").convert()
+        self.surf_falloff = pygame.transform.scale(self.surf_falloff, (300, 300))
+        self.surf_falloff.convert()
+        self.mask = self.shad.get_mask()
+        self.mask.blit(self.surf_falloff, (0,0), special_flags= pygame.BLEND_MULT)
     
     def getRealPosition(self, (x, y)):
         return (x * Screen.CONST_MAP_PX, y * Screen.CONST_MAP_PX)
@@ -64,14 +78,20 @@ class Screen:
             img_life = person.getLifeBar()
             self.screen.blit(img_life, (16 + x, 4 + y))
         
-    def draw(self, master, millis):
-        
+    def draw(self, master, sun, millis):
         self.clear(self.getRealPosition(master.getPosition()))
         self.renderPersonsToScreen(master, millis)
         self.renderTilesToScreen(master, millis)
         self.renderPersonsAfter(master, millis)
+        self.blitShadow(master, sun.getColor())
         pygame.display.flip()
     
+    def blitShadow(self, master, color):
+        self.surf_lighting.fill(color)
+        if not master.furtive:
+            pos = self.shad.get_center_position(self.screen_width / 2, self.screen_height / 2 - 16)
+            self.surf_lighting.blit(self.mask, pos, special_flags = pygame.BLEND_MAX)
+        self.screen.blit(self.surf_lighting, (0,0), special_flags=pygame.BLEND_MULT)
     
     def renderTilesToScreen(self, master, millis):
         
@@ -94,10 +114,10 @@ class Screen:
         if (fimy > Screen.CONST_MAX_WH):
             fimy = Screen.CONST_MAX_WH
             
-        for x in xrange (inix, fimx, 16):
-            xt = x / Screen.CONST_TILE
-            for y in xrange (iniy, fimy, 16):
-                yt = y / Screen.CONST_TILE
+        for y in xrange (iniy, fimy, 16):
+            yt = y / Screen.CONST_TILE
+            for x in xrange (inix, fimx, 16):
+                xt = x / Screen.CONST_TILE
                 if (self.objectMatrix[xt][yt] != None):
                     self.screen.blit (self.objectMatrix[xt][yt], (self.getObjectPosition((x, y), self.getRealPosition(master.getPosition() ) ) ) )
 

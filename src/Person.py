@@ -8,7 +8,7 @@ class Person:
     person_list = []
     
     @staticmethod
-    def getNewPerson(x, y, image = '../characters/human1.png'):
+    def getNewPerson(x, y, image = '../characters/ordan.png'):
         if (x > Person.CONST_MAX_WH / 4 or y > Person.CONST_MAX_WH / 4):
             return None
         
