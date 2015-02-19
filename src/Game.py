@@ -15,7 +15,7 @@ class Game:
         self.clock = pygame.time.Clock()
         self.screen = Screen.Screen(self.width, self.height)     
         
-        self.p = Person.Person.getNewPerson(100, 250)
+        self.p = Person.Person.getNewPerson(100, 250, '../characters/ordan.png')
         self.p2 = Person.Person.getNewPerson(110, 275, '../characters/kauan.png')
 
         

@@ -94,10 +94,10 @@ class Screen:
         if (fimy > Screen.CONST_MAX_WH):
             fimy = Screen.CONST_MAX_WH
             
-        for y in xrange (iniy, fimy, 16):
-            yt = y / Screen.CONST_TILE
-            for x in xrange (inix, fimx, 16):
-                xt = x / Screen.CONST_TILE
+        for x in xrange (inix, fimx, 16):
+            xt = x / Screen.CONST_TILE
+            for y in xrange (iniy, fimy, 16):
+                yt = y / Screen.CONST_TILE
                 if (self.objectMatrix[xt][yt] != None):
                     self.screen.blit (self.objectMatrix[xt][yt], (self.getObjectPosition((x, y), self.getRealPosition(master.getPosition() ) ) ) )
 
