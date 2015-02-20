@@ -4,7 +4,7 @@ import pygame
 class Sun:
     
     # 2,5 minutes = 150000
-    PERIOD = 1500
+    PERIOD = 15000
 
     def __init__(self):
         self.color = (240, 240, 240)

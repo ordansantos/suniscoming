@@ -8,7 +8,7 @@ class Person:
     person_list = []
     
     @staticmethod
-    def getNewPerson(x, y, image = '../characters/ordan.png'):
+    def getNewPerson(x, y, image = '../characters/kauan.png'):
         if (x > Person.CONST_MAX_WH / 4 or y > Person.CONST_MAX_WH / 4):
             return None
         
@@ -64,6 +64,18 @@ class Person:
                     
         return Person.person_list
     
+    @staticmethod
+    def getMaster():
+        
+        for p in Person.person_list:
+            if (p.id == Person.id_master):
+                return p
+        return None
+    
+    
+    @staticmethod
+    def setMaster(id_master):
+        Person.id_master = id_master
     
         
         

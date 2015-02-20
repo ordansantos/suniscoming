@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="450" height="450" tilewidth="16" tileheight="16" nextobjectid="651">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="450" height="450" tilewidth="16" tileheight="16" nextobjectid="684">
  <tileset firstgid="1" name="2s0fn00" tilewidth="16" tileheight="16">
   <image source="../tiles/wall/2s0fn00.png" width="512" height="256"/>
  </tileset>
@@ -499,6 +499,27 @@
   <object id="644" x="5615.5" y="7137" width="6" height="21.5"/>
   <object id="646" x="5616.5" y="6910.5" width="4" height="230"/>
   <object id="650" x="6942" y="6224" width="5.66667" height="131.333"/>
+  <object id="651" x="398.043" y="17.1739" width="6.86957" height="8.78261"/>
+  <object id="652" x="4419" y="248.5" width="10.5" height="10.75"/>
+  <object id="655" x="4791" y="229" width="9.25" height="28.25"/>
+  <object id="661" x="7105.33" y="712" width="12" height="12"/>
+  <object id="663" x="6984.67" y="3751.33" width="11.3333" height="24.6667"/>
+  <object id="664" x="3914.5" y="4110" width="16" height="16"/>
+  <object id="665" x="35.3333" y="2484.67" width="13.3333" height="16"/>
+  <object id="666" x="60.6667" y="2219.33" width="8.66667" height="21.3333"/>
+  <object id="667" x="134" y="2218.67" width="8.66667" height="12"/>
+  <object id="669" x="36" y="971.333" width="10" height="23.3333"/>
+  <object id="671" x="82.6667" y="4836" width="12.6667" height="11.3333"/>
+  <object id="672" x="98.6667" y="7058" width="16" height="18.6667"/>
+  <object id="674" x="6983.33" y="3887.33" width="8.66667" height="169.333"/>
+  <object id="675" x="87" y="3648" width="9" height="232"/>
+  <object id="676" x="1060" y="3809.33" width="7.33333" height="10.6667"/>
+  <object id="677" x="3518.67" y="4554" width="4" height="9.33333"/>
+  <object id="678" x="3780.67" y="4383.33" width="8" height="9.33333"/>
+  <object id="679" x="4214" y="4142" width="7.33333" height="10.6667"/>
+  <object id="681" x="4384" y="4096.67" width="6.66667" height="8"/>
+  <object id="682" x="4493.33" y="4095.33" width="6.66667" height="14"/>
+  <object id="683" x="3516.5" y="4550.5" width="6.75" height="10"/>
  </objectgroup>
  <layer name="nature" width="450" height="450">
   <data encoding="base64" compression="zlib">

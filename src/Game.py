@@ -3,6 +3,7 @@ import pygame
 import Screen
 import Person
 import Sun
+import Bot
 
 class Game:
     
@@ -18,11 +19,21 @@ class Game:
         
         self.sun = Sun.Sun()
         
-        self.p = Person.Person.getNewPerson(100, 250)
-        self.p2 = Person.Person.getNewPerson(110, 275, '../characters/kauan.png')
+        self.p = Person.Person.getNewPerson(100, 250, '../characters/ordan.png')
+        Person.Person.setMaster(self.p.getId())
         
         self.millis = 0
-    
+        
+        Bot.Bot.putNewBot((140, 250))
+        Bot.Bot.putNewBot((160, 251))
+        #Bot.Bot.putNewBot((130, 252))
+        #Bot.Bot.putNewBot((120, 253))
+        #Bot.Bot.putNewBot((110, 254))
+        #Bot.Bot.putNewBot((100, 260))
+        #Bot.Bot.putNewBot((120, 251))
+        #Bot.Bot.putNewBot((130, 242))
+        #Bot.Bot.putNewBot((140, 233))
+        #Bot.Bot.putNewBot((120, 214))
     def setScreenWidth(self, width):
         self.width = width
     
@@ -33,8 +44,9 @@ class Game:
         self.running = True
   
         while self.running:
+            
             self.millis = self.clock.tick(30)
-            pygame.display.set_caption('%d %d - Sun Is Coming - Master(%d) - Person(%d)' %(self.p.x, self.p.y, self.p.life, self.p2.life))
+            pygame.display.set_caption('%d %d - Sun Is Coming - Master(%d)' %(self.p.x, self.p.y, self.p.life))
             self.p.move()
             self.screen.draw(self.p, self.sun, self.millis)
             self.doEvent()
@@ -42,7 +54,8 @@ class Game:
     def doEvent(self):
         for e in pygame.event.get():
             if e.type == pygame.QUIT:
-                self.running = False;
+                self.running = False
+                pygame.quit()
             
             if e.type == pygame.KEYUP:
                 if e.key in self.p.arrow_states.keys():
@@ -54,3 +67,6 @@ class Game:
                     self.p.attack(e.key)
                 if e.key == pygame.K_f:
                     self.p.updateFurtiveness()
+            
+
+                

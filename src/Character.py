@@ -318,4 +318,6 @@ class Character:
 		self.arrow_states[pygame.K_RIGHT][0] = True
 		self.updateArrows()
 		self.move()
-	
+		
+	def stopped(self):
+		self.arrow = [0, 0]
