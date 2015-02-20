@@ -34,12 +34,12 @@ class Screen:
         
         self.surf_lighting = pygame.Surface((screen_width, screen_height))
         self.shad = shadow.Shadow()
-        self.shad.set_radius(150.0)
+        # self.shad.set_radius(200.0)
         self.surf_falloff = pygame.image.load("../characters/light_falloff100.png").convert()
-        self.surf_falloff = pygame.transform.scale(self.surf_falloff, (300, 300))
-        self.surf_falloff.convert()
-        self.mask = self.shad.get_mask()
-        self.mask.blit(self.surf_falloff, (0,0), special_flags= pygame.BLEND_MULT)
+        # self.surf_falloff = pygame.transform.scale(self.surf_falloff, (400, 400))
+        # self.surf_falloff.convert()
+        # self.mask = self.shad.get_mask()
+        # self.mask.blit(self.surf_falloff, (0,0), special_flags= pygame.BLEND_MULT)
     
     def getRealPosition(self, (x, y)):
         return (x * Screen.CONST_MAP_PX, y * Screen.CONST_MAP_PX)
@@ -83,14 +83,20 @@ class Screen:
         self.renderPersonsToScreen(master, millis)
         self.renderTilesToScreen(master, millis)
         self.renderPersonsAfter(master, millis)
-        self.blitShadow(master, sun.getColor())
+        self.blitShadow(master, sun)
         pygame.display.flip()
     
-    def blitShadow(self, master, color):
-        self.surf_lighting.fill(color)
+    def blitShadow(self, master, sun):
+        self.surf_lighting.fill(sun.getColor())
         if not master.furtive:
+            radius = sun.getRadius()
+            self.shad.set_radius(radius)
+            falloff = pygame.transform.scale(self.surf_falloff, (radius * 2, radius * 2))
+            falloff.convert()
+            mask = self.shad.get_mask()
+            mask.blit(falloff, (0,0), special_flags= pygame.BLEND_MULT)
             pos = self.shad.get_center_position(self.screen_width / 2, self.screen_height / 2 - 16)
-            self.surf_lighting.blit(self.mask, pos, special_flags = pygame.BLEND_MAX)
+            self.surf_lighting.blit(mask, pos, special_flags = pygame.BLEND_MAX)
         self.screen.blit(self.surf_lighting, (0,0), special_flags=pygame.BLEND_MULT)
     
     def renderTilesToScreen(self, master, millis):
