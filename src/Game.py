@@ -20,20 +20,22 @@ class Game:
         self.sun = Sun.Sun()
         
         self.p = Person.Person.getNewPerson(100, 250, '../characters/ordan.png')
+        self.p.px= 4
         Person.Person.setMaster(self.p.getId())
         
         self.millis = 0
         
-        Bot.Bot.putNewBot((140, 250))
-        Bot.Bot.putNewBot((160, 251))
-        #Bot.Bot.putNewBot((130, 252))
-        #Bot.Bot.putNewBot((120, 253))
-        #Bot.Bot.putNewBot((110, 254))
-        #Bot.Bot.putNewBot((100, 260))
-        #Bot.Bot.putNewBot((120, 251))
-        #Bot.Bot.putNewBot((130, 242))
-        #Bot.Bot.putNewBot((140, 233))
-        #Bot.Bot.putNewBot((120, 214))
+        Bot.Bot.putNewBot((1700, 1700), '../characters/skeleton.png')
+        #Bot.Bot.putNewBot((160, 300))
+        #Bot.Bot.putNewBot((130, 400))
+        #Bot.Bot.putNewBot((120, 350))
+        #Bot.Bot.putNewBot((200, 300))
+        #Bot.Bot.putNewBot((100, 340))
+        #Bot.Bot.putNewBot((250, 251))
+        #Bot.Bot.putNewBot((130, 501))
+        #Bot.Bot.putNewBot((600, 800))
+        #Bot.Bot.putNewBot((1000, 2000))
+        
     def setScreenWidth(self, width):
         self.width = width
     
