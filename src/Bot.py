@@ -25,8 +25,6 @@ class BotThread(threading.Thread):
         self.clock = pygame.time.Clock()
         self.millis = 0
         
-
-        
         while True:
             
             self.millis = self.clock.tick(30)
@@ -39,6 +37,7 @@ class BotThread(threading.Thread):
                 self.path_deque = PathFind.PathFind.getPath ((x, y), Person.Person.getMaster().getPosition())
                 
             self.p.stopped()
+            
     def moveBot(self):
         x, y = self.p.getPosition()
         x1, y1 = self.path_deque.popleft()
@@ -50,7 +49,6 @@ class BotThread(threading.Thread):
             elif (y1 < y):
                 self.p.upRight()
                 print 'entrou 2'
-                
             else:
                 self.p.right()
                 print 'entrou 3'
@@ -74,6 +72,3 @@ class BotThread(threading.Thread):
                 self.p.up()
                 print 'entrou 8'
 
-        
-        
-        

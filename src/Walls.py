@@ -66,13 +66,13 @@ class Walls:
     def changePersonLocation (p, x, y):
         
         x0, y0 = final_position = p.getPosition()
-            
+        
         k = 1
         # It's done for any k's
         if (y0 == y):
             
             if (x < x0):
-                k *= -1
+                k = -1
             
             while ( x0 != x ):
                 x0 += k
@@ -88,19 +88,37 @@ class Walls:
         if (x0 == x):
             #print x0, y0, x, y
             if (y < y0):
-                k *= -1
+                k = -1
             
             while ( y0 != y ):
                 y0 += k
                 if (Walls.isThereWall((x0, y0)) or Walls.isTherePerson(x0, y0)):
                     return final_position
+                
                 final_position = (x0, y0)
                 
             Walls.doChange(p.getId(), p.getPosition(), (x0, y0))
-                
+            
+            return final_position
+        
+        j = 1
+        if (x < x0):
+            k = -1
+        if (y < y0):
+            j = -1
+        
+        while ( y0 != y and x0 != x ):
+            x0 += k
+            y0 += j
+            if (Walls.isThereWall((x0, y0)) or Walls.isTherePerson(x0, y0)):
+                return final_position
+            
+            final_position = (x0, y0)
+        
+        Walls.doChange(p.getId(), p.getPosition(), (x0, y0))
+            
         return final_position
-        
-        
+    
     @staticmethod
     def isTherePerson (x, y):
         if (Walls.Matrix[x][y] != None and Walls.Matrix[x][y] != -1):

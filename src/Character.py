@@ -120,32 +120,59 @@ class Character:
 	"""
 	def move(self):
 		if not self.attackNow():
-			if self.arrow[1] == -1:
+			if self.arrow == [0, -1]:
 				self.moveUp()
-			if self.arrow[0] == -1:
-				self.moveLeft()
-			if self.arrow[1] == 1:
+			elif self.arrow == [0, 1]:
 				self.moveDown()
-			if self.arrow[0] == 1:
+			elif self.arrow == [-1, 0]:
+				self.moveLeft()
+			elif self.arrow == [1, 0]:
 				self.moveRight()
+			elif self.arrow == [-1, -1]:
+				self.moveUpLeft()
+			elif self.arrow == [1, -1]:
+				self.moveUpRight()
+			elif self.arrow == [-1, 1]:
+				self.moveDownLeft()
+			elif self.arrow == [1, 1]:
+				self.moveDownRight()
 	
 	def moveUp(self):
 		position = Person.Person.changePersonLocation(self, self.x, self.y - self.px);
 		self.setPosition(position)
-	
 		# print str(self.x) + ' + ' + str(self.y)
+		
 	def moveLeft(self):
 		position = Person.Person.changePersonLocation(self, self.x - self.px, self.y )
 		self.setPosition(position)
 		# print str(self.x) + ' + ' + str(self.y)
+		
 	def moveDown(self):
 		position = Person.Person.changePersonLocation(self, self.x, self.y + self.px);
 		self.setPosition(position)
 		# print str(self.x) + ' + ' + str(self.y)
+		
 	def moveRight(self):
 		position = Person.Person.changePersonLocation(self, self.x  + self.px , self.y);
 		self.setPosition(position)
 		# print str(self.x) + ' + ' + str(self.y)
+	
+	def moveUpLeft(self):
+		position = Person.Person.changePersonLocation(self, self.x - self.px, self.y - self.px);
+		print position
+		self.setPosition(position)
+	
+	def moveUpRight(self):
+		position = Person.Person.changePersonLocation(self, self.x + self.px, self.y - self.px);
+		self.setPosition(position)
+	
+	def moveDownLeft(self):
+		position = Person.Person.changePersonLocation(self, self.x - self.px, self.y + self.px);
+		self.setPosition(position)
+			
+	def moveDownRight(self):
+		position = Person.Person.changePersonLocation(self, self.x + self.px, self.y + self.px);
+		self.setPosition(position)
 	
 	""" handle arrow
 	"""
