@@ -23,8 +23,6 @@ class Game:
         self.p.px= 4
         Person.Person.setMaster(self.p.getId())
         
-        self.millis = 0
-        
         Bot.Bot.putNewBot((1700, 1700), '../characters/skeleton.png')
         #Bot.Bot.putNewBot((160, 300))
         #Bot.Bot.putNewBot((130, 400))
@@ -46,11 +44,10 @@ class Game:
         self.running = True
   
         while self.running:
-            
-            self.millis = self.clock.tick(30)
+            self.clock.tick(30)
             pygame.display.set_caption('%d %d - Sun Is Coming - Master(%d)' %(self.p.x, self.p.y, self.p.life))
             self.p.move()
-            self.screen.draw(self.p, self.sun, self.millis)
+            self.screen.draw(self.p, self.sun)
             self.doEvent()
     
     def doEvent(self):
@@ -69,6 +66,3 @@ class Game:
                     self.p.attack(e.key)
                 if e.key == pygame.K_f:
                     self.p.updateFurtiveness()
-            
-
-                

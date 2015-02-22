@@ -30,7 +30,6 @@ class Person:
                 return p
     
         return None
-  
     
     @staticmethod
     def getPersonByPosition (x, y):
@@ -38,7 +37,6 @@ class Person:
             return None;
         
         return Person.getPersonById(Walls.Walls.getIdPosition(x, y))
-    
     
     @staticmethod
     def changePersonLocation (p, x, y):
@@ -72,10 +70,6 @@ class Person:
                 return p
         return None
     
-    
     @staticmethod
     def setMaster(id_master):
         Person.id_master = id_master
-    
-        
-        

@@ -1,6 +1,7 @@
 
 import pygame
 import Person
+from apt.auth import update
 
 class Character:
 	
@@ -20,7 +21,7 @@ class Character:
 		self.sprites = self.readSprites()
 		self.lifeBar = pygame.image.load(file('../characters/blood.png')).convert()
 		# sprites controller
-		self.interval = 150
+		self.interval = 100
 		self.cycletime = 0
 		self.picnr = [3, 0]
 		self.lenPic = 9
@@ -88,16 +89,23 @@ class Character:
 		
 		return sprites
 	
-	def getImage(self, millis):
+	def getImage(self):
 		if self.arrow != [0, 0] or self.attackNow():
-			self.cycletime += millis
-			if self.cycletime > self.interval:
+			if self.updateTime():
 				self.picnr[1] += 1
 				if self.picnr[1] == self.lenPic:
 					self.updateAttack()
 					self.picnr[1] = 0
-				self.cycletime = 0
 		return self.sprites[self.picnr[0]][self.picnr[1]]
+	
+	def updateTime(self):
+		time = pygame.time.get_ticks()
+		if time < self.cycletime:
+			self.cycletime = 0
+		if time - self.cycletime >= self.interval:
+			self.cycletime = pygame.time.get_ticks()
+			return True
+		return False
 	
 	def getLifeBar(self):
 		return self.lifeBar.subsurface(32 - int(self.life * 0.32), 0, 32, 3)
@@ -159,7 +167,6 @@ class Character:
 	
 	def moveUpLeft(self):
 		position = Person.Person.changePersonLocation(self, self.x - self.px, self.y - self.px);
-		print position
 		self.setPosition(position)
 	
 	def moveUpRight(self):
@@ -216,7 +223,7 @@ class Character:
 				self.picnr = [3, 0]
 			self.attack_keys[self.attackKey] = False
 			self.lenPic = 9
-			self.interval = 150
+			self.interval = 100
 			self.attackKey = 0
 			self.updateArrows()
 	

@@ -34,12 +34,7 @@ class Screen:
         
         self.surf_lighting = pygame.Surface((screen_width, screen_height))
         self.shad = shadow.Shadow()
-        # self.shad.set_radius(200.0)
         self.surf_falloff = pygame.image.load("../characters/light_falloff100.png").convert()
-        # self.surf_falloff = pygame.transform.scale(self.surf_falloff, (400, 400))
-        # self.surf_falloff.convert()
-        # self.mask = self.shad.get_mask()
-        # self.mask.blit(self.surf_falloff, (0,0), special_flags= pygame.BLEND_MULT)
     
     def getRealPosition(self, (x, y)):
         return (x * Screen.CONST_MAP_PX, y * Screen.CONST_MAP_PX)
@@ -61,28 +56,28 @@ class Screen:
         self.screen.fill((0, 0, 0))
         self.screen.blit(self.background, (-mx + self.screen_width / 2, -my + self.screen_height / 2))
     
-    def blitMaster(self, person, millis):
-        img_person = person.getImage(millis)
+    def blitMaster(self, person):
+        img_person = person.getImage()
         self.screen.blit(img_person, (-32 + self.screen_width / 2, -64 + self.screen_height / 2))
         
         img_life = person.getLifeBar()
         self.screen.blit(img_life, (-16 + self.screen_width / 2, -60 + self.screen_height / 2))
         
-    def blitPerson(self, master, person, millis):
+    def blitPerson(self, master, person):
         if (master == person):
-            self.blitMaster (master, millis)
+            self.blitMaster (master)
         else:    
-            img_person = person.getImage(millis)
+            img_person = person.getImage()
             x, y = self.getPersonPosition(self.getRealPosition(master.getPosition()), self.getRealPosition(person.getPosition()))
             self.screen.blit(img_person, (x, y))
             img_life = person.getLifeBar()
             self.screen.blit(img_life, (16 + x, 4 + y))
         
-    def draw(self, master, sun, millis):
+    def draw(self, master, sun):
         self.clear(self.getRealPosition(master.getPosition()))
-        self.renderPersonsToScreen(master, millis)
-        self.renderTilesToScreen(master, millis)
-        self.renderPersonsAfter(master, millis)
+        self.renderPersonsToScreen(master)
+        self.renderTilesToScreen(master)
+        self.renderPersonsAfter(master)
         self.blitShadow(master, sun)
         pygame.display.flip()
     
@@ -99,16 +94,16 @@ class Screen:
             self.surf_lighting.blit(mask, pos, special_flags = pygame.BLEND_MAX)
         self.screen.blit(self.surf_lighting, (0,0), special_flags=pygame.BLEND_MULT)
     
-    def renderTilesToScreen(self, master, millis):
+    def renderTilesToScreen(self, master):
         
         mx, my = self.getRealPosition(master.getPosition())
      
         middlex = self.screen_width / 2
         middley = self.screen_height / 2
         
-        inix = (mx - middlex) / 16 * 16 - 32 # -32 margem de erro
+        inix = (mx - middlex) / 16 * 16 - 32 # -32 margin of error
         iniy = (my - middley) / 16 * 16 - 32
-        fimx = mx + middlex + 32 # -32 margem de erro
+        fimx = mx + middlex + 32 # -32 margin of error
         fimy = my + middley + 32
         
         if (inix < 0): inix = 0
@@ -134,7 +129,7 @@ class Screen:
                 for x, y, image in layer.tiles():
                     self.objectMatrix[x][y] = image.convert_alpha()        
                     
-    def renderPersonsToScreen(self, master, millis):
+    def renderPersonsToScreen(self, master):
         
         self.to_render_after = []
         
@@ -144,8 +139,8 @@ class Screen:
             if (not self.personIsOnScreen(master, p)): continue
       
             x, y = self.getRealPosition(p.getPosition())
-            # Is foot free?
-            sujo = False
+            # has free legs?
+            stained = False
             
             for i in xrange (x - 4, x + 5, 4):
                 for j in xrange (y, y + 17, 4):
@@ -153,17 +148,17 @@ class Screen:
                     xt = i / Screen.CONST_TILE
                     yt = j / Screen.CONST_TILE
                     if (self.objectMatrix[xt][yt] != None):
-                        sujo = True
+                        stained = True
             
-            if (not sujo):
+            if (not stained):
                 self.to_render_after.append(p)
             else:
-                self.blitPerson(master, p, millis)
+                self.blitPerson(master, p)
 
         
-    def renderPersonsAfter(self, master, millis):
+    def renderPersonsAfter(self, master):
         for p in self.to_render_after:
-            self.blitPerson(master, p, millis)
+            self.blitPerson(master, p)
             
             
     def personIsOnScreen(self, master, person):
@@ -178,7 +173,3 @@ class Screen:
         if (math.fabs(py - my) > middley + 32):
             return False
         return True
-        
-        
-        
-            

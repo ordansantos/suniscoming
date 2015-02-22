@@ -1,5 +1,4 @@
 
-
 import Queue
 import Walls
 import math
@@ -88,6 +87,4 @@ class PathFind():
         PathFind.buildPath (path_deque, parent_map, (x1, y1))
         
         return path_deque
-        
-        
         
