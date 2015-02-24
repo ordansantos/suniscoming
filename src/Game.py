@@ -65,8 +65,7 @@ class Game:
                         self.client.sendMovement("down")
                     if e.key == pygame.K_UP:
                         self.client.sendMovement("up")
-                if e.type == pygame.KEYUP:
-                    self.p.stopped()
+
             for e in client_event['moves']:
                 if e == 'up':
                     self.p.up()
