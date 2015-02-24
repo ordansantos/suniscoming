@@ -91,6 +91,14 @@ class Character:
 	
 	def getImage(self):
 		if self.arrow != [0, 0] or self.attackNow():
+			if self.side == 'up':  # up
+				self.picnr[0] = 0
+			elif self.side == 'left':  # left
+				self.picnr[0] = 1
+			elif self.side == 'down': # down
+				self.picnr[0] = 2
+			elif self.side == 'right':   # right
+				self.picnr[0] = 3
 			if self.updateTime():
 				self.picnr[1] += 1
 				if self.picnr[1] == self.lenPic:
@@ -102,7 +110,7 @@ class Character:
 		time = pygame.time.get_ticks()
 		if time < self.cycletime:
 			self.cycletime = 0
-		if time - self.cycletime >= self.interval:
+		if (time - self.cycletime) >= self.interval:
 			self.cycletime = pygame.time.get_ticks()
 			return True
 		return False
@@ -112,16 +120,16 @@ class Character:
     
 	def updatePicnr(self):
 		if self.arrow == [0, -1]:  # up
-			self.picnr = [0, 0]
+			#self.picnr = [0, 0]
 			self.side = 'up'
 		elif self.arrow[0] == -1:  # left
-			self.picnr = [1, 0]
+			#self.picnr = [1, 0]
 			self.side = 'left'
 		elif self.arrow == [0, 1]: # down
-			self.picnr = [2, 0]
+			#self.picnr = [2, 0]
 			self.side = 'down'
 		elif self.arrow[0] == 1:   # right
-			self.picnr = [3, 0]
+			#self.picnr = [3, 0]
 			self.side = 'right'
 	
 	""" handle movement

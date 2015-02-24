@@ -7,7 +7,7 @@ class ClientSocket :
     
     def __init__(self):
         
-        self.host = 'localhost'
+        self.host = '150.165.74.119'
         self.port = 8888
         self.size = 1024
         self.conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

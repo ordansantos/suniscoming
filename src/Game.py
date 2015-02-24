@@ -21,21 +21,35 @@ class Game:
         self.sun = Sun.Sun()
         
         self.p = Person.Person.getNewPerson(100, 250, '../characters/ordan.png')
-        self.p.px= 1
+        self.p.px= 4
         Person.Person.setMaster(self.p.getId())
         
-        Bot.Bot.putNewBot((1700, 1700), '../characters/skeleton.png')
-        #Bot.Bot.putNewBot((160, 300))
-        #Bot.Bot.putNewBot((130, 400))
-        #Bot.Bot.putNewBot((120, 350))
-        #Bot.Bot.putNewBot((200, 300))
-        #Bot.Bot.putNewBot((100, 340))
-        #Bot.Bot.putNewBot((250, 251))
-        #Bot.Bot.putNewBot((130, 501))
+        #Bot.Bot.putNewBot((1700, 1700), '../characters/skeleton.png')
+        Bot.Bot.putNewBot((160, 300))
+        Bot.Bot.putNewBot((130, 400))
+        Bot.Bot.putNewBot((120, 350))
+        Bot.Bot.putNewBot((200, 300))
+        Bot.Bot.putNewBot((100, 340))
+        Bot.Bot.putNewBot((250, 251))
+        Bot.Bot.putNewBot((130, 501))
+        Bot.Bot.putNewBot((166, 300))
+        Bot.Bot.putNewBot((131, 400))
+        Bot.Bot.putNewBot((122, 350))
+        Bot.Bot.putNewBot((203, 300))
+        Bot.Bot.putNewBot((104, 340))
+        Bot.Bot.putNewBot((255, 251))
+        Bot.Bot.putNewBot((138, 501))
+        Bot.Bot.putNewBot((169, 308))
+        Bot.Bot.putNewBot((139, 408))
+        Bot.Bot.putNewBot((129, 358))
+        Bot.Bot.putNewBot((209, 308))
+        Bot.Bot.putNewBot((109, 348))
+        Bot.Bot.putNewBot((259, 258))
+        Bot.Bot.putNewBot((139, 508))
         #Bot.Bot.putNewBot((600, 800))
         #Bot.Bot.putNewBot((1000, 2000))
         
-        self.client = ClientSocket.ClientSocket()
+        """ self.client = ClientSocket.ClientSocket() """
         
     def setScreenWidth(self, width):
         self.width = width
@@ -45,15 +59,15 @@ class Game:
     
     def run(self):
         self.running = True
-  
+        
         while self.running:
             self.clock.tick(30)
             pygame.display.set_caption('%d %d - Sun Is Coming - Master(%d)' %(self.p.x, self.p.y, self.p.life))
             self.p.move()
             self.screen.draw(self.p, self.sun)
-            #self.doEvent()
+            self.doEvent()
             
-            client_event = self.client.get()
+            '''client_event = self.client.get()
             
             for e in pygame.event.get():
                 if e.type == pygame.KEYDOWN:
@@ -74,14 +88,14 @@ class Game:
                 if e == 'left':
                     self.p.left()
                 if e == 'right':
-                    self.p.right()
+                    self.p.right()'''
                 
     def doEvent(self):
         for e in pygame.event.get():
             if e.type == pygame.QUIT:
                 self.running = False
                 pygame.quit()
-        """  
+          
             if e.type == pygame.KEYUP:
                 if e.key in self.p.arrow_states.keys():
                     self.p.setArrow(e.key, False)
@@ -92,5 +106,5 @@ class Game:
                     self.p.attack(e.key)
                 if e.key == pygame.K_f:
                     self.p.updateFurtiveness()
-                    """
+                    
                     
