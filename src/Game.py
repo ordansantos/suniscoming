@@ -18,6 +18,15 @@ class Game:
         self.clock = pygame.time.Clock()
         self.screen = Screen.Screen(self.width, self.height)     
         
+        self.arrow_states = {
+            pygame.K_UP: [False, -1],
+            pygame.K_DOWN: [False, 1],
+            pygame.K_LEFT: [False, -1],
+            pygame.K_RIGHT: [False, 1],
+        }
+        
+        self.arrow = [0, 0]
+        
         self.sun = Sun.Sun()
         
         self.p = Person.Person.getNewPerson(100, 250, '../characters/ordan.png')
@@ -63,9 +72,9 @@ class Game:
         while self.running:
             self.clock.tick(30)
             pygame.display.set_caption('%d %d - Sun Is Coming - Master(%d)' %(self.p.x, self.p.y, self.p.life))
-            self.p.move()
             self.screen.draw(self.p, self.sun)
             self.doEvent()
+            self.p.move(self.arrow)
             
             '''client_event = self.client.get()
             
@@ -95,16 +104,29 @@ class Game:
             if e.type == pygame.QUIT:
                 self.running = False
                 pygame.quit()
-          
+            
             if e.type == pygame.KEYUP:
-                if e.key in self.p.arrow_states.keys():
-                    self.p.setArrow(e.key, False)
+                if e.key in self.arrow_states.keys():
+                    self.arrow_states[e.key][0] = False
+                    self.updateArrows()
+            
             if e.type == pygame.KEYDOWN:
-                if e.key in self.p.arrow_states.keys():
-                    self.p.setArrow(e.key, True)
+                if e.key in self.arrow_states.keys():
+                    self.arrow_states[e.key][0] = True
+                    self.updateArrows()
                 if e.key in self.p.attack_keys.keys():
                     self.p.attack(e.key)
                 if e.key == pygame.K_f:
                     self.p.updateFurtiveness()
-                    
-                    
+    
+    def updateArrows(self):
+        self.arrow = [0, 0]
+        if self.arrow_states[pygame.K_UP][0]:
+            self.arrow[1] += self.arrow_states[pygame.K_UP][1]
+        if self.arrow_states[pygame.K_DOWN][0]:
+            self.arrow[1] += self.arrow_states[pygame.K_DOWN][1]
+        if self.arrow_states[pygame.K_LEFT][0]:
+            self.arrow[0] += self.arrow_states[pygame.K_LEFT][1]
+        if self.arrow_states[pygame.K_RIGHT][0]:
+            self.arrow[0] += self.arrow_states[pygame.K_RIGHT][1]
+        print self.arrow

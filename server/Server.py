@@ -95,5 +95,3 @@ while 1:
     start_new_thread(clientthread ,(conn, ))
 
 s.close()
-            
-            

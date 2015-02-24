@@ -23,22 +23,15 @@ class Character:
 		# sprites controller
 		self.interval = 100
 		self.cycletime = 0
-		self.picnr = [3, 0]
+		self.picnr = [3, 0] # picture on right
 		self.lenPic = 9
 		# movement controller
-		self.arrow_states = {
-			pygame.K_UP: [False, -1],
-			pygame.K_DOWN: [False, 1],
-			pygame.K_LEFT: [False, -1],
-			pygame.K_RIGHT: [False, 1],
-		}
-		self.arrow = [0, 0]
+		self.side = 'stopped'
 		# attack controller
 		self.attack_keys = {
 			pygame.K_SPACE: False,
 			pygame.K_e: False
 		}
-		self.side = 'right'
 		self.attackKey = 0
 		# furtiveness
 		self.furtive = False
@@ -90,21 +83,25 @@ class Character:
 		return sprites
 	
 	def getImage(self):
-		if self.arrow != [0, 0] or self.attackNow():
-			if self.side == 'up':  # up
-				self.picnr[0] = 0
-			elif self.side == 'left':  # left
-				self.picnr[0] = 1
-			elif self.side == 'down': # down
-				self.picnr[0] = 2
-			elif self.side == 'right':   # right
-				self.picnr[0] = 3
+		if self.side != 'stopped' or self.attackKey != 0:
+			self.updatePicnr()
 			if self.updateTime():
 				self.picnr[1] += 1
 				if self.picnr[1] == self.lenPic:
 					self.updateAttack()
 					self.picnr[1] = 0
 		return self.sprites[self.picnr[0]][self.picnr[1]]
+	
+	def updatePicnr(self):
+		if self.attackKey == 0:
+			if self.side == 'up':
+				self.picnr[0] = 0
+			elif self.side == 'left':
+				self.picnr[0] = 1
+			elif self.side == 'down':
+				self.picnr[0] = 2
+			elif self.side == 'right':
+				self.picnr[0] = 3
 	
 	def updateTime(self):
 		time = pygame.time.get_ticks()
@@ -117,97 +114,82 @@ class Character:
 	
 	def getLifeBar(self):
 		return self.lifeBar.subsurface(32 - int(self.life * 0.32), 0, 32, 3)
-    
-	def updatePicnr(self):
-		if self.arrow == [0, -1]:  # up
-			#self.picnr = [0, 0]
-			self.side = 'up'
-		elif self.arrow[0] == -1:  # left
-			#self.picnr = [1, 0]
-			self.side = 'left'
-		elif self.arrow == [0, 1]: # down
-			#self.picnr = [2, 0]
-			self.side = 'down'
-		elif self.arrow[0] == 1:   # right
-			#self.picnr = [3, 0]
-			self.side = 'right'
 	
 	""" handle movement
 	"""
-	def move(self):
-		if not self.attackNow():
-			if self.arrow == [0, -1]:
-				self.moveUp()
-			elif self.arrow == [0, 1]:
-				self.moveDown()
-			elif self.arrow == [-1, 0]:
-				self.moveLeft()
-			elif self.arrow == [1, 0]:
-				self.moveRight()
-			elif self.arrow == [-1, -1]:
-				self.moveUpLeft()
-			elif self.arrow == [1, -1]:
-				self.moveUpRight()
-			elif self.arrow == [-1, 1]:
-				self.moveDownLeft()
-			elif self.arrow == [1, 1]:
-				self.moveDownRight()
+	def move(self, arrow):
+		if self.attackKey == 0:
+			if arrow == [0, -1]:
+				self.up()
+			elif arrow == [0, 1]:
+				self.down()
+			elif arrow == [-1, 0]:
+				self.left()
+			elif arrow == [1, 0]:
+				self.right()
+			elif arrow == [-1, -1]:
+				self.upLeft()
+			elif arrow == [1, -1]:
+				self.upRight()
+			elif arrow == [-1, 1]:
+				self.downLeft()
+			elif arrow == [1, 1]:
+				self.downRight()
+			else:
+				self.stopped()
+				self.picnr[1] = 0
 	
-	def moveUp(self):
-		position = Person.Person.changePersonLocation(self, self.x, self.y - self.px);
-		self.setPosition(position)
-		# print str(self.x) + ' + ' + str(self.y)
-		
-	def moveLeft(self):
-		position = Person.Person.changePersonLocation(self, self.x - self.px, self.y )
-		self.setPosition(position)
-		# print str(self.x) + ' + ' + str(self.y)
-		
-	def moveDown(self):
-		position = Person.Person.changePersonLocation(self, self.x, self.y + self.px);
-		self.setPosition(position)
-		# print str(self.x) + ' + ' + str(self.y)
-		
-	def moveRight(self):
-		position = Person.Person.changePersonLocation(self, self.x  + self.px , self.y);
-		self.setPosition(position)
-		# print str(self.x) + ' + ' + str(self.y)
+	def up(self):
+		if self.attackKey == 0:
+			self.side = 'up'
+			position = Person.Person.changePersonLocation(self, self.x, self.y - self.px);
+			self.setPosition(position)
 	
-	def moveUpLeft(self):
-		position = Person.Person.changePersonLocation(self, self.x - self.px, self.y - self.px);
-		self.setPosition(position)
+	def left(self):
+		if self.attackKey == 0:
+			self.side = 'left'
+			position = Person.Person.changePersonLocation(self, self.x - self.px, self.y )
+			self.setPosition(position)
 	
-	def moveUpRight(self):
-		position = Person.Person.changePersonLocation(self, self.x + self.px, self.y - self.px);
-		self.setPosition(position)
+	def down(self):
+		if self.attackKey == 0:
+			self.side = 'down'
+			position = Person.Person.changePersonLocation(self, self.x, self.y + self.px);
+			self.setPosition(position)
 	
-	def moveDownLeft(self):
-		position = Person.Person.changePersonLocation(self, self.x - self.px, self.y + self.px);
-		self.setPosition(position)
-			
-	def moveDownRight(self):
-		position = Person.Person.changePersonLocation(self, self.x + self.px, self.y + self.px);
-		self.setPosition(position)
+	def right(self):
+		if self.attackKey == 0:
+			self.side = 'right'
+			position = Person.Person.changePersonLocation(self, self.x  + self.px , self.y);
+			self.setPosition(position)
 	
-	""" handle arrow
-	"""
-	def setArrow(self, key, state):
-		self.arrow_states[key][0] = state
-		self.updateArrows()
-
-	def updateArrows(self):
-		if not self.attackNow():
-			self.arrow = [0, 0]
-			if self.arrow_states[pygame.K_UP][0]:
-				self.arrow[1] += self.arrow_states[pygame.K_UP][1]
-			if self.arrow_states[pygame.K_DOWN][0]:
-				self.arrow[1] += self.arrow_states[pygame.K_DOWN][1]
-			if self.arrow_states[pygame.K_LEFT][0]:
-				self.arrow[0] += self.arrow_states[pygame.K_LEFT][1]
-			if self.arrow_states[pygame.K_RIGHT][0]:
-				self.arrow[0] += self.arrow_states[pygame.K_RIGHT][1]
-			self.updatePicnr()
-
+	def upLeft(self):
+		if self.attackKey == 0:
+			self.side = 'left'
+			position = Person.Person.changePersonLocation(self, self.x - self.px, self.y - self.px);
+			self.setPosition(position)
+	
+	def upRight(self):
+		if self.attackKey == 0:
+			self.side = 'right'
+			position = Person.Person.changePersonLocation(self, self.x + self.px, self.y - self.px);
+			self.setPosition(position)
+	
+	def downLeft(self):
+		if self.attackKey == 0:
+			self.side = 'left'
+			position = Person.Person.changePersonLocation(self, self.x - self.px, self.y + self.px);
+			self.setPosition(position)
+	
+	def downRight(self):
+		if self.attackKey == 0:
+			self.side = 'right'
+			position = Person.Person.changePersonLocation(self, self.x + self.px, self.y + self.px);
+			self.setPosition(position)
+	
+	def stopped(self):
+		self.side = 'stopped'
+	
 	""" handle attack
 	"""
 	def attack(self, key):
@@ -233,12 +215,6 @@ class Character:
 			self.lenPic = 9
 			self.interval = 100
 			self.attackKey = 0
-			self.updateArrows()
-	
-	def attackNow(self):
-		if True in self.attack_keys.values():
-			return True
-		return False
 	
 	def hit(self):
 		if self.side == 'up':
@@ -267,26 +243,26 @@ class Character:
 				self.life += 5
 	
 	def slash(self):
-		if self.side == 'up':  # up
+		if self.side == 'up':
 			self.picnr = [4, 0]
-		elif self.side == 'left':  # left
+		elif self.side == 'left':
 			self.picnr = [5, 0]
-		elif self.side == 'down': # down
+		elif self.side == 'down':
 			self.picnr = [6, 0]
-		elif self.side == 'right':   # right
+		elif self.side == 'right':
 			self.picnr = [7, 0]
 		self.lenPic = 6
 		self.interval = 80
 		self.hit()
 	
 	def rebuke(self):
-		if self.side == 'up':  # up
+		if self.side == 'up':
 			self.picnr = [8, 0]
-		elif self.side == 'left':  # left
+		elif self.side == 'left':
 			self.picnr = [9, 0]
-		elif self.side == 'down': # down
+		elif self.side == 'down':
 			self.picnr = [10, 0]
-		elif self.side == 'right':   # right
+		elif self.side == 'right':
 			self.picnr = [11, 0]
 		self.lenPic = 7
 		self.interval = 150
@@ -296,70 +272,3 @@ class Character:
 	def updateFurtiveness(self):
 		self.furtive = not self.furtive
 	
-	""" methods for bots """
-	def up(self):
-		self.arrow_states[pygame.K_UP][0] = True
-		self.arrow_states[pygame.K_LEFT][0] = False
-		self.arrow_states[pygame.K_DOWN][0] = False
-		self.arrow_states[pygame.K_RIGHT][0] = False
-		self.updateArrows()
-		self.move()
-	
-	def left(self):
-		self.arrow_states[pygame.K_UP][0] = False
-		self.arrow_states[pygame.K_LEFT][0] = True
-		self.arrow_states[pygame.K_DOWN][0] = False
-		self.arrow_states[pygame.K_RIGHT][0] = False
-		self.updateArrows()
-		self.move()
-	
-	def down(self):
-		self.arrow_states[pygame.K_UP][0] = False
-		self.arrow_states[pygame.K_LEFT][0] = False
-		self.arrow_states[pygame.K_DOWN][0] = True
-		self.arrow_states[pygame.K_RIGHT][0] = False
-		self.updateArrows()
-		self.move()
-	
-	def right(self):
-		self.arrow_states[pygame.K_UP][0] = False
-		self.arrow_states[pygame.K_LEFT][0] = False
-		self.arrow_states[pygame.K_DOWN][0] = False
-		self.arrow_states[pygame.K_RIGHT][0] = True
-		self.updateArrows()
-		self.move()
-	
-	def upLeft(self):
-		self.arrow_states[pygame.K_UP][0] = True
-		self.arrow_states[pygame.K_LEFT][0] = True
-		self.arrow_states[pygame.K_DOWN][0] = False
-		self.arrow_states[pygame.K_RIGHT][0] = False
-		self.updateArrows()
-		self.move()
-	
-	def upRight(self):
-		self.arrow_states[pygame.K_UP][0] = True
-		self.arrow_states[pygame.K_LEFT][0] = False
-		self.arrow_states[pygame.K_DOWN][0] = False
-		self.arrow_states[pygame.K_RIGHT][0] = True
-		self.updateArrows()
-		self.move()
-	
-	def downLeft(self):
-		self.arrow_states[pygame.K_UP][0] = False
-		self.arrow_states[pygame.K_LEFT][0] = True
-		self.arrow_states[pygame.K_DOWN][0] = True
-		self.arrow_states[pygame.K_RIGHT][0] = False
-		self.updateArrows()
-		self.move()
-	
-	def downRight(self):
-		self.arrow_states[pygame.K_UP][0] = False
-		self.arrow_states[pygame.K_LEFT][0] = False
-		self.arrow_states[pygame.K_DOWN][0] = True
-		self.arrow_states[pygame.K_RIGHT][0] = True
-		self.updateArrows()
-		self.move()
-		
-	def stopped(self):
-		self.arrow = [0, 0]
