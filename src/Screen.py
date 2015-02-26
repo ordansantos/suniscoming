@@ -35,8 +35,6 @@ class Screen:
         self.surf_lighting = pygame.Surface((screen_width, screen_height))
         self.shad = shadow.Shadow()
         self.surf_falloff = pygame.image.load("../characters/light_falloff100.png").convert()
-        
-        self.blood_squirt = pygame.image.load(file('../characters/death_blood.png')).convert_alpha()
     
     def getRealPosition(self, (x, y)):
         return (x * Screen.CONST_MAP_PX, y * Screen.CONST_MAP_PX)
@@ -59,23 +57,37 @@ class Screen:
         self.screen.blit(self.background, (-mx + self.screen_width / 2, -my + self.screen_height / 2))
     
     def blitMaster(self, person):
+        x, y = self.screen_width / 2, self.screen_height / 2
+        
+        img_death = person.getDeathBlood()
+        if img_death != None:
+                self.screen.blit(img_death, (x - 24, y - 16))
+        
         img_person = person.getImage()
-        self.screen.blit(img_person, (-32 + self.screen_width / 2, -64 + self.screen_height / 2))
+        self.screen.blit(img_person, (-32 + x, -64 + y))
         
         img_life = person.getLifeBar()
-        self.screen.blit(img_life, (-16 + self.screen_width / 2, -60 + self.screen_height / 2))
-        
+        self.screen.blit(img_life, (-16 + x, -60 + y))
+    
     def blitPerson(self, master, person):
         if (master == person):
             self.blitMaster (master)
         else:    
-            img_person = person.getImage()
             x, y = self.getPersonPosition(self.getRealPosition(master.getPosition()), self.getRealPosition(person.getPosition()))
-            if person.life == 0:
-                self.screen.blit(self.blood_squirt, (x - 24, y - 16))
+            
+            img_death = person.getDeathBlood()
+            if img_death != None:
+                self.screen.blit(img_death, (x - 24, y - 16))
+                
+            img_person = person.getImage()
             self.screen.blit(img_person, (x, y))
+            
             img_life = person.getLifeBar()
             self.screen.blit(img_life, (16 + x, 4 + y))
+            
+            img_squirt = person.getBloodSquirt()
+            if img_squirt != None:
+                self.screen.blit(img_squirt, (x - 24, y - 16))
     
     def draw(self, master, sun):
         self.clear(self.getRealPosition(master.getPosition()))

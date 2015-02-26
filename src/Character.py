@@ -24,12 +24,15 @@ class Character:
 		# sprites
 		self.path = image
 		self.sprites = self.readSprites()
-		self.lifeBar = pygame.image.load(file('../characters/blood.png')).convert()
+		self.life_bar = pygame.image.load(file('../characters/blood.png')).convert()
+		self.death_blood = pygame.image.load(file('../characters/death_blood.png')).convert_alpha()
+		self.blood_squirt = pygame.image.load(file('../characters/blood_squirt.png')).convert_alpha()
 		# sprites controller
 		self.interval = 100
 		self.cycletime = 0
 		self.picnr = [3, 0] # picture on right
 		self.lenPic = 9
+		self.squirt_time = 0
 		# movement controller
 		self.side = 'right'
 		self.movement = False
@@ -38,7 +41,8 @@ class Character:
 			Character.SLASH: False,
 			Character.REBUKE: False
 		}
-		self.attackKey = Character.NO_ATTACK
+		self.attack_key = Character.NO_ATTACK
+		self.attacked = False
 		# furtiveness
 		self.furtive = False
 		
@@ -98,7 +102,7 @@ class Character:
 	
 	def getImage(self):
 		x, y = self.picnr
-		if self.movement or self.attackKey != Character.NO_ATTACK or self.life == 0:
+		if self.movement or self.attack_key != Character.NO_ATTACK or self.life == 0:
 			self.updatePicnr()
 			if self.updateTime():
 				self.picnr[1] += 1
@@ -109,7 +113,7 @@ class Character:
 		return self.sprites[x][y]
 	
 	def updatePicnr(self):
-		if self.attackKey == Character.NO_ATTACK and self.life != 0:
+		if self.attack_key == Character.NO_ATTACK and self.life != 0:
 			if self.side == 'up':
 				self.picnr[0] = 0
 			elif self.side == 'left':
@@ -129,12 +133,25 @@ class Character:
 		return False
 	
 	def getLifeBar(self):
-		return self.lifeBar.subsurface(32 - int(self.life * 0.32), 0, 32, 3)
+		return self.life_bar.subsurface(32 - int(self.life * 0.32), 0, 32, 3)
+	
+	def getDeathBlood(self):
+		if self.life == 0:
+			return self.death_blood
+		return None
+	
+	def getBloodSquirt(self):
+		time = pygame.time.get_ticks()
+		if self.attacked and (time - self.squirt_time) >= 100:
+			self.attacked = False
+			self.squirt_time = time
+			return self.blood_squirt
+		return None
 	
 	""" handle movement
 	"""
 	def move(self, arrow):
-		if self.attackKey == Character.NO_ATTACK:
+		if self.attack_key == Character.NO_ATTACK:
 			if arrow == [0, -1]:
 				self.up()
 			elif arrow == [0, 1]:
@@ -155,56 +172,56 @@ class Character:
 				self.stopped()
 	
 	def up(self):
-		if self.attackKey == Character.NO_ATTACK:
+		if self.attack_key == Character.NO_ATTACK:
 			self.side = 'up'
 			self.movement = True
 			position = Person.Person.changePersonLocation(self, self.x, self.y - self.px);
 			self.setPosition(position)
 	
 	def left(self):
-		if self.attackKey == Character.NO_ATTACK:
+		if self.attack_key == Character.NO_ATTACK:
 			self.side = 'left'
 			self.movement = True
 			position = Person.Person.changePersonLocation(self, self.x - self.px, self.y )
 			self.setPosition(position)
 	
 	def down(self):
-		if self.attackKey == Character.NO_ATTACK:
+		if self.attack_key == Character.NO_ATTACK:
 			self.side = 'down'
 			self.movement = True
 			position = Person.Person.changePersonLocation(self, self.x, self.y + self.px);
 			self.setPosition(position)
 	
 	def right(self):
-		if self.attackKey == Character.NO_ATTACK:
+		if self.attack_key == Character.NO_ATTACK:
 			self.side = 'right'
 			self.movement = True
 			position = Person.Person.changePersonLocation(self, self.x  + self.px , self.y);
 			self.setPosition(position)
 	
 	def upLeft(self):
-		if self.attackKey == Character.NO_ATTACK:
+		if self.attack_key == Character.NO_ATTACK:
 			self.side = 'left'
 			self.movement = True
 			position = Person.Person.changePersonLocation(self, self.x - self.px, self.y - self.px);
 			self.setPosition(position)
 	
 	def upRight(self):
-		if self.attackKey == Character.NO_ATTACK:
+		if self.attack_key == Character.NO_ATTACK:
 			self.side = 'right'
 			self.movement = True
 			position = Person.Person.changePersonLocation(self, self.x + self.px, self.y - self.px);
 			self.setPosition(position)
 	
 	def downLeft(self):
-		if self.attackKey == Character.NO_ATTACK:
+		if self.attack_key == Character.NO_ATTACK:
 			self.side = 'left'
 			self.movement = True
 			position = Person.Person.changePersonLocation(self, self.x - self.px, self.y + self.px);
 			self.setPosition(position)
 	
 	def downRight(self):
-		if self.attackKey == Character.NO_ATTACK:
+		if self.attack_key == Character.NO_ATTACK:
 			self.side = 'right'
 			self.movement = True
 			position = Person.Person.changePersonLocation(self, self.x + self.px, self.y + self.px);
@@ -217,16 +234,16 @@ class Character:
 	""" handle attack
 	"""
 	def attack(self, key):
-		if self.attackKey == Character.NO_ATTACK:
+		if self.attack_key == Character.NO_ATTACK:
 			self.attack_keys[key] = True
-			self.attackKey = key
+			self.attack_key = key
 			if key == Character.SLASH:
 				self.slash()
 			elif key == Character.REBUKE:
 				self.rebuke()
 	
 	def updateAttack(self):
-		if self.attackKey != Character.NO_ATTACK:
+		if self.attack_key != Character.NO_ATTACK:
 			if self.side == 'up':  # up
 				self.picnr = [0, 0]
 			elif self.side == 'left':  # left
@@ -235,10 +252,10 @@ class Character:
 				self.picnr = [2, 0]
 			elif self.side == 'right':   # right
 				self.picnr = [3, 0]
-			self.attack_keys[self.attackKey] = False
+			self.attack_keys[self.attack_key] = False
 			self.lenPic = 9
 			self.interval = 100
-			self.attackKey = Character.NO_ATTACK
+			self.attack_key = Character.NO_ATTACK
 	
 	def hit(self):
 		if self.side == 'up':
@@ -263,6 +280,7 @@ class Character:
 			enemy = Person.Person.getPersonByPosition(x, y)
 			if enemy != None:
 				if enemy.life >= self.stranger:
+					enemy.attacked = True
 					enemy.life -= self.stranger
 					if enemy.life == 0:
 						enemy.dead()
