@@ -35,6 +35,8 @@ class Screen:
         self.surf_lighting = pygame.Surface((screen_width, screen_height))
         self.shad = shadow.Shadow()
         self.surf_falloff = pygame.image.load("../characters/light_falloff100.png").convert()
+        
+        self.blood_squirt = pygame.image.load(file('../characters/death_blood.png')).convert_alpha()
     
     def getRealPosition(self, (x, y)):
         return (x * Screen.CONST_MAP_PX, y * Screen.CONST_MAP_PX)
@@ -69,10 +71,12 @@ class Screen:
         else:    
             img_person = person.getImage()
             x, y = self.getPersonPosition(self.getRealPosition(master.getPosition()), self.getRealPosition(person.getPosition()))
+            if person.life == 0:
+                self.screen.blit(self.blood_squirt, (x - 24, y - 16))
             self.screen.blit(img_person, (x, y))
             img_life = person.getLifeBar()
             self.screen.blit(img_life, (16 + x, 4 + y))
-        
+    
     def draw(self, master, sun):
         self.clear(self.getRealPosition(master.getPosition()))
         self.renderPersonsToScreen(master)

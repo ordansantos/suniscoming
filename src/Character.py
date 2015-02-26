@@ -69,7 +69,6 @@ class Character:
 		# one full day to do this function
 		spritesheet = pygame.image.load(file(self.path))
 		spritesheet.convert()
-		# sprites = [[0 for i in range(10)] for i in range(12)]
 		sprites = []
 		
 		# walk
@@ -98,6 +97,7 @@ class Character:
 		return sprites
 	
 	def getImage(self):
+		x, y = self.picnr
 		if self.movement or self.attackKey != Character.NO_ATTACK or self.life == 0:
 			self.updatePicnr()
 			if self.updateTime():
@@ -106,7 +106,7 @@ class Character:
 					self.updateAttack()
 					if self.picnr[0] == 12: self.isDead()
 					self.picnr[1] = 0
-		return self.sprites[self.picnr[0]][self.picnr[1]]
+		return self.sprites[x][y]
 	
 	def updatePicnr(self):
 		if self.attackKey == Character.NO_ATTACK and self.life != 0:
@@ -266,7 +266,6 @@ class Character:
 					enemy.life -= self.stranger
 					if enemy.life == 0:
 						enemy.dead()
-					print 'id- ' + str(enemy.id) + ' life- ' + str(enemy.life)
 				if self.life <= 100 - self.stranger:
 					self.life += self.stranger
 	
@@ -303,12 +302,10 @@ class Character:
 	""" handle life """
 	def isDead(self):
 		if self.life == 0:
-			print 'CHAMA MORTE'
 			Person.Person.setDead(self)
 	
 	def dead(self):
-		print 'MANDA PINTAR MORTE DE ID- ' + str(self.id)
 		self.picnr = [12, 0]
 		self.lenPic = 6
-		self.interval = 50
+		self.interval = 500
 	

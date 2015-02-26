@@ -131,9 +131,7 @@ class Walls:
             return -1
         return Walls.Matrix[x][y]
     
-    
-   
-    
-    
-                
+    @staticmethod
+    def setDead((x, y)):
+        Walls.Matrix[x][y] = None
     

@@ -34,7 +34,10 @@ class BotThread(threading.Thread):
                 x, y = self.p.getPosition()
                 self.path_deque = PathFind.PathFind.getPath ((x, y), Person.Person.getMaster().getPosition())
                 self.p.stopped()
-    
+            
+            if self.p.life == 0:
+                break
+            
     def moveBot(self):
         x, y = self.p.getPosition()
         x1, y1 = self.path_deque.popleft()

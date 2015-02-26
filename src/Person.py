@@ -76,6 +76,6 @@ class Person:
 
     @staticmethod
     def setDead(person):
-        print 'MORREU MESMO'
+        Walls.Walls.setDead(person.getPosition())
         Person.person_list.remove(person)
     
