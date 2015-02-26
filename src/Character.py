@@ -5,12 +5,17 @@ from apt.auth import update
 
 class Character:
 	
+	# attack_keys
+	NO_ATTACK = 0
+	SLASH = pygame.K_SPACE
+	REBUKE = pygame.K_e
+	
 	def __init__(self, image = '../characters/ordan.png'):
 		# essential
 		self.id = 0
 		self.name = ''
 		self.life = 100
-		self.stranger = 5
+		self.stranger = 25
 		# position
 		self.x = 0
 		self.y = 0
@@ -26,13 +31,14 @@ class Character:
 		self.picnr = [3, 0] # picture on right
 		self.lenPic = 9
 		# movement controller
-		self.side = 'stopped'
+		self.side = 'right'
+		self.movement = False
 		# attack controller
 		self.attack_keys = {
-			pygame.K_SPACE: False,
-			pygame.K_e: False
+			Character.SLASH: False,
+			Character.REBUKE: False
 		}
-		self.attackKey = 0
+		self.attackKey = Character.NO_ATTACK
 		# furtiveness
 		self.furtive = False
 		
@@ -63,37 +69,47 @@ class Character:
 		# one full day to do this function
 		spritesheet = pygame.image.load(file(self.path))
 		spritesheet.convert()
-		sprites = [[0 for i in range(10)] for i in range(12)]
+		# sprites = [[0 for i in range(10)] for i in range(12)]
+		sprites = []
 		
 		# walk
 		for x in range(4):
+			sprites.append([])
 			for y in range(9):
-				sprites[x][y] = (spritesheet.subsurface((y * 64, (x + 8) * 64, 64, 64)))
+				sprites[x].append((spritesheet.subsurface((y * 64, (x + 8) * 64, 64, 64))))
 		
 		# slash
 		for x in range(4):
+			sprites.append([])
 			for y in range(6):
-				sprites[x+4][y] = (spritesheet.subsurface((y * 64, (x + 12) * 64, 64, 64)))
+				sprites[x+4].append((spritesheet.subsurface((y * 64, (x + 12) * 64, 64, 64))))
 		
 		# rebuke
 		for x in range(4):
+			sprites.append([])
 			for y in range(7):
-				sprites[x+8][y] = (spritesheet.subsurface((y * 64, x * 64, 64, 64)))
+				sprites[x+8].append((spritesheet.subsurface((y * 64, x * 64, 64, 64))))
+		
+		# dead
+		sprites.append([])
+		for y in range(6):
+			sprites[12].append((spritesheet.subsurface((y * 64, 20 * 64, 64, 64))))
 		
 		return sprites
 	
 	def getImage(self):
-		if self.side != 'stopped' or self.attackKey != 0:
+		if self.movement or self.attackKey != Character.NO_ATTACK or self.life == 0:
 			self.updatePicnr()
 			if self.updateTime():
 				self.picnr[1] += 1
 				if self.picnr[1] == self.lenPic:
 					self.updateAttack()
+					if self.interval == 66: self.isDead()
 					self.picnr[1] = 0
 		return self.sprites[self.picnr[0]][self.picnr[1]]
 	
 	def updatePicnr(self):
-		if self.attackKey == 0:
+		if self.attackKey == Character.NO_ATTACK and self.life != 0:
 			if self.side == 'up':
 				self.picnr[0] = 0
 			elif self.side == 'left':
@@ -118,7 +134,7 @@ class Character:
 	""" handle movement
 	"""
 	def move(self, arrow):
-		if self.attackKey == 0:
+		if self.attackKey == Character.NO_ATTACK:
 			if arrow == [0, -1]:
 				self.up()
 			elif arrow == [0, 1]:
@@ -137,72 +153,80 @@ class Character:
 				self.downRight()
 			else:
 				self.stopped()
-				self.picnr[1] = 0
 	
 	def up(self):
-		if self.attackKey == 0:
+		if self.attackKey == Character.NO_ATTACK:
 			self.side = 'up'
+			self.movement = True
 			position = Person.Person.changePersonLocation(self, self.x, self.y - self.px);
 			self.setPosition(position)
 	
 	def left(self):
-		if self.attackKey == 0:
+		if self.attackKey == Character.NO_ATTACK:
 			self.side = 'left'
+			self.movement = True
 			position = Person.Person.changePersonLocation(self, self.x - self.px, self.y )
 			self.setPosition(position)
 	
 	def down(self):
-		if self.attackKey == 0:
+		if self.attackKey == Character.NO_ATTACK:
 			self.side = 'down'
+			self.movement = True
 			position = Person.Person.changePersonLocation(self, self.x, self.y + self.px);
 			self.setPosition(position)
 	
 	def right(self):
-		if self.attackKey == 0:
+		if self.attackKey == Character.NO_ATTACK:
 			self.side = 'right'
+			self.movement = True
 			position = Person.Person.changePersonLocation(self, self.x  + self.px , self.y);
 			self.setPosition(position)
 	
 	def upLeft(self):
-		if self.attackKey == 0:
+		if self.attackKey == Character.NO_ATTACK:
 			self.side = 'left'
+			self.movement = True
 			position = Person.Person.changePersonLocation(self, self.x - self.px, self.y - self.px);
 			self.setPosition(position)
 	
 	def upRight(self):
-		if self.attackKey == 0:
+		if self.attackKey == Character.NO_ATTACK:
 			self.side = 'right'
+			self.movement = True
 			position = Person.Person.changePersonLocation(self, self.x + self.px, self.y - self.px);
 			self.setPosition(position)
 	
 	def downLeft(self):
-		if self.attackKey == 0:
+		if self.attackKey == Character.NO_ATTACK:
 			self.side = 'left'
+			self.movement = True
 			position = Person.Person.changePersonLocation(self, self.x - self.px, self.y + self.px);
 			self.setPosition(position)
 	
 	def downRight(self):
-		if self.attackKey == 0:
+		if self.attackKey == Character.NO_ATTACK:
 			self.side = 'right'
+			self.movement = True
 			position = Person.Person.changePersonLocation(self, self.x + self.px, self.y + self.px);
 			self.setPosition(position)
 	
 	def stopped(self):
-		self.side = 'stopped'
+		self.movement = False
+		self.picnr[1] = 0
 	
 	""" handle attack
 	"""
 	def attack(self, key):
-		if self.attackKey == 0:
+		if self.attackKey == Character.NO_ATTACK:
 			self.attack_keys[key] = True
 			self.attackKey = key
-			if key == pygame.K_SPACE:
+			if key == Character.SLASH:
 				self.slash()
-			elif key == pygame.K_e:
+			elif key == Character.REBUKE:
 				self.rebuke()
 	
 	def updateAttack(self):
-		if self.attackKey != 0:
+		if self.attackKey != Character.NO_ATTACK:
 			if self.side == 'up':  # up
 				self.picnr = [0, 0]
 			elif self.side == 'left':  # left
@@ -214,7 +238,7 @@ class Character:
 			self.attack_keys[self.attackKey] = False
 			self.lenPic = 9
 			self.interval = 100
-			self.attackKey = 0
+			self.attackKey = Character.NO_ATTACK
 	
 	def hit(self):
 		if self.side == 'up':
@@ -237,10 +261,12 @@ class Character:
 	def checkAttack(self, x, y):
 		enemy = Person.Person.getPersonByPosition(x, y)
 		if enemy != None:
-			if enemy.life >= 5:
-				enemy.life -= 5
-			if self.life <= 95:
-				self.life += 5
+			if enemy.life >= self.stranger:
+				enemy.life -= self.stranger
+				if enemy.life == 0:
+					enemy.dead()
+			if self.life <= 100 - self.stranger:
+				self.life += self.stranger
 	
 	def slash(self):
 		if self.side == 'up':
@@ -271,4 +297,16 @@ class Character:
 	""" furtiveness """
 	def updateFurtiveness(self):
 		self.furtive = not self.furtive
+	
+	""" handle life """
+	def isDead(self):
+		if self.life == 0:
+			print 'MORREU'
+			Person.Person.setDead(self.id)
+	
+	def dead(self):
+		print 'PINTOU'
+		self.picnr = [12, 0]
+		self.lenPic = 6
+		self.interval = 66
 	

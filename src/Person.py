@@ -73,3 +73,10 @@ class Person:
     @staticmethod
     def setMaster(id_master):
         Person.id_master = id_master
+
+    @staticmethod
+    def setDead(id_dead):
+        for p in Person.person_list:
+            if (id_dead == p.getId()):
+                Person.person_list.pop(id_dead)
+    
