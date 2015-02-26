@@ -104,7 +104,7 @@ class Character:
 				self.picnr[1] += 1
 				if self.picnr[1] == self.lenPic:
 					self.updateAttack()
-					if self.interval == 66: self.isDead()
+					if self.picnr[0] == 12: self.isDead()
 					self.picnr[1] = 0
 		return self.sprites[self.picnr[0]][self.picnr[1]]
 	
@@ -259,14 +259,16 @@ class Character:
 					self.checkAttack(x, y)
 	
 	def checkAttack(self, x, y):
-		enemy = Person.Person.getPersonByPosition(x, y)
-		if enemy != None:
-			if enemy.life >= self.stranger:
-				enemy.life -= self.stranger
-				if enemy.life == 0:
-					enemy.dead()
-			if self.life <= 100 - self.stranger:
-				self.life += self.stranger
+		if self.getPosition() != (x, y):
+			enemy = Person.Person.getPersonByPosition(x, y)
+			if enemy != None:
+				if enemy.life >= self.stranger:
+					enemy.life -= self.stranger
+					if enemy.life == 0:
+						enemy.dead()
+					print 'id- ' + str(enemy.id) + ' life- ' + str(enemy.life)
+				if self.life <= 100 - self.stranger:
+					self.life += self.stranger
 	
 	def slash(self):
 		if self.side == 'up':
@@ -301,12 +303,12 @@ class Character:
 	""" handle life """
 	def isDead(self):
 		if self.life == 0:
-			print 'MORREU'
-			Person.Person.setDead(self.id)
+			print 'CHAMA MORTE'
+			Person.Person.setDead(self)
 	
 	def dead(self):
-		print 'PINTOU'
+		print 'MANDA PINTAR MORTE DE ID- ' + str(self.id)
 		self.picnr = [12, 0]
 		self.lenPic = 6
-		self.interval = 66
+		self.interval = 50
 	

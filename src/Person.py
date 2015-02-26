@@ -75,8 +75,7 @@ class Person:
         Person.id_master = id_master
 
     @staticmethod
-    def setDead(id_dead):
-        for p in Person.person_list:
-            if (id_dead == p.getId()):
-                Person.person_list.pop(id_dead)
+    def setDead(person):
+        print 'MORREU MESMO'
+        Person.person_list.remove(person)
     
