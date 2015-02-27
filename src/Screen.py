@@ -171,12 +171,11 @@ class Screen:
             stained = False
             
             for i in xrange (x - 4, x + 5, 4):
-                for j in xrange (y, y + 17, 4):
-                    if (i < 0 or j < 0 or i > Screen.CONST_MAX_WH or j > Screen.CONST_MAX_WH): continue
-                    xt = i / Screen.CONST_TILE
-                    yt = j / Screen.CONST_TILE
-                    if (self.objectMatrix[xt][yt] != None):
-                        stained = True
+                if (i < 0 or i > Screen.CONST_MAX_WH): continue
+                xt = i / Screen.CONST_TILE
+                yt = y / Screen.CONST_TILE 
+                if (self.objectMatrix[xt][yt] != None):
+                    stained = True
             
             self.renderDeathBlood(master, p)
             
