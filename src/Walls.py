@@ -14,12 +14,12 @@ class Walls:
     @staticmethod
     def getTileByPXMap((x, y)):
         
-        if (x % Walls.CONST_MAP_PX >= 2):
+        if (x % Walls.CONST_MAP_PX):
             x = x / Walls.CONST_MAP_PX + 1
         else:
             x = x / Walls.CONST_MAP_PX
             
-        if (y % Walls.CONST_MAP_PX >= 2):
+        if (y % Walls.CONST_MAP_PX):
             y = y / Walls.CONST_MAP_PX + 1
         else:
             y = y / Walls.CONST_MAP_PX
@@ -43,8 +43,8 @@ class Walls:
     
     @staticmethod
     def putAMagicWall ((x, y), (w, h)):
-        for i in xrange (int(x), int(x + w)):
-            for j in xrange (int(y), int(y + h)):
+        for i in xrange (int(x), int(x + w) + 1):
+            for j in xrange (int(y), int(y + h) + 1):
                 Walls.Matrix[i][j] = -1
     # About Magic Wall's Algorithm : https://www.youtube.com/watch?v=nX6FNSU_Ywc
     
