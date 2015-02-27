@@ -23,6 +23,7 @@ class Screen:
     def __init__(self, screen_width, screen_height):
         
         self.objectMatrix = [[None for i in xrange(450)] for j in xrange(450)]
+        self.objectMatrix2 = [[None for i in xrange(450)] for j in xrange(450)]
         
         self.screen = pygame.display.set_mode((screen_width, screen_height))
         self.screen_width = screen_width
@@ -137,15 +138,25 @@ class Screen:
             for x in xrange (inix, fimx, 16):
                 xt = x / Screen.CONST_TILE
                 if (self.objectMatrix[xt][yt] != None):
-                    self.screen.blit (self.objectMatrix[xt][yt], (self.getObjectPosition((x, y), self.getRealPosition(master.getPosition() ) ) ) )
+                    if (isinstance(self.objectMatrix[xt][yt], tuple)):
+                        img_1, img_2 = self.objectMatrix[xt][yt]
+                        self.screen.blit (img_1, (self.getObjectPosition((x, y), self.getRealPosition(master.getPosition() ) ) ) )
+                        self.screen.blit (img_2, (self.getObjectPosition((x, y), self.getRealPosition(master.getPosition() ) ) ) )
+                        
+                    else:
+                        self.screen.blit (self.objectMatrix[xt][yt], (self.getObjectPosition((x, y), self.getRealPosition(master.getPosition() ) ) ) )
 
     # Map position
     def preLoadTiles(self):
         for layer in self.tile_map.visible_layers:
             if isinstance(layer, pytmx.TiledTileLayer):
                 for x, y, image in layer.tiles():
-                    self.objectMatrix[x][y] = image.convert_alpha()        
-                    
+                    if (self.objectMatrix[x][y] != None and not isinstance(self.objectMatrix[x][y], tuple)):
+                        self.objectMatrix[x][y] = (self.objectMatrix[x][y], image.convert_alpha())        
+                    else:
+                        if (self.objectMatrix[x][y] == None):
+                            self.objectMatrix[x][y] = image.convert_alpha()
+                            
     def renderPersonsToScreen(self, master):
         
         self.to_render_after = []
