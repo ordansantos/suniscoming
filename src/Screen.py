@@ -82,12 +82,13 @@ class Screen:
             img_person = person.getImage()
             self.screen.blit(img_person, (x, y))
             
-            img_life = person.getLifeBar()
-            self.screen.blit(img_life, (16 + x, 4 + y))
+            if img_death == None:
+                img_life = person.getLifeBar()
+                self.screen.blit(img_life, (16 + x, 4 + y))
             
             img_squirt = person.getBloodSquirt()
             if img_squirt != None:
-                self.screen.blit(img_squirt, (x - 24, y - 16))
+                self.screen.blit(img_squirt, (x + 8, y + 8))
     
     def draw(self, master, sun):
         self.clear(self.getRealPosition(master.getPosition()))

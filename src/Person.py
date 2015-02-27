@@ -79,3 +79,7 @@ class Person:
         Walls.Walls.setDead(person.getPosition())
         Person.person_list.remove(person)
     
+    @staticmethod
+    def freeLocation(person):
+        Walls.Walls.setDead(person.getPosition())
+    

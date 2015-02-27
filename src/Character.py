@@ -15,7 +15,7 @@ class Character:
 		self.id = 0
 		self.name = ''
 		self.life = 100
-		self.stranger = 25
+		self.stranger = 5
 		# position
 		self.x = 0
 		self.y = 0
@@ -142,9 +142,10 @@ class Character:
 	
 	def getBloodSquirt(self):
 		time = pygame.time.get_ticks()
-		if self.attacked and (time - self.squirt_time) >= 100:
+		if time - self.squirt_time >= 1500:
 			self.attacked = False
 			self.squirt_time = time
+		if self.attacked and self.life != 0:
 			return self.blood_squirt
 		return None
 	
@@ -323,6 +324,7 @@ class Character:
 			Person.Person.setDead(self)
 	
 	def dead(self):
+		# Person.Person.freeLocation(self)
 		self.picnr = [12, 0]
 		self.lenPic = 6
 		self.interval = 500
