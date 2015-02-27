@@ -35,7 +35,7 @@ class Game:
         
         #Bot.Bot.putNewBot((1700, 1700), '../characters/skeleton.png')
         Bot.Bot.putNewBot((160, 300))
-        #Bot.Bot.putNewBot((130, 400))
+        Bot.Bot.putNewBot((130, 400))
         """Bot.Bot.putNewBot((120, 350))
         Bot.Bot.putNewBot((200, 300))
         Bot.Bot.putNewBot((100, 340))

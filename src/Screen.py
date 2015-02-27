@@ -59,9 +59,9 @@ class Screen:
     def blitMaster(self, person):
         x, y = self.screen_width / 2, self.screen_height / 2
         
-        img_death = person.getDeathBlood()
+        '''img_death = person.getDeathBlood()
         if img_death != None:
-                self.screen.blit(img_death, (x - 24, y - 16))
+                self.screen.blit(img_death, (x - 24, y - 16))'''
         
         img_person = person.getImage()
         self.screen.blit(img_person, (-32 + x, -64 + y))
@@ -75,15 +75,15 @@ class Screen:
         else:    
             x, y = self.getPersonPosition(self.getRealPosition(master.getPosition()), self.getRealPosition(person.getPosition()))
             
-            img_death = person.getDeathBlood()
+            '''img_death = person.getDeathBlood()
             if img_death != None:
-                self.screen.blit(img_death, (x - 24, y - 16))
+                self.screen.blit(img_death, (x - 24, y - 16))'''
                 
             img_person = person.getImage()
             self.screen.blit(img_person, (x, y))
             
-            if img_death == None:
-                img_life = person.getLifeBar()
+            img_life = person.getLifeBar()
+            if img_life != None:
                 self.screen.blit(img_life, (16 + x, 4 + y))
             
             img_squirt = person.getBloodSquirt()
@@ -167,12 +167,13 @@ class Screen:
                     if (self.objectMatrix[xt][yt] != None):
                         stained = True
             
+            self.renderDeathBlood(master, p)
+            
             if (not stained):
                 self.to_render_after.append(p)
             else:
                 self.blitPerson(master, p)
-
-        
+    
     def renderPersonsAfter(self, master):
         for p in self.to_render_after:
             self.blitPerson(master, p)
@@ -190,3 +191,14 @@ class Screen:
         if (math.fabs(py - my) > middley + 32):
             return False
         return True
+    
+    def renderDeathBlood(self, master, person):
+        img_death = person.getDeathBlood()
+        if img_death != None:
+            if person != master:
+                x, y = self.getPersonPosition(self.getRealPosition(master.getPosition()), self.getRealPosition(person.getPosition()))
+                self.screen.blit(img_death, (x - 24, y - 16))
+            else:
+                x, y = self.screen_width / 2, self.screen_height / 2
+                self.screen.blit(img_death, (x - 24, y - 16))
+    

@@ -15,7 +15,7 @@ class Character:
 		self.id = 0
 		self.name = ''
 		self.life = 100
-		self.stranger = 5
+		self.stranger = 25
 		# position
 		self.x = 0
 		self.y = 0
@@ -133,7 +133,9 @@ class Character:
 		return False
 	
 	def getLifeBar(self):
-		return self.life_bar.subsurface(32 - int(self.life * 0.32), 0, 32, 3)
+		if self.life != 0:
+			return self.life_bar.subsurface(32 - int(self.life * 0.32), 0, 32, 3)
+		return None
 	
 	def getDeathBlood(self):
 		if self.life == 0:
@@ -173,56 +175,56 @@ class Character:
 				self.stopped()
 	
 	def up(self):
-		if self.attack_key == Character.NO_ATTACK:
+		if self.attack_key == Character.NO_ATTACK and self.life != 0:
 			self.side = 'up'
 			self.movement = True
 			position = Person.Person.changePersonLocation(self, self.x, self.y - self.px);
 			self.setPosition(position)
 	
 	def left(self):
-		if self.attack_key == Character.NO_ATTACK:
+		if self.attack_key == Character.NO_ATTACK and self.life != 0:
 			self.side = 'left'
 			self.movement = True
 			position = Person.Person.changePersonLocation(self, self.x - self.px, self.y )
 			self.setPosition(position)
 	
 	def down(self):
-		if self.attack_key == Character.NO_ATTACK:
+		if self.attack_key == Character.NO_ATTACK and self.life != 0:
 			self.side = 'down'
 			self.movement = True
 			position = Person.Person.changePersonLocation(self, self.x, self.y + self.px);
 			self.setPosition(position)
 	
 	def right(self):
-		if self.attack_key == Character.NO_ATTACK:
+		if self.attack_key == Character.NO_ATTACK and self.life != 0:
 			self.side = 'right'
 			self.movement = True
 			position = Person.Person.changePersonLocation(self, self.x  + self.px , self.y);
 			self.setPosition(position)
 	
 	def upLeft(self):
-		if self.attack_key == Character.NO_ATTACK:
+		if self.attack_key == Character.NO_ATTACK and self.life != 0:
 			self.side = 'left'
 			self.movement = True
 			position = Person.Person.changePersonLocation(self, self.x - self.px, self.y - self.px);
 			self.setPosition(position)
 	
 	def upRight(self):
-		if self.attack_key == Character.NO_ATTACK:
+		if self.attack_key == Character.NO_ATTACK and self.life != 0:
 			self.side = 'right'
 			self.movement = True
 			position = Person.Person.changePersonLocation(self, self.x + self.px, self.y - self.px);
 			self.setPosition(position)
 	
 	def downLeft(self):
-		if self.attack_key == Character.NO_ATTACK:
+		if self.attack_key == Character.NO_ATTACK and self.life != 0:
 			self.side = 'left'
 			self.movement = True
 			position = Person.Person.changePersonLocation(self, self.x - self.px, self.y + self.px);
 			self.setPosition(position)
 	
 	def downRight(self):
-		if self.attack_key == Character.NO_ATTACK:
+		if self.attack_key == Character.NO_ATTACK and self.life != 0:
 			self.side = 'right'
 			self.movement = True
 			position = Person.Person.changePersonLocation(self, self.x + self.px, self.y + self.px);
@@ -324,7 +326,7 @@ class Character:
 			Person.Person.setDead(self)
 	
 	def dead(self):
-		# Person.Person.freeLocation(self)
+		Person.Person.freeLocation(self)
 		self.picnr = [12, 0]
 		self.lenPic = 6
 		self.interval = 500
