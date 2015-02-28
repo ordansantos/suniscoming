@@ -23,7 +23,6 @@ class Screen:
     def __init__(self, screen_width, screen_height):
         
         self.objectMatrix = [[None for i in xrange(450)] for j in xrange(450)]
-        self.objectMatrix2 = [[None for i in xrange(450)] for j in xrange(450)]
         
         self.screen = pygame.display.set_mode((screen_width, screen_height))
         self.screen_width = screen_width
