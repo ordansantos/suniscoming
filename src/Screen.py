@@ -14,6 +14,8 @@ if sys.platform in ["win32","win64"]: os.environ["SDL_VIDEO_CENTERED"]="1"
 import PAdLib.occluder as occluder
 import PAdLib.shadow as shadow
 
+import reader.reader as reader
+
 class Screen:
 
     CONST_TILE = 16
@@ -25,6 +27,51 @@ class Screen:
         self.objectMatrix = [[None for i in xrange(450)] for j in xrange(450)]
         
         self.screen = pygame.display.set_mode((screen_width, screen_height))
+        
+        self.text = """"Reader" allows you to render text and scroll it by using mouse wheel or arrow keys.
+The constraint being that it only supports monospaced fonts and use unicode string.
+ctrl+, ctrl- : increase and decrease font.
+all tab characters in text will be expanded to spaces(4).
+
+Reader(text,pos,width,height=None,font=None,fontsize=None,bg=(250,250,250),fgcolor=(0,0,0),hlcolor=(180,180,200))teste
+
+pos      = position of the box
+width    = width in pix
+height   = height in pix
+fontsize = size of the font
+bg       = backgroud: color triplet or surface object
+fgcolor  = foreground: color triplet
+hlcolor  = highlight: rgb or rgba color
+
+Reader.show()
+display the box.
+
+Reader.update(pygame.event)
+Update the box by sending event.
+
+property:
+LINE      = get the clicked line
+NLINE     = get the clicked line number
+WORD      = get the clicked word
+SELECTION = get the selected text
+
+with NLINE and WORD you can make some simplist menus, ex:
+choose a colour:
+
+\t\tRED
+\t\tBLUE
+\t\tWHITE
+
+QUIT"""
+        
+        # text editor
+        txtedges = 5
+        self.txtbox_height = int(600 / 9)
+        self.txtbox_width = screen_width - (txtedges * 2)
+        self.pos_txt = (txtedges, self.txtbox_height * 8)
+        lenfont = 14
+        self.txt = reader.Reader(unicode(self.text,'utf8'), self.pos_txt, self.txtbox_width, 13, self.txtbox_height, font=os.path.join('../reader','MonospaceTypewriter.ttf'), fgcolor=(255,255,255), hlcolor=(255,10,150,100), split=False)
+        
         self.screen_width = screen_width
         self.screen_height = screen_height
         self.background = pygame.image.load(file('../tiles/background.png')).convert()
@@ -35,6 +82,15 @@ class Screen:
         self.surf_lighting = pygame.Surface((screen_width, screen_height))
         self.shad = shadow.Shadow()
         self.surf_falloff = pygame.image.load("../characters/light_falloff100.png").convert()
+    
+    def draw(self, master, sun):
+        self.clear(self.getRealPosition(master.getPosition()))
+        self.renderPersonsToScreen(master)
+        self.renderTilesToScreen(master)
+        self.renderPersonsAfter(master)
+        self.blitShadow(master, sun)
+        self.txt.show()
+        pygame.display.flip()
     
     def getRealPosition(self, (x, y)):
         return (x * Screen.CONST_MAP_PX, y * Screen.CONST_MAP_PX)
@@ -89,14 +145,6 @@ class Screen:
             img_squirt = person.getBloodSquirt()
             if img_squirt != None:
                 self.screen.blit(img_squirt, (x + 8, y + 8))
-    
-    def draw(self, master, sun):
-        self.clear(self.getRealPosition(master.getPosition()))
-        self.renderPersonsToScreen(master)
-        self.renderTilesToScreen(master)
-        self.renderPersonsAfter(master)
-        self.blitShadow(master, sun)
-        pygame.display.flip()
     
     def blitShadow(self, master, sun):
         self.surf_lighting.fill(sun.getColor())
@@ -210,4 +258,9 @@ class Screen:
             else:
                 x, y = self.screen_width / 2, self.screen_height / 2
                 self.screen.blit(img_death, (x - 24, y - 16))
+    
+    def onTextBox(self, (x, y)):
+        if x >= self.pos_txt[0] and y >= self.pos_txt[1]:
+            return True
+        return False
     

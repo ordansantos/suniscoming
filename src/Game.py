@@ -118,6 +118,9 @@ class Game:
                     self.p.attack(e.key)
                 if e.key == pygame.K_f:
                     self.p.updateFurtiveness()
+            
+            if self.screen.onTextBox(pygame.mouse.get_pos()):
+                self.screen.txt.update(e)
     
     def updateArrows(self):
         self.arrow = [0, 0]
