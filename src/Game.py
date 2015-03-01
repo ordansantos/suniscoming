@@ -4,6 +4,7 @@ import Screen
 import Person
 import Sun
 import Bot
+import TextBox
 import ClientSocket
 
 class Game:
@@ -16,7 +17,8 @@ class Game:
         self.height =  600
 
         self.clock = pygame.time.Clock()
-        self.screen = Screen.Screen(self.width, self.height)     
+        self.screen = Screen.Screen(self.width, self.height)
+        self.txt = self.screen.txt
         
         self.arrow_states = {
             pygame.K_UP: [False, -1],
@@ -34,8 +36,8 @@ class Game:
         Person.Person.setMaster(self.p.getId())
         
         #Bot.Bot.putNewBot((1700, 1700), '../characters/skeleton.png')
-        Bot.Bot.putNewBot((160, 300))
-        Bot.Bot.putNewBot((130, 400))
+        #Bot.Bot.putNewBot((160, 300))
+        #Bot.Bot.putNewBot((130, 400))
         """Bot.Bot.putNewBot((120, 350))
         Bot.Bot.putNewBot((200, 300))
         Bot.Bot.putNewBot((100, 340))
@@ -59,7 +61,7 @@ class Game:
         #Bot.Bot.putNewBot((1000, 2000))
         
         """ self.client = ClientSocket.ClientSocket() """
-        
+    
     def setScreenWidth(self, width):
         self.width = width
     
@@ -100,27 +102,39 @@ class Game:
                     self.p.right()'''
                 
     def doEvent(self):
-        for e in pygame.event.get():
+        
+        events = pygame.event.get()
+        
+        for e in events:
             if e.type == pygame.QUIT:
                 self.running = False
                 pygame.quit()
             
-            if e.type == pygame.KEYUP:
-                if e.key in self.arrow_states.keys():
-                    self.arrow_states[e.key][0] = False
-                    self.updateArrows()
+            self.clicked(e)
+            mouse_pos = pygame.mouse.get_pos()
             
-            if e.type == pygame.KEYDOWN:
-                if e.key in self.arrow_states.keys():
-                    self.arrow_states[e.key][0] = True
-                    self.updateArrows()
-                if e.key in self.p.attack_keys.keys():
-                    self.p.attack(e.key)
-                if e.key == pygame.K_f:
-                    self.p.updateFurtiveness()
+            if self.txt.onTextBox(mouse_pos) or self.txt.writing_now:
+                self.txt.handleTextBox(events)
             
-            if self.screen.onTextBox(pygame.mouse.get_pos()):
-                self.screen.txt.update(e)
+            else:
+                if e.type == pygame.KEYUP:
+                    if e.key in self.arrow_states.keys():
+                        self.arrow_states[e.key][0] = False
+                        self.updateArrows()
+                
+                if e.type == pygame.KEYDOWN:
+                    if e.key in self.arrow_states.keys():
+                        self.arrow_states[e.key][0] = True
+                        self.updateArrows()
+                    if e.key in self.p.attack_keys.keys():
+                        self.p.attack(e.key)
+                    if e.key == pygame.K_f:
+                        self.p.updateFurtiveness()
+    
+    def clicked(self, event):
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            self.txt.updateWriting()
+        return True
     
     def updateArrows(self):
         self.arrow = [0, 0]
@@ -132,3 +146,4 @@ class Game:
             self.arrow[0] += self.arrow_states[pygame.K_LEFT][1]
         if self.arrow_states[pygame.K_RIGHT][0]:
             self.arrow[0] += self.arrow_states[pygame.K_RIGHT][1]
+    

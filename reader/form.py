@@ -16,9 +16,9 @@ class Form(pygame.Rect,object):
         self.HLCOLOR = hlcolor
         self.CURSCOLOR = curscolor
         self._line = 0
-        self._index = 0
+        self._index = 3
         self.MAXLINES = maxlines
-        self._splitted = ['']
+        self._splitted = ['> ']
         if not height: pygame.Rect.__init__(self,pos,(width,self.FONT.get_height()))
         else: pygame.Rect.__init__(self,pos,(width,height))
         self._x,self._y = pos
@@ -46,6 +46,7 @@ class Form(pygame.Rect,object):
     @property
     def OUTPUT(self):
         return '\n'.join(self._splitted)
+    
     @OUTPUT.setter
     def OUTPUT(self,string):
         self._splitted = string.split('\n')
@@ -111,7 +112,6 @@ class Form(pygame.Rect,object):
         self.update(ev)
             
     def update(self,ev):
-        
         line,index = self._line,self._index
         shift = pygame.key.get_pressed()
         shift = shift[pygame.K_RSHIFT]|shift[pygame.K_LSHIFT]
@@ -240,7 +240,11 @@ class Form(pygame.Rect,object):
 
         if (line,index) != (self._line,self._index):
             self._adjust()
-            
+    
+    def setInitialMessage(self):
+        self._index = 2
+        self._splitted = ['> ']
+    
 if __name__ == '__main__':
     import os.path
     thisrep = os.path.dirname(__file__)

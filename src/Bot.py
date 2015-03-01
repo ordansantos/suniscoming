@@ -4,6 +4,7 @@ from collections import deque
 import pygame
 import threading
 import PathFind
+import pygtk, gtk, gobject
 
 class Bot:
     

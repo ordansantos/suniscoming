@@ -201,10 +201,13 @@ class Reader(pygame.Rect,object):
             if self._index > len(self._splitted[self._line].string): self._index = len(self._splitted[self._line].string)
     
     def updateText(self, text):
-        if len(self._original) < 1501:
-            text = unicode(text.expandtabs(4),'utf8')
-            self._original += text.expandtabs(4).split('\n')
-            self._splitted = self.splittext()
+        t = text[0:len(text)]
+        tam = len(self._original)
+        t = unicode(t.expandtabs(4),'utf8').split('\n')
+        if tam + len(t) > 500:
+            self._original = self._original[300:tam-1]
+        self._original += t
+        self._splitted = self.splittext()
     
 if __name__ == '__main__':
     import os.path
@@ -215,7 +218,7 @@ The constraint being that it only supports monospaced fonts and use unicode stri
 ctrl+, ctrl- : increase and decrease font.
 all tab characters in text will be expanded to spaces(4).
 
-Reader(text,pos,width,height=None,font=None,fontsize=None,bg=(250,250,250),fgcolor=(0,0,0),hlcolor=(180,180,200))teste
+Reader(text,pos,width,height=None,font=None,fontsize=None,bg=(250,250,250),fgcolor=(0,0,0),hlcolor=(180,180,200))
 
 pos      = position of the box
 width    = width in pix
@@ -252,17 +255,16 @@ QUIT"""
     
     try: import GetEvent
     except : GetEvent = pygame.event
-    txt = Reader(unicode(text.expandtabs(4),'utf8'),pos_txt,790,13,txtbox_height,font=os.path.join(thisrep,'MonospaceTypewriter.ttf'),fgcolor=(255,255,255),hlcolor=(255,10,150,100),split=False)
+    txt = Reader(unicode(text.expandtabs(4),'utf8'),pos_txt,790,13,txtbox_height,font=os.path.join(thisrep,'MonospaceTypewriter.ttf'),fgcolor=(255,255,255),hlcolor=(250,190,150,50),split=False)
     txt.show()
     pygame.key.set_repeat(100,25)
-    print txt._original
-    txt.updateText('MY TEXT o///')
+    print txt._original[0]
+    txt.updateText('MY TEXT >')
     print txt._original
     while True:
         evs = GetEvent.get()
         if evs:
             for ev in evs:
-                print ev
                 s = txt.update(ev)
                 if s != None:
                     print s
