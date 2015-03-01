@@ -53,6 +53,7 @@ class Reader(pygame.Rect,object):
     @property
     def HLCOLOR(self):
         return self._hlc
+    
     @HLCOLOR.setter
     def HLCOLOR(self,color):
         self._hlsurface = pygame.Surface((self._w,self._h),pygame.SRCALPHA)
@@ -155,18 +156,16 @@ class Reader(pygame.Rect,object):
                 scrollup(1)
                 
             elif ev.key == pygame.K_DOWN:
-                scrolldown(1)      
-            
-            elif ctrl and ev.key == pygame.K_KP_PLUS:
-                if self.FONTSIZE < 16:
-                    self.FONTSIZE += 1
-            
-            elif ctrl and ev.key == pygame.K_KP_MINUS and self._fontsize:
-                if self.FONTSIZE > 12:
-                    self.FONTSIZE -= 1
+                scrolldown(1)
             
             elif ctrl and ev.key == pygame.K_c:
                 return self.SELECTION
+            
+            """elif ctrl and (ev.key == pygame.K_KP_PLUS or ev.key == pygame.K_PLUS):
+                self.FONTSIZE += 1
+            
+            elif ctrl and (ev.key == pygame.K_KP_MINUS or ev.key == pygame.K_MINUS) and self._fontsize:
+                self.FONTSIZE -= 1"""
 
         elif ev.type == pygame.MOUSEBUTTONDOWN and self.collidepoint(ev.pos):
             if ev.button == 1:
@@ -201,53 +200,24 @@ class Reader(pygame.Rect,object):
             if self._index > len(self._splitted[self._line].string): self._index = len(self._splitted[self._line].string)
     
     def updateText(self, text):
-        t = text[0:len(text)]
+        text = str(text)
         tam = len(self._original)
-        t = unicode(t.expandtabs(4),'utf8').split('\n')
-        if tam + len(t) > 500:
+        text = unicode(text.expandtabs(4),'utf8').split('\n')
+        if tam + len(text) > 500:
             self._original = self._original[300:tam-1]
-        self._original += t
+        self._original += text
         self._splitted = self.splittext()
+        self.viewEndLine()
+    
+    def viewEndLine(self):
+        if len(self._original) > 4:
+            self._y = self.top - (len(self._original) - 4) * self._h
     
 if __name__ == '__main__':
     import os.path
     thisrep = os.path.dirname(__file__)
     pygame.display.set_mode((800,600))
-    text = """"Reader" allows you to render text and scroll it by using mouse wheel or arrow keys.
-The constraint being that it only supports monospaced fonts and use unicode string.
-ctrl+, ctrl- : increase and decrease font.
-all tab characters in text will be expanded to spaces(4).
-
-Reader(text,pos,width,height=None,font=None,fontsize=None,bg=(250,250,250),fgcolor=(0,0,0),hlcolor=(180,180,200))
-
-pos      = position of the box
-width    = width in pix
-height   = height in pix
-fontsize = size of the font
-bg       = backgroud: color triplet or surface object
-fgcolor  = foreground: color triplet
-hlcolor  = highlight: rgb or rgba color
-
-Reader.show()
-display the box.
-
-Reader.update(pygame.event)
-Update the box by sending event.
-
-property:
-LINE      = get the clicked line
-NLINE     = get the clicked line number
-WORD      = get the clicked word
-SELECTION = get the selected text
-
-with NLINE and WORD you can make some simplist menus, ex:
-choose a colour:
-
-\t\tRED
-\t\tBLUE
-\t\tWHITE
-
-QUIT"""
+    text = '0'
     
     txtbox_height = int(600 / 9)
     pos_txt = (5, txtbox_height * 8)
@@ -256,16 +226,17 @@ QUIT"""
     try: import GetEvent
     except : GetEvent = pygame.event
     txt = Reader(unicode(text.expandtabs(4),'utf8'),pos_txt,790,13,txtbox_height,font=os.path.join(thisrep,'MonospaceTypewriter.ttf'),fgcolor=(255,255,255),hlcolor=(250,190,150,50),split=False)
+    txt._y = 409
     txt.show()
     pygame.key.set_repeat(100,25)
-    print txt._original[0]
-    txt.updateText('MY TEXT >')
-    print txt._original
+    txt.updateText('1\n2\n3\n4\n5\n6\n7\n8\n9\n10')
+    print 'Numero de linhas= ' + str(len(txt._original))
     while True:
         evs = GetEvent.get()
         if evs:
             for ev in evs:
                 s = txt.update(ev)
+                print txt.top, txt._y, txt._h
                 if s != None:
                     print s
                 if ev.type == pygame.MOUSEBUTTONDOWN and ev.button == 1:

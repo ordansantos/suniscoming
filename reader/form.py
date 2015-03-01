@@ -242,6 +242,7 @@ class Form(pygame.Rect,object):
             self._adjust()
     
     def setInitialMessage(self):
+        self._cursor = False
         self._index = 2
         self._splitted = ['> ']
     
