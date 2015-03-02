@@ -70,7 +70,8 @@ class Screen:
     # Use object real position
     def clear(self, (mx, my)):
         self.screen.fill((0, 0, 0))
-        self.screen.blit(self.background, (-mx + self.screen_width / 2, -my + self.screen_height / 2))
+        subsurface = self.background.subsurface ((mx - self.screen_width / 2, my - self.screen_height / 2, self.screen_width, self.screen_height))
+        self.screen.blit(subsurface, (0, 0))
     
     def blitMaster(self, person):
         x, y = self.screen_width / 2, self.screen_height / 2
