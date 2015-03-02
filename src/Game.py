@@ -31,8 +31,8 @@ class Game:
         
         self.sun = Sun.Sun()
         
-        self.p = Person.Person.getNewPerson(100, 250, '../characters/ordan.png')
-        self.p.px= 4
+        self.p = Person.Person.getNewPerson(457, 1457, '../characters/ordan.png')
+        self.p.px= 1
         Person.Person.setMaster(self.p.getId())
         
         #Bot.Bot.putNewBot((1700, 1700), '../characters/skeleton.png')
