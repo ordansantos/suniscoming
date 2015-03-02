@@ -31,9 +31,8 @@ class TextBox:
         
         self.writing_now = False
     
-    def handleTextBox(self, events):
+    def handleWriterBox(self, events):
         for e in events:
-            
             if self.writing_now:
                 if e.type == pygame.KEYDOWN:
                     if e.key == pygame.K_KP_ENTER or e.key == pygame.K_RETURN:
@@ -43,15 +42,19 @@ class TextBox:
                         self.writing_now = False
                         # just one test
                         self.updateReaderMessage(message)
-                        # print message
+                        return message
                     else:
                         if (e.key == pygame.K_BACKSPACE or e.key == pygame.K_LEFT) and len(self.writer.OUTPUT) == 2:
                             continue
                         self.writer._cursor = True
                         self.writer.update(e)
-            
-            if self.onTextBox(pygame.mouse.get_pos()):
-                self.reader.update(e)
+            self.handleReaderBox(e)
+        return ''
+    
+    def handleReaderBox(self, event):
+        if self.onTextBox(pygame.mouse.get_pos()):
+            if event.type == pygame.MOUSEBUTTONDOWN or event.type == pygame.MOUSEBUTTONUP:
+                self.reader.update(event)
     
     def updateWriting(self):
         if self.onWriterBox(pygame.mouse.get_pos()):

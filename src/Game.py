@@ -106,17 +106,25 @@ class Game:
         events = pygame.event.get()
         
         for e in events:
+            # close window
             if e.type == pygame.QUIT:
                 self.running = False
                 pygame.quit()
             
+            # check click and get mouse position
             self.clicked(e)
             mouse_pos = pygame.mouse.get_pos()
             
-            if self.txt.onTextBox(mouse_pos) or self.txt.writing_now:
-                self.txt.handleTextBox(events)
+            # handle writer box
+            if self.txt.writing_now and self.arrow == [0,0]:
+                self.txt.handleWriterBox(events)
             
             else:
+                
+                # handle reader box
+                self.txt.handleReaderBox(e)
+                
+                # handle character movement
                 if e.type == pygame.KEYUP:
                     if e.key in self.arrow_states.keys():
                         self.arrow_states[e.key][0] = False
