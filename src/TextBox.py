@@ -44,7 +44,7 @@ class TextBox:
                         self.updateReaderMessage(message)
                         return message
                     else:
-                        if (e.key == pygame.K_BACKSPACE or e.key == pygame.K_LEFT) and len(self.writer.OUTPUT) == 2:
+                        if ((e.key == pygame.K_BACKSPACE or e.key == pygame.K_LEFT) and len(self.writer.OUTPUT) == 2) or e.key == pygame.K_QUOTEDBL:
                             continue
                         self.writer._cursor = True
                         self.writer.update(e)

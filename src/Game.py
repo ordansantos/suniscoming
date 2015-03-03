@@ -6,18 +6,19 @@ import Sun
 import Bot
 import TextBox
 import ClientSocket
+import gtk
 
 class Game:
     
-    def __init__(self):
+    def __init__(self, screen, width, height):
         
         pygame.init()
         
-        self.width = 800
-        self.height =  600
+        self.width = width
+        self.height = height
 
         self.clock = pygame.time.Clock()
-        self.screen = Screen.Screen(self.width, self.height)
+        self.screen = Screen.Screen(screen, self.width, self.height)
         self.txt = self.screen.txt
         
         self.arrow_states = {
@@ -130,7 +131,7 @@ class Game:
                         self.arrow_states[e.key][0] = False
                         self.updateArrows()
                 
-                if e.type == pygame.KEYDOWN:
+                elif e.type == pygame.KEYDOWN:
                     if e.key in self.arrow_states.keys():
                         self.arrow_states[e.key][0] = True
                         self.updateArrows()
@@ -138,6 +139,12 @@ class Game:
                         self.p.attack(e.key)
                     if e.key == pygame.K_f:
                         self.p.updateFurtiveness()
+                """
+                # resize screen: very very slow :(
+                elif e.type == pygame.VIDEORESIZE:
+                    self.width, self.height = e.dict['size']
+                    self.screen = Screen.Screen(self.width, self.height)
+                    self.txt = self.screen.txt """
     
     def clicked(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:

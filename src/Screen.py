@@ -21,11 +21,12 @@ class Screen:
     CONST_MAX_WH = 7200
     CONST_MAP_PX = 4
     
-    def __init__(self, screen_width, screen_height):
+    def __init__(self, screen, screen_width, screen_height):
         
         self.objectMatrix = [[None for i in xrange(450)] for j in xrange(450)]
         
-        self.screen = pygame.display.set_mode((screen_width, screen_height))
+        # self.screen = pygame.display.set_mode((screen_width, screen_height), pygame.HWSURFACE | pygame.DOUBLEBUF)
+        self.screen = screen
         
         # screen
         self.screen_width = screen_width

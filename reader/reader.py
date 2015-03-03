@@ -200,14 +200,17 @@ class Reader(pygame.Rect,object):
             if self._index > len(self._splitted[self._line].string): self._index = len(self._splitted[self._line].string)
     
     def updateText(self, text):
-        text = str(text)
-        tam = len(self._original)
-        text = unicode(text.expandtabs(4),'utf8').split('\n')
-        if tam + len(text) > 500:
-            self._original = self._original[300:tam-1]
-        self._original += text
-        self._splitted = self.splittext()
-        self.viewEndLine()
+        try:
+            text = str(text)
+            tam = len(self._original)
+            text = unicode(text.expandtabs(4),'utf8').split('\n')
+            if tam + len(text) > 500:
+                self._original = self._original[300:tam-1]
+            self._original += text
+            self._splitted = self.splittext()
+            self.viewEndLine()
+        except:
+            print 'ERRO!'
     
     def viewEndLine(self):
         if len(self._original) > 4:
@@ -229,7 +232,7 @@ if __name__ == '__main__':
     txt._y = 409
     txt.show()
     pygame.key.set_repeat(100,25)
-    txt.updateText('1\n2\n3\n4\n5\n6\n7\n8\n9\n10')
+    txt.updateText(str('1\n2\n3\n4\n5\n6\n7\n8\n9\n10\nBLUE\nQUIT\n¬¬\''))
     print 'Numero de linhas= ' + str(len(txt._original))
     while True:
         evs = GetEvent.get()
