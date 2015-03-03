@@ -9,34 +9,45 @@ import gtk
 class Menu:
     
     def __init__(self, screen, width, height):
+        # screen
         self.screen = screen
         self.width = width
         self.height = height
-        self.menu_pos = width / 2 + 392, height - 205
-    
-    def showMenu(self):
+        self.edges = int(self.height / 5)
+        
         # background
-        self.screen.fill((0, 0, 0))
-        background = pygame.image.load("../tiles/menu.png").convert()
-        self.screen.blit(background, (self.width / 2 - 392, self.height / 2 - 343))
+        self.background = pygame.image.load("../tiles/bg_menu.png").convert()
+        self.bg_size = self.background.get_width() - self.edges, self.background.get_height() - self.edges
+        self.background = pygame.transform.scale(self.background, self.bg_size)
         
         # menu
-        menu = pygame.image.load("../tiles/opcoes.png").convert()
-        self.screen.blit(menu, (self.menu_pos))
+        self.menu = pygame.image.load("../tiles/menu.png").convert()
+        self.menu_pos = int(self.width / 2) + int(self.bg_size[0] / 2), self.height - self.menu.get_height() - self.edges
+    
+    def showMenu(self):
+
+        # background
+        self.screen.fill((0, 0, 0))
+        self.screen.blit(self.background, (int(self.edges / 4), int(self.edges / 4)))
+        
+        # menu
+        self.screen.blit(self.menu, (self.menu_pos))
         
         #draw
         pygame.display.flip()
     
     def selectMenu(self, event):
+        
+        # functions
+        def play(mouse_pos):
+            if (mouse_pos[0] > (self.menu_pos[0] + 12)) and (mouse_pos[1] > (self.menu_pos[1] + 7)) and (mouse_pos[0] < (self.menu_pos[0] + 68) and (mouse_pos[1]) < (self.menu_pos[1] + 65)):
+                return True
+            return False
+        
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             mouse_pos = pygame.mouse.get_pos()
-            if self.play(mouse_pos):
+            if play(mouse_pos):
                 return 1
-    
-    def play(self, mouse_pos):
-        if (mouse_pos[0] > (self.menu_pos[0] + 12)) and (mouse_pos[1] > (self.menu_pos[1] + 7)) and (mouse_pos[0] < (self.menu_pos[0] + 68) and (mouse_pos[1]) < (self.menu_pos[1] + 65)):
-            return True
-        return False
     
     def loading(self):
         # loading

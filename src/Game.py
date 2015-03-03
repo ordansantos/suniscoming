@@ -1,5 +1,5 @@
 
-import pygame
+import pygame, time
 import Screen
 import Person
 import Sun
@@ -74,10 +74,15 @@ class Game:
         
         while self.running:
             self.clock.tick(30)
-            pygame.display.set_caption('%d %d - Sun Is Coming - Master(%d)' %(self.p.x, self.p.y, self.p.life))
-            self.screen.draw(self.p, self.sun)
-            self.doEvent()
-            self.p.move(self.arrow)
+            if self.p.life != 0:
+                pygame.display.set_caption('%d %d - Sun Is Coming - Master(%d)' %(self.p.x, self.p.y, self.p.life))
+                self.screen.draw(self.p, self.sun)
+                self.doEvent()
+                self.p.move(self.arrow)
+            else:
+                print 'YOU DIED'
+                self.running = False
+                pygame.quit()
             
             '''client_event = self.client.get()
             
@@ -104,14 +109,15 @@ class Game:
                 
     def doEvent(self):
         
+        # close window
+        if pygame.event.peek(pygame.QUIT):
+            self.running = False
+            pygame.quit()
+            return
+        
         events = pygame.event.get()
         
         for e in events:
-            # close window
-            if e.type == pygame.QUIT:
-                self.running = False
-                pygame.quit()
-            
             # check click and get mouse position
             self.clicked(e)
             mouse_pos = pygame.mouse.get_pos()
@@ -130,15 +136,24 @@ class Game:
                     if e.key in self.arrow_states.keys():
                         self.arrow_states[e.key][0] = False
                         self.updateArrows()
+                    
+                    if e.key == pygame.K_LSHIFT:
+                        self.p.updateSpeed(False)
                 
                 elif e.type == pygame.KEYDOWN:
                     if e.key in self.arrow_states.keys():
                         self.arrow_states[e.key][0] = True
                         self.updateArrows()
+                    
                     if e.key in self.p.attack_keys.keys():
                         self.p.attack(e.key)
+                    
                     if e.key == pygame.K_f:
                         self.p.updateFurtiveness()
+                    
+                    if e.key == pygame.K_LSHIFT:
+                        self.p.updateSpeed(True)
+                
                 """
                 # resize screen: very very slow :(
                 elif e.type == pygame.VIDEORESIZE:

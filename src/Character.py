@@ -1,5 +1,5 @@
 
-import pygame
+import pygame, time
 import Person
 from apt.auth import update
 
@@ -15,11 +15,11 @@ class Character:
 		self.id = 0
 		self.name = ''
 		self.life = 100
-		self.stranger = 25
+		self.stranger = 5
 		# position
 		self.x = 0
 		self.y = 0
-		# velocity
+		# speed
 		self.px = 1
 		# sprites
 		self.path = image
@@ -45,17 +45,18 @@ class Character:
 		self.attacked = False
 		# furtiveness
 		self.furtive = False
+		# death
+		self.death = pygame.time.get_ticks()
+		self.death_interval = 1000 # 1 seconds
 		
-	""" utilities for the id
-	"""
+	# utilities for the id
 	def setId(self, p_id):
 		self.id = p_id
 	
 	def getId(self):
 		return self.id
 	
-	""" utilities for the position
-	"""
+	# utilities for the position
 	def toPosition(self, x, y):	
 		self.x = x
 		self.y = y
@@ -67,8 +68,7 @@ class Character:
 		self.x = x
 		self.y = y
 
-	""" handle images
-	"""
+	# handle images
 	def readSprites(self):
 		# one full day to do this function
 		spritesheet = pygame.image.load(file(self.path))
@@ -151,8 +151,7 @@ class Character:
 			return self.blood_squirt
 		return None
 	
-	""" handle movement
-	"""
+	# handle movement
 	def move(self, arrow):
 		if self.attack_key == Character.NO_ATTACK:
 			if arrow == [0, -1]:
@@ -173,6 +172,7 @@ class Character:
 				self.downRight()
 			else:
 				self.stopped()
+		self.updateDeath()
 	
 	def up(self):
 		if self.attack_key == Character.NO_ATTACK and self.life != 0:
@@ -234,8 +234,7 @@ class Character:
 		self.movement = False
 		self.picnr[1] = 0
 	
-	""" handle attack
-	"""
+	# handle attack
 	def attack(self, key):
 		if self.attack_key == Character.NO_ATTACK:
 			self.attack_keys[key] = True
@@ -316,11 +315,11 @@ class Character:
 		self.interval = 150
 		self.hit()
 	
-	""" furtiveness """
+	# furtiveness
 	def updateFurtiveness(self):
 		self.furtive = not self.furtive
 	
-	""" handle life """
+	# handle life
 	def isDead(self):
 		if self.life == 0:
 			Person.Person.setDead(self)
@@ -330,4 +329,19 @@ class Character:
 		self.picnr = [12, 0]
 		self.lenPic = 6
 		self.interval = 500
+	
+	# handle speed
+	def updateSpeed(self, fast):
+		if fast:
+			self.px = 2
+		else:
+			self.px = 1
+	
+	def updateDeath(self):
+		time = pygame.time.get_ticks()
+		if time - self.death >= self.death_interval:
+			self.life -= self.stranger
+			if self.life < 0:
+				self.life = 0
+			self.death = time
 	

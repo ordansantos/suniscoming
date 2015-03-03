@@ -5,8 +5,8 @@ import gtk
 import Menu
 import Game
 
-width = gtk.gdk.screen_width() - 50
-height = gtk.gdk.screen_height() - 50
+width = 800 # gtk.gdk.screen_width() - 50
+height = 600 # gtk.gdk.screen_height() - 50
 
 screen = pygame.display.set_mode((width, height), pygame.HWSURFACE | pygame.DOUBLEBUF)
 
@@ -20,4 +20,5 @@ while True:
         menu.loading()
         game = Game.Game(screen, width, height)
         game.run()
-        op = 0
+        # for now
+        break
