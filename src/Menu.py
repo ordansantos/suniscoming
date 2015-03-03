@@ -17,18 +17,24 @@ class Menu:
         
         # background
         self.background = pygame.image.load("../tiles/bg_menu.png").convert()
-        self.bg_size = self.background.get_width() - self.edges, self.background.get_height() - self.edges
-        self.background = pygame.transform.scale(self.background, self.bg_size)
+        gap = self.height - self.background.get_height()
+        if gap < 0:
+            gap = -gap + self.edges
+            self.bg_size = self.background.get_width() - gap, self.height - self.edges
+        else:
+            self.bg_size = self.background.get_width() + gap, self.height - self.edges
+        
+        self.background = pygame.transform.scale(self.background, self.bg_size).convert()
         
         # menu
         self.menu = pygame.image.load("../tiles/menu.png").convert()
-        self.menu_pos = int(self.width / 2) + int(self.bg_size[0] / 2), self.height - self.menu.get_height() - self.edges
+        self.menu_pos = int(self.width / 2) + int(self.bg_size[0] / 2), self.height - self.menu.get_height() - int(self.edges / 2)
     
     def showMenu(self):
 
         # background
         self.screen.fill((0, 0, 0))
-        self.screen.blit(self.background, (int(self.edges / 4), int(self.edges / 4)))
+        self.screen.blit(self.background, (int(self.width / 2) - int(self.bg_size[0] / 2), int(self.edges / 2)))
         
         # menu
         self.screen.blit(self.menu, (self.menu_pos))

@@ -12,7 +12,15 @@ screen = pygame.display.set_mode((width, height), pygame.HWSURFACE | pygame.DOUB
 
 menu = Menu.Menu(screen, width, height)
 menu.showMenu()
+
 while True:
+    
+    # close window
+    if pygame.event.peek(pygame.QUIT):
+        pygame.quit()
+        break
+    
+    # handle events
     for e in pygame.event.get():
         op = menu.selectMenu(e)
     

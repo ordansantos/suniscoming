@@ -131,7 +131,7 @@ class Reader(pygame.Rect,object):
         
     def show(self):
         self.screen()
-        pygame.display.update(self)
+        # pygame.display.update(self)
             
     def update(self,ev):
 

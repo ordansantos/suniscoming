@@ -72,7 +72,6 @@ class TextBox:
             return True
         return False
     
-    # giving error for now
     def updateReaderMessage(self, message):
         self.reader.updateText(message)
     

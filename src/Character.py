@@ -13,9 +13,9 @@ class Character:
 	def __init__(self, image = '../characters/ordan.png'):
 		# essential
 		self.id = 0
-		self.name = ''
+		self.name = 'Example'
 		self.life = 100
-		self.stranger = 5
+		self.stranger = 20
 		# position
 		self.x = 0
 		self.y = 0
@@ -93,7 +93,7 @@ class Character:
 			for y in range(7):
 				sprites[x+8].append((spritesheet.subsurface((y * 64, x * 64, 64, 64))))
 		
-		# dead
+		# dying
 		sprites.append([])
 		for y in range(6):
 			sprites[12].append((spritesheet.subsurface((y * 64, 20 * 64, 64, 64))))
@@ -133,9 +133,7 @@ class Character:
 		return False
 	
 	def getLifeBar(self):
-		if self.life != 0:
-			return self.life_bar.subsurface(32 - int(self.life * 0.32), 0, 32, 3)
-		return None
+		return self.life_bar.subsurface(32 - int(self.life * 0.32), 0, 32, 3)
 	
 	def getDeathBlood(self):
 		if self.life == 0:
@@ -285,7 +283,7 @@ class Character:
 					enemy.attacked = True
 					enemy.life -= self.stranger
 					if enemy.life == 0:
-						enemy.dead()
+						enemy.dying()
 				if self.life <= 100 - self.stranger:
 					self.life += self.stranger
 	
@@ -322,9 +320,10 @@ class Character:
 	# handle life
 	def isDead(self):
 		if self.life == 0:
+			self.death = -1
 			Person.Person.setDead(self)
 	
-	def dead(self):
+	def dying(self):
 		Person.Person.freeLocation(self)
 		self.picnr = [12, 0]
 		self.lenPic = 6

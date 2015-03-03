@@ -120,7 +120,7 @@ class Screen:
             self.screen.blit(img_person, (x, y))
             
             img_life = person.getLifeBar()
-            if img_life != None:
+            if person.life != 0:
                 self.screen.blit(img_life, (16 + x, 4 + y))
             
             img_squirt = person.getBloodSquirt()
@@ -238,4 +238,4 @@ class Screen:
                 self.screen.blit(img_death, (x - 24, y - 16))
             else:
                 x, y = self.screen_width / 2, self.screen_height / 2
-                self.screen.blit(img_death, (x - 24, y - 16))
+                self.screen.blit(img_death, (x - 58, y - 80))

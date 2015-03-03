@@ -71,7 +71,7 @@ class Game:
     
     def run(self):
         self.running = True
-        
+        died = False
         while self.running:
             self.clock.tick(30)
             if self.p.life != 0:
@@ -80,9 +80,15 @@ class Game:
                 self.doEvent()
                 self.p.move(self.arrow)
             else:
-                print 'YOU DIED'
-                self.running = False
-                pygame.quit()
+                if died == False:
+                    self.txt.updateReaderMessage(self.p.name + ' died!')
+                    self.p.dying()
+                    died = True
+                if self.p.death != -1:
+                    self.screen.draw(self.p, self.sun)
+                else:
+                    self.running = False
+                    pygame.quit()
             
             '''client_event = self.client.get()
             

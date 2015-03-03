@@ -105,7 +105,7 @@ class Form(pygame.Rect,object):
     
     def show(self):
         self.screen()
-        pygame.display.update(self)
+        # pygame.display.update(self)
         
     def wakeup(self,ev):
         if ev.type == pygame.MOUSEBUTTONDOWN and ev.button == 1: pyca.focus(self)
