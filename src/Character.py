@@ -1,7 +1,7 @@
 
 import pygame, time
 import Person
-from apt.auth import update
+import Sound
 
 class Character:
 	
@@ -15,12 +15,13 @@ class Character:
 		self.id = 0
 		self.name = 'Example'
 		self.life = 100
-		self.stranger = 20
+		self.stranger = 5
 		# position
 		self.x = 0
 		self.y = 0
 		# speed
 		self.px = 1
+		self.fast = False
 		# sprites
 		self.path = image
 		self.sprites = self.readSprites()
@@ -47,7 +48,7 @@ class Character:
 		self.furtive = False
 		# death
 		self.death = pygame.time.get_ticks()
-		self.death_interval = 1000 # 1 seconds
+		self.death_interval = 7000 # 7 seconds
 		
 	# utilities for the id
 	def setId(self, p_id):
@@ -238,8 +239,10 @@ class Character:
 			self.attack_keys[key] = True
 			self.attack_key = key
 			if key == Character.SLASH:
+				Sound.Sound.attackPlay()
 				self.slash()
 			elif key == Character.REBUKE:
+				Sound.Sound.attackPlay()
 				self.rebuke()
 	
 	def updateAttack(self):
@@ -324,6 +327,7 @@ class Character:
 			Person.Person.setDead(self)
 	
 	def dying(self):
+		Sound.Sound.deathPlay()
 		Person.Person.freeLocation(self)
 		self.picnr = [12, 0]
 		self.lenPic = 6
@@ -332,8 +336,10 @@ class Character:
 	# handle speed
 	def updateSpeed(self, fast):
 		if fast:
+			self.fast = True
 			self.px = 2
 		else:
+			self.fast = False
 			self.px = 1
 	
 	def updateDeath(self):
@@ -343,4 +349,10 @@ class Character:
 			if self.life < 0:
 				self.life = 0
 			self.death = time
-	
+		elif time - self.death >= (self.death_interval / 5):
+			if self.fast:
+				self.life -= 1
+			if self.life < 0:
+				self.life = 0
+			self.death = time
+		

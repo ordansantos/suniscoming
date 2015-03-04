@@ -5,6 +5,7 @@ import Person
 import Sun
 import Bot
 import TextBox
+import Sound
 import ClientSocket
 import gtk
 
@@ -21,6 +22,8 @@ class Game:
         self.screen = Screen.Screen(screen, self.width, self.height)
         self.txt = self.screen.txt
         
+        self.sound = Sound.Sound()
+        
         self.arrow_states = {
             pygame.K_UP: [False, -1],
             pygame.K_DOWN: [False, 1],
@@ -33,12 +36,11 @@ class Game:
         self.sun = Sun.Sun()
         
         self.p = Person.Person.getNewPerson(457, 1457, '../characters/ordan.png')
-        self.p.px= 1
         Person.Person.setMaster(self.p.getId())
         
         #Bot.Bot.putNewBot((1700, 1700), '../characters/skeleton.png')
-        #Bot.Bot.putNewBot((160, 300))
-        #Bot.Bot.putNewBot((130, 400))
+        Bot.Bot.putNewBot((160, 300))
+        Bot.Bot.putNewBot((100, 1000))
         """Bot.Bot.putNewBot((120, 350))
         Bot.Bot.putNewBot((200, 300))
         Bot.Bot.putNewBot((100, 340))
@@ -70,6 +72,7 @@ class Game:
         self.height = height
     
     def run(self):
+        self.sound.backgroundPlay()
         self.running = True
         died = False
         while self.running:
@@ -87,6 +90,7 @@ class Game:
                 if self.p.death != -1:
                     self.screen.draw(self.p, self.sun)
                 else:
+                    self.sound.stopAll()
                     self.running = False
                     pygame.quit()
             

@@ -96,15 +96,12 @@ class Screen:
     def blitMaster(self, person):
         x, y = self.screen_width / 2, self.screen_height / 2
         
-        '''img_death = person.getDeathBlood()
-        if img_death != None:
-                self.screen.blit(img_death, (x - 24, y - 16))'''
-        
         img_person = person.getImage()
         self.screen.blit(img_person, (-32 + x, -64 + y))
         
         img_life = person.getLifeBar()
-        self.screen.blit(img_life, (-16 + x, -60 + y))
+        if person.life != 0:
+            self.screen.blit(img_life, (-16 + x, -60 + y))
     
     def blitPerson(self, master, person):
         if (master == person):
@@ -112,10 +109,6 @@ class Screen:
         else:    
             x, y = self.getPersonPosition(self.getRealPosition(master.getPosition()), self.getRealPosition(person.getPosition()))
             
-            '''img_death = person.getDeathBlood()
-            if img_death != None:
-                self.screen.blit(img_death, (x - 24, y - 16))'''
-                
             img_person = person.getImage()
             self.screen.blit(img_person, (x, y))
             
