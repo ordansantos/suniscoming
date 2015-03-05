@@ -42,7 +42,7 @@ class BotThread(threading.Thread):
     def moveBot(self):
         x, y = self.p.getPosition()
         x1, y1 = self.path_deque.popleft()
-        
+        print self.p.getId(), x1, y1
         if (x1 > x):
             if (y1 > y):
                 self.p.downRight()
@@ -64,3 +64,6 @@ class BotThread(threading.Thread):
                 self.p.down()
             elif (y1 < y):
                 self.p.up()
+
+
+
