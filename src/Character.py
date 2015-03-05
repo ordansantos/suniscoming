@@ -179,7 +179,7 @@ class Character:
 			self.movement = True
 			position = Person.Person.changePersonLocation(self, self.x, self.y - self.px);
 			self.setPosition(position)
-	
+			
 	def left(self):
 		if self.attack_key == Character.NO_ATTACK and self.life != 0:
 			self.side = 'left'

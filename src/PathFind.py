@@ -6,7 +6,7 @@ from collections import deque
 
 class PathFind():
 
-
+    CONST_BOT_MIN_DISTANCE = 4
     @staticmethod
     def neighbors((x, y)):
         
@@ -28,7 +28,7 @@ class PathFind():
             l.append ((x - 1, y + 1))
         if not Walls.Walls.isThereWall((x - 1, y - 1)) and not Walls.Walls.isTherePerson(x - 1, y - 1):
             l.append ((x - 1, y - 1))
-        print 'entrou'
+
         return l
     
     @staticmethod
@@ -40,9 +40,9 @@ class PathFind():
         return math.sqrt ((x0 - x1) ** 2 + (y0 - y1) ** 2)
 
     @staticmethod
-    def aStar((x0, y0), (x1, y1)):
+    def aStar((x0, y0), (x1, y1), precise = False):
         
-        x_final, y_final = x1, y1
+        x_final, y_final = x0, y0
 
         parent_map = {}
         cost = {}
@@ -57,9 +57,10 @@ class PathFind():
         while (not q.empty()):
             x0, y0 = q.get()[1]
             
-            if ((x0, y0) == (x1, y1) or PathFind.euclidianDistance( (x0, y0), (x1, y1) ) <= 4):
-                x_final, y_final = x0, y0
-                break;
+            if (not precise):
+                if (PathFind.euclidianDistance( (x0, y0), (x1, y1) ) <= PathFind.CONST_BOT_MIN_DISTANCE):
+                    x_final, y_final = x0, y0
+                    break;
             
             neighbors = PathFind.neighbors((x0, y0))
             
@@ -79,7 +80,7 @@ class PathFind():
     # There is no memory for recursive solution
     @staticmethod    
     def buildPath (deque_path, parent_map, xy):
-        
+
         while (parent_map[xy] != xy):
             deque_path.appendleft(xy)
             xy = parent_map[xy]
@@ -87,10 +88,9 @@ class PathFind():
     @staticmethod
     def getPath ((x0, y0), (x1, y1)):
         
-        x_final, y_final, parent_map = PathFind.aStar((x0, y0), (x1, y1))
+        x_final, y_final, parent_map = PathFind.aStar((x0, y0), (x1, y1), False)
         
         path_deque = deque()
-        
         PathFind.buildPath (path_deque, parent_map, (x_final, y_final))
         
         return path_deque
