@@ -5,13 +5,14 @@ class Sun:
     
     # 2,5 minutes = 150000
     PERIOD = 15000
+    MAX = 256
+    MIN = 80
 
     def __init__(self):
-        self.color = (240, 240, 240)
+        self.color = (Sun.MIN, Sun.MIN, Sun.MIN)
         self.time = 0
-        self.gray = 240
-        self.sum = -16
-        self.radius = 80
+        self.gray = Sun.MIN
+        self.sum = 16
     
     def getColor(self):
         time = pygame.time.get_ticks()
@@ -22,17 +23,19 @@ class Sun:
     
     def nextColor(self):
         self.gray += self.sum
-        self.radius -= self.sum / 2
-        if self.gray == -16:
-            self.gray = 0
-            self.radius = 208
+        if self.gray == Sun.MIN - abs(self.sum):
+            self.gray = Sun.MIN
             self.sum = 16
-        if self.gray == 256:
-            self.gray = 240
-            self.radius = 80
+        if self.gray == Sun.MAX + abs(self.sum):
+            self.gray = Sun.MAX
             self.sum = -16
+        if self.gray == Sun.MAX:
+            return (255, 255, 255)
         return (self.gray, self.gray, self.gray)
     
-    def getRadius(self):
-        return self.radius
+    def getPeriod(self):
+        if self.gray < 192:
+            return 'afternoon'
+        else:
+            return 'morning'
     

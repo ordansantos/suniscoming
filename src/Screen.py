@@ -40,6 +40,12 @@ class Screen:
         self.surf_lighting = pygame.Surface((screen_width, screen_height))
         self.shad = shadow.Shadow()
         self.surf_falloff = pygame.image.load("../characters/light_falloff100.png").convert()
+        radius = 208
+        self.shad.set_radius(radius)
+        self.surf_falloff = pygame.transform.scale(self.surf_falloff, (radius * 2, radius * 2))
+        self.surf_falloff.convert()
+        self.mask = self.shad.get_mask()
+        self.mask.blit(self.surf_falloff, (0, 0), special_flags=pygame.BLEND_MULT)
         
         # textbox
         self.txt = TextBox.TextBox(screen_width, screen_height)
@@ -52,7 +58,7 @@ class Screen:
         self.renderPersonsToScreen(master)
         self.renderTilesToScreen(master)
         self.renderPersonsAfter(master)
-        self.blitShadow(master, sun)
+        self.blitShadow(sun)
         self.txt.drawTextBox()
         self.life.blitLifeBar(master.life)
         pygame.display.flip()
@@ -124,17 +130,11 @@ class Screen:
             if img_squirt != None:
                 self.screen.blit(img_squirt, (x + 8, y + 8))
     
-    def blitShadow(self, master, sun):
+    def blitShadow(self, sun):
         self.surf_lighting.fill(sun.getColor())
-        if not master.furtive:
-            radius = sun.getRadius()
-            self.shad.set_radius(radius)
-            falloff = pygame.transform.scale(self.surf_falloff, (radius * 2, radius * 2))
-            falloff.convert()
-            mask = self.shad.get_mask()
-            mask.blit(falloff, (0, 0), special_flags=pygame.BLEND_MULT)
+        if sun.gray < 160:
             pos = self.shad.get_center_position(self.screen_width / 2, self.screen_height / 2 - 16)
-            self.surf_lighting.blit(mask, pos, special_flags=pygame.BLEND_MAX)
+            self.surf_lighting.blit(self.mask, pos, special_flags=pygame.BLEND_MAX)
         self.screen.blit(self.surf_lighting, (0, 0), special_flags=pygame.BLEND_MULT)
     
     def renderTilesToScreen(self, master):

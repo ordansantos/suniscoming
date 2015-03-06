@@ -1,15 +1,13 @@
 
-import pygame, time
+import pygame
 import Screen
 import Person
 import Sun
 import Bot
-import TextBox
 import Sound
 import ClientSocket
 import PathFind
 from collections import deque
-import gtk
 import sys
 
 class Game:
@@ -90,12 +88,14 @@ class Game:
                 pygame.display.set_caption('%d %d - Sun Is Coming - Master(%d)' %(self.p.x, self.p.y, self.p.life))
                 self.screen.draw(self.p, self.sun)
                 self.doEvent()
+                self.p.updateDeath(self.sun.getPeriod())
 
                 if (len(self.path_deque)):
                     x1, y1 = self.path_deque.popleft()
                     self.p.doAMovement((x1, y1))
                 else:
                     self.p.move(self.arrow)
+                
             else:
                 if died == False:
                     self.txt.updateReaderMessage(self.p.name + ' died!')
@@ -195,9 +195,6 @@ class Game:
                     
                     if e.key == pygame.K_LSHIFT:
                         self.p.updateSpeed(True)
-                        
-                        
-
                 
                 """
                 # resize screen: very very slow :(

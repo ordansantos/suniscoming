@@ -10,7 +10,7 @@ class Character:
 	SLASH = pygame.K_SPACE
 	REBUKE = pygame.K_e
 	
-	def __init__(self, (x, y) = (0, 0), image = '../characters/ordan.png', movement_range = 25):
+	def __init__(self, (x, y)=(0, 0), image='../characters/ordan.png', movement_range=25):
 		# essential
 		self.setPosition((x, y))
 		self.initial_position = (x, y)
@@ -30,7 +30,7 @@ class Character:
 		# sprites controller
 		self.interval = 100
 		self.cycletime = 0
-		self.picnr = [3, 0] # picture on right
+		self.picnr = [3, 0]  # picture on right
 		self.lenPic = 9
 		self.squirt_time = 0
 		# movement controller
@@ -47,7 +47,7 @@ class Character:
 		self.furtive = False
 		# death
 		self.death = pygame.time.get_ticks()
-		self.death_interval = 7000 # 7 seconds
+		self.death_interval = 7000  # 7 seconds
 		
 		# bot
 		self.movement_range = movement_range
@@ -101,13 +101,13 @@ class Character:
 		for x in range(4):
 			sprites.append([])
 			for y in range(6):
-				sprites[x+4].append((spritesheet.subsurface((y * 64, (x + 12) * 64, 64, 64))))
+				sprites[x + 4].append((spritesheet.subsurface((y * 64, (x + 12) * 64, 64, 64))))
 		
 		# rebuke
 		for x in range(4):
 			sprites.append([])
 			for y in range(7):
-				sprites[x+8].append((spritesheet.subsurface((y * 64, x * 64, 64, 64))))
+				sprites[x + 8].append((spritesheet.subsurface((y * 64, x * 64, 64, 64))))
 		
 		# dying
 		sprites.append([])
@@ -186,7 +186,31 @@ class Character:
 				self.downRight()
 			else:
 				self.stopped()
-		self.updateDeath()
+	
+	def doAMovement(self, (x1, y1)):
+		x, y = self.getPosition()
+
+		if (x1 > x):
+			if (y1 > y):
+				self.downRight()
+			elif (y1 < y):
+				self.upRight()
+			else:
+				self.right()
+
+		elif (x1 < x):
+			if (y1 > y):
+				self.downLeft()
+			elif (y1 < y):
+				self.upLeft()
+			else:
+				self.left()
+
+		else:
+			if (y1 > y):
+				self.down()
+			elif (y1 < y):
+				self.up()
 	
 	def up(self):
 		if self.attack_key == Character.NO_ATTACK and self.life != 0:
@@ -199,7 +223,7 @@ class Character:
 		if self.attack_key == Character.NO_ATTACK and self.life != 0:
 			self.side = 'left'
 			self.movement = True
-			position = Person.Person.changePersonLocation(self, self.x - self.px, self.y )
+			position = Person.Person.changePersonLocation(self, self.x - self.px, self.y)
 			self.setPosition(position)
 	
 	def down(self):
@@ -213,7 +237,7 @@ class Character:
 		if self.attack_key == Character.NO_ATTACK and self.life != 0:
 			self.side = 'right'
 			self.movement = True
-			position = Person.Person.changePersonLocation(self, self.x  + self.px , self.y);
+			position = Person.Person.changePersonLocation(self, self.x + self.px , self.y);
 			self.setPosition(position)
 	
 	def upLeft(self):
@@ -266,9 +290,9 @@ class Character:
 				self.picnr = [0, 0]
 			elif self.side == 'left':  # left
 				self.picnr = [1, 0]
-			elif self.side == 'down': # down
+			elif self.side == 'down':  # down
 				self.picnr = [2, 0]
-			elif self.side == 'right':   # right
+			elif self.side == 'right':  # right
 				self.picnr = [3, 0]
 			self.attack_keys[self.attack_key] = False
 			self.lenPic = 9
@@ -358,44 +382,19 @@ class Character:
 			self.fast = False
 			self.px = 1
 	
-	def updateDeath(self):
-		time = pygame.time.get_ticks()
-		if time - self.death >= self.death_interval:
-			self.life -= self.stranger
-			if self.life < 0:
-				self.life = 0
-			self.death = time
-		elif time - self.death >= (self.death_interval / 5):
-			if self.fast:
-				self.life -= 1
-			if self.life < 0:
-				self.life = 0
+	def updateDeath(self, period):
+		if period == "morning":
+			time = pygame.time.get_ticks()
+			if time - self.death >= self.death_interval:
+				self.life -= self.stranger
+				if self.life < 0:
+					self.life = 0
 				self.death = time
-		
-	def doAMovement(self, (x1, y1)):
-		x, y = self.getPosition()
-
-		if (x1 > x):
-			if (y1 > y):
-				self.downRight()
-			elif (y1 < y):
-				self.upRight()
-			else:
-				self.right()
-
-		elif (x1 < x):
-			if (y1 > y):
-				self.downLeft()
-			elif (y1 < y):
-				self.upLeft()
-			else:
-				self.left()
-
-		else:
-			if (y1 > y):
-				self.down()
-			elif (y1 < y):
-				self.up()
-
+			elif time - self.death >= (self.death_interval / 5):
+				if self.fast:
+					self.life -= 1
+				if self.life < 0:
+					self.life = 0
+					self.death = time
 	
 	
