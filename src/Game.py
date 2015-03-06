@@ -10,6 +10,7 @@ import ClientSocket
 import PathFind
 from collections import deque
 import gtk
+import sys
 
 class Game:
     

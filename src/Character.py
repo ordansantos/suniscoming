@@ -51,6 +51,8 @@ class Character:
 		
 		# bot
 		self.movement_range = movement_range
+		
+		self.enemy = None
 	# utilities for the id
 	def setId(self, p_id):
 		self.id = p_id
@@ -75,6 +77,12 @@ class Character:
 		
 	def getMovementRange(self):
 		return self.movement_range
+	
+	def getEnemy(self):
+		return self.enemy
+	
+	def setEnemy(self, enemy):
+		self.enemy = enemy
 		
 	# handle images
 	def readSprites(self):
@@ -289,6 +297,7 @@ class Character:
 		if self.getPosition() != (x, y):
 			enemy = Person.Person.getPersonByPosition(x, y)
 			if enemy != None:
+				enemy.setEnemy(self)
 				if enemy.life >= self.stranger:
 					enemy.attacked = True
 					enemy.life -= self.stranger

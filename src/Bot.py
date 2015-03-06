@@ -37,13 +37,17 @@ class BotThread(threading.Thread):
                     self.p.stopped()
             else:
                 x1, y1 = Person.Person.getMaster().getPosition()
-                # if (not self.getPath((x1, y1))):
-                #    self.p.attack(pygame.K_SPACE)
-                if (pygame.time.get_ticks() - self.last_tick > 5000):
-                    self.getAnyPath()    
-                    self.last_tick = pygame.time.get_ticks()
+             
+                if (self.p.getEnemy() != None):
+                    if (not self.getPath((x1, y1))):
+                        self.p.attack(pygame.K_SPACE)
                 else:
-                    self.p.stopped()
+                    if (pygame.time.get_ticks() - self.last_tick > 5000):
+                        self.getAnyPath()    
+                        self.last_tick = pygame.time.get_ticks()
+                    else:
+                        self.p.stopped()
+                        
             if self.p.life == 0:
                 break
             
