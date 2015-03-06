@@ -354,5 +354,32 @@ class Character:
 				self.life -= 1
 			if self.life < 0:
 				self.life = 0
-			self.death = time
+				self.death = time
 		
+	def doAMovement(self, (x1, y1)):
+		x, y = self.getPosition()
+
+		if (x1 > x):
+			if (y1 > y):
+				self.downRight()
+			elif (y1 < y):
+				self.upRight()
+			else:
+				self.right()
+
+		elif (x1 < x):
+			if (y1 > y):
+				self.downLeft()
+			elif (y1 < y):
+				self.upLeft()
+			else:
+				self.left()
+
+		else:
+			if (y1 > y):
+				self.down()
+			elif (y1 < y):
+				self.up()
+
+	
+	

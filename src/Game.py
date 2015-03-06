@@ -7,6 +7,8 @@ import Bot
 import TextBox
 import Sound
 import ClientSocket
+import PathFind
+from collections import deque
 import gtk
 
 class Game:
@@ -14,7 +16,8 @@ class Game:
     def __init__(self, screen, width, height):
         
         pygame.init()
-        
+        self.mouse_pos_right_click = None
+    
         self.width = width
         self.height = height
 
@@ -37,9 +40,10 @@ class Game:
         
         self.p = Person.Person.getNewPerson(150, 350, '../characters/ordan.png')
         Person.Person.setMaster(self.p.getId())
+        self.path_deque = deque()
         
         #Bot.Bot.putNewBot((1700, 1700), '../characters/skeleton.png')
-        Bot.Bot.putNewBot((160, 300))
+        #Bot.Bot.putNewBot((160, 300))
         """Bot.Bot.putNewBot((100, 350))
         Bot.Bot.putNewBot((120, 350))
         Bot.Bot.putNewBot((200, 300))
@@ -84,7 +88,12 @@ class Game:
                 pygame.display.set_caption('%d %d - Sun Is Coming - Master(%d)' %(self.p.x, self.p.y, self.p.life))
                 self.screen.draw(self.p, self.sun)
                 self.doEvent()
-                self.p.move(self.arrow)
+
+                if (len(self.path_deque)):
+                    x1, y1 = self.path_deque.popleft()
+                    self.p.doAMovement((x1, y1))
+                else:
+                    self.p.move(self.arrow)
             else:
                 if died == False:
                     self.txt.updateReaderMessage(self.p.name + ' died!')
@@ -96,6 +105,8 @@ class Game:
                     self.sound.stopAll()
                     self.running = False
                     pygame.quit()
+            
+
             
             '''client_event = self.client.get()
             
@@ -129,12 +140,18 @@ class Game:
             return
         
         events = pygame.event.get()
-        
+        a = len(events)
         for e in events:
             # check click and get mouse position
             self.clicked(e)
             mouse_pos = pygame.mouse.get_pos()
-            
+
+            if (  pygame.mouse.get_pressed()[2] ):
+                self.mouse_pos_right_click = mouse_pos
+
+            if (not pygame.mouse.get_pressed()[2] and self.mouse_pos_right_click != None):
+                self.updateMovementPath(self.mouse_pos_right_click)
+                self.mouse_pos_right_click = None
             # handle writer box
             if self.txt.writing_now and self.arrow == [0,0]:
                 self.txt.handleWriterBox(events)
@@ -146,6 +163,11 @@ class Game:
                 
                 # handle character movement
                 if e.type == pygame.KEYUP:
+                    
+                    if (len(self.path_deque)):
+                        self.p.stopped
+                        self.path_deque.clear()
+                        
                     if e.key in self.arrow_states.keys():
                         self.arrow_states[e.key][0] = False
                         self.updateArrows()
@@ -154,6 +176,11 @@ class Game:
                         self.p.updateSpeed(False)
                 
                 elif e.type == pygame.KEYDOWN:
+                    
+                    if (len(self.path_deque)):
+                        self.p.stopped
+                        self.path_deque.clear()
+                        
                     if e.key in self.arrow_states.keys():
                         self.arrow_states[e.key][0] = True
                         self.updateArrows()
@@ -166,6 +193,9 @@ class Game:
                     
                     if e.key == pygame.K_LSHIFT:
                         self.p.updateSpeed(True)
+                        
+                        
+
                 
                 """
                 # resize screen: very very slow :(
@@ -173,7 +203,7 @@ class Game:
                     self.width, self.height = e.dict['size']
                     self.screen = Screen.Screen(self.width, self.height)
                     self.txt = self.screen.txt """
-    
+      
     def clicked(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             self.txt.updateWriting()
@@ -190,3 +220,9 @@ class Game:
         if self.arrow_states[pygame.K_RIGHT][0]:
             self.arrow[0] += self.arrow_states[pygame.K_RIGHT][1]
     
+    def updateMovementPath(self, mouse_pos):
+        x, y = self.screen.getMousePositionOnMap(self.p, mouse_pos)
+        self.path_deque = PathFind.PathFind.getPath (self.p.getPosition(), (x, y), True)
+
+        
+        

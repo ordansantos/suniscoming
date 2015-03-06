@@ -49,30 +49,8 @@ class BotThread(threading.Thread):
                 break
             
     def moveBot(self):
-        x, y = self.p.getPosition()
         x1, y1 = self.path_deque.popleft()
-
-        if (x1 > x):
-            if (y1 > y):
-                self.p.downRight()
-            elif (y1 < y):
-                self.p.upRight()
-            else:
-                self.p.right()
-
-        elif (x1 < x):
-            if (y1 > y):
-                self.p.downLeft()
-            elif (y1 < y):
-                self.p.upLeft()
-            else:
-                self.p.left()
-
-        else:
-            if (y1 > y):
-                self.p.down()
-            elif (y1 < y):
-                self.p.up()
+        self.p.doAMovement((x1, y1))
 
 
 

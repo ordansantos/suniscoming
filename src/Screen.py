@@ -236,6 +236,27 @@ class Screen:
             else:
                 x, y = self.screen_width / 2, self.screen_height / 2
                 self.screen.blit(img_death, (x - 58, y - 80))
+                
+    def getMousePositionOnMap(self, master, mouse_position):
+        mouse_x, mouse_y = mouse_position
+        
+        center_x = self.screen_width / 2
+        center_y = self.screen_height / 2
+        
+        master_x, master_y = master.getPosition()
+        
+        x = mouse_x - center_x
+        y = mouse_y - center_y
+        
+        x /= Walls.Walls.CONST_MAP_PX
+        y /= Walls.Walls.CONST_MAP_PX
+        
+        
+        x = x + master_x
+        y = y + master_y
+        
+        return (x, y)
+    
 
 class Header:
     
@@ -258,4 +279,7 @@ class Header:
     def blitLifeBar(self, life):
         surf = self.life_bar.subsurface(0, 0, int(life * self.life_size[0] / 100), self.life_size[1])
         self.src.blit(surf, (self.edges[0], self.edges[1]))
+        
+        
+
     
