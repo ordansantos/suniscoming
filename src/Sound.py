@@ -7,22 +7,33 @@ import pygame
 class Sound:
     
     def __init__(self, background='../sounds/background.wav', volume=0.3):
-        self.background = pygame.mixer.Sound(background)
-        self.background.set_volume(volume)
-        
+        self.transformed = pygame.mixer.Sound('../sounds/transformed.wav')
+        self.normal_background = pygame.mixer.Sound(background)
+        self.normal_background.set_volume(volume)
+        self.swapped = False
     
     # background
+    def updateBackground(self, master_transformed):
+        if master_transformed:
+            self.normal_background.stop()
+            self.transformed.play()
+            self.swapped = True
+        else:
+            if self.swapped:
+                self.normal_background.play(-1)
+                self.swapped = False
+    
     def backgroundPlay(self):
-        self.background.play(-1)
+        self.normal_background.play(-1)
     
     def backgroundStop(self):
-        self.background.stop()
+        self.normal_background.pause()
     
     def backgroundGetVolume(self):
-        return self.background.get_volume()
+        return self.normal_background.get_volume()
     
     def backgroundSetVolume(self, volume):
-        self.background.set_volume(volume)
+        self.normal_background.set_volume(volume)
     
     # attack
     @staticmethod

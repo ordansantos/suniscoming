@@ -44,9 +44,9 @@ class Game:
         
         # Bot.BotController.putNewBot((1700, 1700), '../characters/skeleton.png')
         Bot.BotController.putNewBot((160, 320))
-        """Bot.BotController.putNewBot((100, 350))
-        Bot.BotController.putNewBot((120, 350))
-        Bot.BotController.putNewBot((200, 300))
+        Bot.BotController.putNewBot((165, 350))
+        Bot.BotController.putNewBot((170, 370))
+        """Bot.BotController.putNewBot((200, 300))
         Bot.BotController.putNewBot((100, 340))
         Bot.BotController.putNewBot((250, 251))
         Bot.BotController.putNewBot((130, 501))
@@ -83,18 +83,29 @@ class Game:
         while self.running:
             self.clock.tick(30)
             if self.p.life != 0:
+                
+                # update title
                 pygame.display.set_caption('%d %d - Sun Is Coming - Master(%d)' %(self.p.x, self.p.y, self.p.life))
+                
+                # draw screen and event handle
                 self.screen.draw(self.p, self.sun)
                 self.doEvent()
+                
+                # update player
                 self.p.updateDeath(self.sun.getPeriod())
+                transform = self.p.updateTransform()
+                
+                # update sound
+                self.sound.updateBackground(transform)
 
+                # move player
                 if (len(self.path_deque)):
                     x1, y1 = self.path_deque.popleft()
                     self.p.doAMovement((x1, y1))
                 else:
                     self.p.move(self.arrow)
                 
-            else:
+            else: # if player died...
                 if died == False:
                     self.txt.updateReaderMessage(self.p.name + ' died!')
                     died = True
@@ -216,6 +227,4 @@ class Game:
     def updateMovementPath(self, mouse_pos):
         x, y = self.screen.getMousePositionOnMap(self.p, mouse_pos)
         self.path_deque = PathFind.PathFind.getPath (self.p.getPosition(), (x, y), True)
-
-        
         

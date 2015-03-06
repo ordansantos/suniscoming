@@ -10,7 +10,7 @@ class Character:
 	SLASH = pygame.K_SPACE
 	REBUKE = pygame.K_e
 	
-	def __init__(self, (x, y), image, death_blood):
+	def __init__(self, (x, y), path_image, death_blood):
 		# essential
 		self.setPosition((x, y))
 		self.initial_position = (x, y)
@@ -21,21 +21,20 @@ class Character:
 		self.px = 1
 		self.fast = False
 		# sprites
-		self.path = image
-		self.sprites = self.readSprites()
+		self.sprites = self.readSprites(path_image)
 		self.life_bar = pygame.image.load(file('../characters/blood.png')).convert()
 		self.death_blood = pygame.image.load(file(death_blood)).convert_alpha()
 		self.blood_squirt = pygame.image.load(file('../characters/blood_squirt.png')).convert_alpha()
-		# sprites controller
+		# sprites control
 		self.interval = 100
 		self.cycletime = 0
 		self.picnr = [3, 0]  # picture on right
 		self.lenPic = 9
 		self.squirt_time = 0
-		# movement controller
+		# movement control
 		self.side = 'right'
 		self.movement = False
-		# attack controller
+		# attack control
 		self.attack_keys = {
 			Character.SLASH: False,
 			Character.REBUKE: False
@@ -72,10 +71,10 @@ class Character:
 	def setEnemy(self, enemy):
 		self.enemy = enemy
 		
-	# handle images
-	def readSprites(self):
+	# images handle
+	def readSprites(self, path):
 		# one full day to do this function
-		spritesheet = pygame.image.load(file(self.path))
+		spritesheet = pygame.image.load(file(path))
 		spritesheet.convert()
 		sprites = []
 		
@@ -155,28 +154,7 @@ class Character:
 			return self.blood_squirt
 		return None
 	
-	# handle movement
-	def move(self, arrow):
-		if self.attack_key == Character.NO_ATTACK:
-			if arrow == [0, -1]:
-				self.up()
-			elif arrow == [0, 1]:
-				self.down()
-			elif arrow == [-1, 0]:
-				self.left()
-			elif arrow == [1, 0]:
-				self.right()
-			elif arrow == [-1, -1]:
-				self.upLeft()
-			elif arrow == [1, -1]:
-				self.upRight()
-			elif arrow == [-1, 1]:
-				self.downLeft()
-			elif arrow == [1, 1]:
-				self.downRight()
-			else:
-				self.stopped()
-	
+	# movement handle
 	def doAMovement(self, (x1, y1)):
 		x, y = self.getPosition()
 
@@ -262,7 +240,7 @@ class Character:
 		self.movement = False
 		self.picnr[1] = 0
 	
-	# handle attack
+	# attack handle
 	def attack(self, key):
 		if self.attack_key == Character.NO_ATTACK:
 			self.attack_keys[key] = True
@@ -336,7 +314,7 @@ class Character:
 		self.interval = 150
 		self.hit()
 	
-	# handle life
+	# life handle
 	def isDead(self):
 		Person.Person.setDead(self)
 	
@@ -347,7 +325,7 @@ class Character:
 		self.lenPic = 6
 		self.interval = 500
 	
-	# handle speed
+	# speed handle
 	def updateSpeed(self, fast):
 		if fast:
 			self.fast = True
@@ -359,18 +337,31 @@ class Character:
 
 class Player(Character):
 	
-	def __init__(self, (x, y)=(0, 0), image='../characters/ordan.png', death_blood='../characters/death_blood.png'):
-	
-		Character.__init__(self, (x, y), image, death_blood)
+	def __init__(self, (x, y)=(0, 0), normal_path='../characters/ordan.png', transform_path='../characters/skeleton.png', death_blood='../characters/death_blood.png'):
 		
+		Character.__init__(self, (x, y), normal_path, death_blood)
+		
+		# sprites
+		self.normal_sprites = self.readSprites(normal_path)
+		self.transformed_sprites = self.readSprites(transform_path)
+		
+		# attack control
 		self.stranger = 25
+		self.all_killed = 0
+		
+		# transformation control
+		self.partial_killed = 0
+		self.number_transformation = 2
+		self.transform_interval = 26000
+		self.last_transformation = 0L
+		self.transformed = False
 		
 		# death
 		self.death = pygame.time.get_ticks()
 		self.death_interval = 7000  # 7 seconds
 	
 	def updateDeath(self, period):
-		if period == "morning" and self.life != 0:
+		if period == "morning" and self.life != 0 and not self.transformed:
 			time = pygame.time.get_ticks()
 			if time - self.death >= self.death_interval:
 				self.life -= self.stranger
@@ -386,13 +377,33 @@ class Player(Character):
 						self.dying()
 					self.death = time
 	
-	def isDead(self):
-		Person.Person.setDead(self)
-		self.death = -1
-
+	# movement handle
+	def move(self, arrow):
+		if self.attack_key == Character.NO_ATTACK:
+			if arrow == [0, -1]:
+				self.up()
+			elif arrow == [0, 1]:
+				self.down()
+			elif arrow == [-1, 0]:
+				self.left()
+			elif arrow == [1, 0]:
+				self.right()
+			elif arrow == [-1, -1]:
+				self.upLeft()
+			elif arrow == [1, -1]:
+				self.upRight()
+			elif arrow == [-1, 1]:
+				self.downLeft()
+			elif arrow == [1, 1]:
+				self.downRight()
+			else:
+				self.stopped()
+	
+	# attack handle
 	def checkAttack(self, x, y):
 		if self.getPosition() != (x, y):
 			enemy = Person.Person.getPersonByPosition(x, y)
+			
 			if enemy != None:
 				enemy.setEnemy(self)
 				if enemy.life >= self.stranger:
@@ -400,8 +411,33 @@ class Player(Character):
 					enemy.life -= self.stranger
 					if enemy.life == 0:
 						enemy.dying()
+						self.partial_killed += 1
+						self.all_killed += 1
+		
 				if self.life <= 100 - self.stranger:
 					self.life += self.stranger
+	
+	def updateTransform(self):
+		time = pygame.time.get_ticks()
+		if self.partial_killed == self.number_transformation:
+			self.sprites = self.transformed_sprites
+			self.last_transformation = time
+			self.partial_killed = 0
+			self.transformed = True
+			return True
+		
+		if self.transformed:
+			if time - self.last_transformation >= self.transform_interval:
+				self.sprites = self.normal_sprites
+				self.last_transformation = time
+				self.transformed = False
+		return False
+	
+	# life handle
+	def isDead(self):
+		Person.Person.setDead(self)
+		self.death = -1
+
 
 class Bot(Character):
 	
@@ -409,6 +445,7 @@ class Bot(Character):
 		
 		Character.__init__(self, (x, y), image, death_blood)
 		
+		# attack control
 		self.stranger = 10
 		
 		# bot
