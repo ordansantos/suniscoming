@@ -43,7 +43,7 @@ class Game:
         self.path_deque = deque()
         
         #Bot.Bot.putNewBot((1700, 1700), '../characters/skeleton.png')
-        Bot.Bot.putNewBot((160, 300))
+        Bot.Bot.putNewBot((160, 320))
         """Bot.Bot.putNewBot((100, 350))
         Bot.Bot.putNewBot((120, 350))
         Bot.Bot.putNewBot((200, 300))
