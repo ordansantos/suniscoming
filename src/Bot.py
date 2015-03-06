@@ -31,6 +31,8 @@ class BotThread(threading.Thread):
             
             if (len(self.path_deque)):
                 self.moveBot()
+                if (self.path_deque == 0):
+                    self.p.stopped()
             else:
                 x1, y1 = Person.Person.getMaster().getPosition()
                 x0, y0 = self.p.getPosition()
@@ -40,9 +42,9 @@ class BotThread(threading.Thread):
                 if (dist <= 100 and dist > 4):
                     self.path_deque = PathFind.PathFind.getPath ((x0, y0), (x1, y1))
                 else:
-                    self.p.stopped()
+                    
                     self.p.attack(pygame.K_SPACE)
-            
+                    
             if self.p.life == 0:
                 break
             
