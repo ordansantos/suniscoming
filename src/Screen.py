@@ -10,7 +10,7 @@ import TextBox
 import math
 
 import sys, os, traceback
-if sys.platform in ["win32","win64"]: os.environ["SDL_VIDEO_CENTERED"]="1"
+if sys.platform in ["win32", "win64"]: os.environ["SDL_VIDEO_CENTERED"] = "1"
 
 import PAdLib.occluder as occluder
 import PAdLib.shadow as shadow
@@ -32,7 +32,7 @@ class Screen:
         self.screen_width = screen_width
         self.screen_height = screen_height
         self.background = pygame.image.load(file('../tiles/background.png')).convert()
-        self.tile_map  = load_pygame('tile_map.tmx')
+        self.tile_map = load_pygame('tile_map.tmx')
         Walls.Walls.pushWalls(self.tile_map)    
         self.preLoadTiles()
         
@@ -43,6 +43,9 @@ class Screen:
         
         # textbox
         self.txt = TextBox.TextBox(screen_width, screen_height)
+        
+        # lifebar
+        self.life = Header(self.screen_width, self.screen_height)
     
     def draw(self, master, sun):
         self.clear(self.getRealPosition(master.getPosition()))
@@ -51,6 +54,7 @@ class Screen:
         self.renderPersonsAfter(master)
         self.blitShadow(master, sun)
         self.txt.drawTextBox()
+        self.life.blitLifeBar(master.life)
         pygame.display.flip()
     
     def getRealPosition(self, (x, y)):
@@ -74,7 +78,7 @@ class Screen:
         
         x, y = 0, 0
         img_x, img_y = mx - self.screen_width / 2, my - self.screen_height / 2
-        img_width, img_height =  self.screen_width, self.screen_height
+        img_width, img_height = self.screen_width, self.screen_height
         
         if img_x < 0:
             x = 0 - img_x
@@ -128,10 +132,10 @@ class Screen:
             falloff = pygame.transform.scale(self.surf_falloff, (radius * 2, radius * 2))
             falloff.convert()
             mask = self.shad.get_mask()
-            mask.blit(falloff, (0,0), special_flags= pygame.BLEND_MULT)
+            mask.blit(falloff, (0, 0), special_flags=pygame.BLEND_MULT)
             pos = self.shad.get_center_position(self.screen_width / 2, self.screen_height / 2 - 16)
-            self.surf_lighting.blit(mask, pos, special_flags = pygame.BLEND_MAX)
-        self.screen.blit(self.surf_lighting, (0,0), special_flags=pygame.BLEND_MULT)
+            self.surf_lighting.blit(mask, pos, special_flags=pygame.BLEND_MAX)
+        self.screen.blit(self.surf_lighting, (0, 0), special_flags=pygame.BLEND_MULT)
     
     def renderTilesToScreen(self, master):
         
@@ -140,9 +144,9 @@ class Screen:
         middlex = self.screen_width / 2
         middley = self.screen_height / 2
         
-        inix = (mx - middlex) / 16 * 16 - 32 # -32 margin of error
+        inix = (mx - middlex) / 16 * 16 - 32  # -32 margin of error
         iniy = (my - middley) / 16 * 16 - 32
-        fimx = mx + middlex + 32 # -32 margin of error
+        fimx = mx + middlex + 32  # -32 margin of error
         fimy = my + middley + 32
         
         if (inix < 0): inix = 0
@@ -161,11 +165,11 @@ class Screen:
                 if (self.objectMatrix[xt][yt] != None):
                     if (isinstance(self.objectMatrix[xt][yt], tuple)):
                         img_1, img_2 = self.objectMatrix[xt][yt]
-                        self.screen.blit (img_1, (self.getObjectPosition((x, y), self.getRealPosition(master.getPosition() ) ) ) )
-                        self.screen.blit (img_2, (self.getObjectPosition((x, y), self.getRealPosition(master.getPosition() ) ) ) )
+                        self.screen.blit (img_1, (self.getObjectPosition((x, y), self.getRealPosition(master.getPosition()))))
+                        self.screen.blit (img_2, (self.getObjectPosition((x, y), self.getRealPosition(master.getPosition()))))
                         
                     else:
-                        self.screen.blit (self.objectMatrix[xt][yt], (self.getObjectPosition((x, y), self.getRealPosition(master.getPosition() ) ) ) )
+                        self.screen.blit (self.objectMatrix[xt][yt], (self.getObjectPosition((x, y), self.getRealPosition(master.getPosition()))))
 
     # Map position
     def preLoadTiles(self):
@@ -232,3 +236,26 @@ class Screen:
             else:
                 x, y = self.screen_width / 2, self.screen_height / 2
                 self.screen.blit(img_death, (x - 58, y - 80))
+
+class Header:
+    
+    def __init__(self, width, height):
+        self.src = pygame.display.get_surface()
+        self.life_bar = pygame.image.load(file('../characters/super_lifebar.png')).convert()
+        self.edges = int(width / 15), int(height / 15)
+        
+        gap = int(width / 1.7) - self.life_bar.get_width()
+        if gap < 0:
+            gap = -gap + self.edges[0]
+            perc = gap * 100 / width
+            self.life_size = self.life_bar.get_width() - gap, self.life_bar.get_height() - int(self.life_bar.get_height() * perc / 100)
+        else:
+            perc = gap * 100 / width
+            self.life_size = self.life_bar.get_width() + gap - self.edges[0], self.life_bar.get_height() + int(self.life_bar.get_height() * perc / 100)
+        
+        self.life_bar = pygame.transform.scale(self.life_bar, self.life_size).convert()
+    
+    def blitLifeBar(self, life):
+        surf = self.life_bar.subsurface(0, 0, int(life * self.life_size[0] / 100), self.life_size[1])
+        self.src.blit(surf, (self.edges[0], self.edges[1]))
+    
