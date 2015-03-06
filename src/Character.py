@@ -10,14 +10,13 @@ class Character:
 	SLASH = pygame.K_SPACE
 	REBUKE = pygame.K_e
 	
-	def __init__(self, (x, y)=(0, 0), image='../characters/ordan.png', movement_range=25):
+	def __init__(self, (x, y), image, death_blood):
 		# essential
 		self.setPosition((x, y))
 		self.initial_position = (x, y)
 		self.id = 0
 		self.name = 'Example'
 		self.life = 100
-		self.stranger = 5
 		# speed
 		self.px = 1
 		self.fast = False
@@ -25,7 +24,7 @@ class Character:
 		self.path = image
 		self.sprites = self.readSprites()
 		self.life_bar = pygame.image.load(file('../characters/blood.png')).convert()
-		self.death_blood = pygame.image.load(file('../characters/death_blood.png')).convert_alpha()
+		self.death_blood = pygame.image.load(file(death_blood)).convert_alpha()
 		self.blood_squirt = pygame.image.load(file('../characters/blood_squirt.png')).convert_alpha()
 		# sprites controller
 		self.interval = 100
@@ -43,16 +42,8 @@ class Character:
 		}
 		self.attack_key = Character.NO_ATTACK
 		self.attacked = False
-		# furtiveness
-		self.furtive = False
-		# death
-		self.death = pygame.time.get_ticks()
-		self.death_interval = 7000  # 7 seconds
-		
-		# bot
-		self.movement_range = movement_range
-		
 		self.enemy = None
+		
 	# utilities for the id
 	def setId(self, p_id):
 		self.id = p_id
@@ -74,9 +65,6 @@ class Character:
 	def setPosition(self, (x, y)):
 		self.x = x
 		self.y = y
-		
-	def getMovementRange(self):
-		return self.movement_range
 	
 	def getEnemy(self):
 		return self.enemy
@@ -123,8 +111,10 @@ class Character:
 			if self.updateTime():
 				self.picnr[1] += 1
 				if self.picnr[1] == self.lenPic:
-					self.updateAttack()
-					if self.picnr[0] == 12: self.isDead()
+					if self.picnr[0] == 12:
+						self.isDead()
+					elif self.life != 0:
+						self.updateAttack()
 					self.picnr[1] = 0
 		return self.sprites[x][y]
 	
@@ -318,17 +308,7 @@ class Character:
 					self.checkAttack(x, y)
 	
 	def checkAttack(self, x, y):
-		if self.getPosition() != (x, y):
-			enemy = Person.Person.getPersonByPosition(x, y)
-			if enemy != None:
-				enemy.setEnemy(self)
-				if enemy.life >= self.stranger:
-					enemy.attacked = True
-					enemy.life -= self.stranger
-					if enemy.life == 0:
-						enemy.dying()
-				if self.life <= 100 - self.stranger:
-					self.life += self.stranger
+		pass
 	
 	def slash(self):
 		if self.side == 'up':
@@ -356,15 +336,9 @@ class Character:
 		self.interval = 150
 		self.hit()
 	
-	# furtiveness
-	def updateFurtiveness(self):
-		self.furtive = not self.furtive
-	
 	# handle life
 	def isDead(self):
-		if self.life == 0:
-			self.death = -1
-			Person.Person.setDead(self)
+		Person.Person.setDead(self)
 	
 	def dying(self):
 		Sound.Sound.deathPlay()
@@ -381,20 +355,77 @@ class Character:
 		else:
 			self.fast = False
 			self.px = 1
+
+
+class Player(Character):
+	
+	def __init__(self, (x, y)=(0, 0), image='../characters/ordan.png', death_blood='../characters/death_blood.png'):
+	
+		Character.__init__(self, (x, y), image, death_blood)
+		
+		self.stranger = 25
+		
+		# death
+		self.death = pygame.time.get_ticks()
+		self.death_interval = 7000  # 7 seconds
 	
 	def updateDeath(self, period):
-		if period == "morning":
+		if period == "morning" and self.life != 0:
 			time = pygame.time.get_ticks()
 			if time - self.death >= self.death_interval:
 				self.life -= self.stranger
 				if self.life < 0:
 					self.life = 0
+					self.dying()
 				self.death = time
-			elif time - self.death >= (self.death_interval / 5):
-				if self.fast:
+			elif self.fast:
+				if time - self.death >= (self.death_interval / 5):
 					self.life -= 1
-				if self.life < 0:
-					self.life = 0
+					if self.life < 0:
+						self.life = 0
+						self.dying()
 					self.death = time
 	
+	def isDead(self):
+		Person.Person.setDead(self)
+		self.death = -1
+
+	def checkAttack(self, x, y):
+		if self.getPosition() != (x, y):
+			enemy = Person.Person.getPersonByPosition(x, y)
+			if enemy != None:
+				enemy.setEnemy(self)
+				if enemy.life >= self.stranger:
+					enemy.attacked = True
+					enemy.life -= self.stranger
+					if enemy.life == 0:
+						enemy.dying()
+				if self.life <= 100 - self.stranger:
+					self.life += self.stranger
+
+class Bot(Character):
+	
+	def __init__(self, (x, y)=(0, 0), image='../characters/ordan.png', death_blood='../characters/death_blood.png', movement_range=25):
+		
+		Character.__init__(self, (x, y), image, death_blood)
+		
+		self.stranger = 10
+		
+		# bot
+		self.movement_range = movement_range
+	
+	def getMovementRange(self):
+		return self.movement_range
+
+	def checkAttack(self, x, y):
+		if self.getPosition() != (x, y):
+			enemy = Person.Person.getPersonByPosition(x, y)
+			if enemy != None:
+				enemy.setEnemy(self)
+				if enemy.life >= self.stranger:
+					enemy.attacked = True
+					enemy.life -= self.stranger
+					if enemy.life == 0:
+						enemy.dying()
+
 	

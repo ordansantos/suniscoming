@@ -7,13 +7,14 @@ import PathFind
 import pygtk, gtk, gobject
 import random
 import Walls
+from Character import Bot
 
-class Bot:
+class BotController:
     
     @staticmethod
     def putNewBot ( (x, y), image = '../characters/kauan.png' ):
         
-        person = Person.Person.getNewPerson(x, y, image)
+        person = Person.Person.getNewBot(x, y, image)
         
         person_bot = BotThread(kwargs={'person': person})
         person_bot.setDaemon(True)
@@ -27,7 +28,7 @@ class BotThread(threading.Thread):
         self.path_deque = deque()
         self.clock = pygame.time.Clock()
         
-        while True:
+        while self.p.life != 0:
             
             self.clock.tick(30)
             
@@ -47,10 +48,7 @@ class BotThread(threading.Thread):
                         self.last_tick = pygame.time.get_ticks()
                     else:
                         self.p.stopped()
-                        
-            if self.p.life == 0:
-                break
-            
+    
     def moveBot(self):
         x1, y1 = self.path_deque.popleft()
         self.p.doAMovement((x1, y1))
@@ -82,4 +80,3 @@ class BotThread(threading.Thread):
             y1 = x0
         
         self.path_deque = PathFind.PathFind.getPath ((x0, y0), (x1, y1))
-            

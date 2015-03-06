@@ -37,38 +37,36 @@ class Game:
         
         self.sun = Sun.Sun()
         
-        self.p = Person.Person.getNewPerson(150, 350, '../characters/ordan.png')
+        self.p = Person.Person.getNewPlayer(150, 350, '../characters/ordan.png')
         
         Person.Person.setMaster(self.p.getId())
         self.path_deque = deque()
         
-        #Bot.Bot.putNewBot((1700, 1700), '../characters/skeleton.png')
-        Bot.Bot.putNewBot((160, 320))
-        """Bot.Bot.putNewBot((100, 350))
-        Bot.Bot.putNewBot((120, 350))
-        Bot.Bot.putNewBot((200, 300))
-        Bot.Bot.putNewBot((100, 340))
-        Bot.Bot.putNewBot((250, 251))
-        Bot.Bot.putNewBot((130, 501))
-        Bot.Bot.putNewBot((166, 300))
-        Bot.Bot.putNewBot((131, 400))
-        Bot.Bot.putNewBot((122, 350))
-        Bot.Bot.putNewBot((203, 300))
-        Bot.Bot.putNewBot((104, 340))
-        Bot.Bot.putNewBot((255, 251))
-        Bot.Bot.putNewBot((138, 501))
-        Bot.Bot.putNewBot((169, 308))
-        Bot.Bot.putNewBot((139, 408))
-        Bot.Bot.putNewBot((129, 358))
-        Bot.Bot.putNewBot((209, 308))
-        Bot.Bot.putNewBot((109, 348))
-        Bot.Bot.putNewBot((259, 258))
-        Bot.Bot.putNewBot((139, 508))"""
-        
-        
+        # Bot.BotController.putNewBot((1700, 1700), '../characters/skeleton.png')
+        Bot.BotController.putNewBot((160, 320))
+        """Bot.BotController.putNewBot((100, 350))
+        Bot.BotController.putNewBot((120, 350))
+        Bot.BotController.putNewBot((200, 300))
+        Bot.BotController.putNewBot((100, 340))
+        Bot.BotController.putNewBot((250, 251))
+        Bot.BotController.putNewBot((130, 501))
+        Bot.BotController.putNewBot((166, 300))
+        Bot.BotController.putNewBot((131, 400))
+        Bot.BotController.putNewBot((122, 350))
+        Bot.BotController.putNewBot((203, 300))
+        Bot.BotController.putNewBot((104, 340))
+        Bot.BotController.putNewBot((255, 251))
+        Bot.BotController.putNewBot((138, 501))
+        Bot.BotController.putNewBot((169, 308))
+        Bot.BotController.putNewBot((139, 408))
+        Bot.BotController.putNewBot((129, 358))
+        Bot.BotController.putNewBot((209, 308))
+        Bot.BotController.putNewBot((109, 348))
+        Bot.BotController.putNewBot((259, 258))
+        Bot.BotController.putNewBot((139, 508))"""
     
-        #Bot.Bot.putNewBot((600, 800))
-        #Bot.Bot.putNewBot((1000, 2000))
+        # Bot.BotController.putNewBot((600, 800))
+        # Bot.BotController.putNewBot((1000, 2000))
         
         """ self.client = ClientSocket.ClientSocket() """
     
@@ -99,7 +97,6 @@ class Game:
             else:
                 if died == False:
                     self.txt.updateReaderMessage(self.p.name + ' died!')
-                    self.p.dying()
                     died = True
                 if self.p.death != -1:
                     self.screen.draw(self.p, self.sun)
@@ -148,14 +145,14 @@ class Game:
             self.clicked(e)
             mouse_pos = pygame.mouse.get_pos()
 
-            if (  pygame.mouse.get_pressed()[2] ):
+            if (pygame.mouse.get_pressed()[2]):
                 self.mouse_pos_right_click = mouse_pos
 
             if (not pygame.mouse.get_pressed()[2] and self.mouse_pos_right_click != None):
                 self.updateMovementPath(self.mouse_pos_right_click)
                 self.mouse_pos_right_click = None
             # handle writer box
-            if self.txt.writing_now and self.arrow == [0,0]:
+            if self.txt.writing_now and self.arrow == [0, 0]:
                 self.txt.handleWriterBox(events)
             
             else:
@@ -189,9 +186,6 @@ class Game:
                     
                     if e.key in self.p.attack_keys.keys():
                         self.p.attack(e.key)
-                    
-                    if e.key == pygame.K_f:
-                        self.p.updateFurtiveness()
                     
                     if e.key == pygame.K_LSHIFT:
                         self.p.updateSpeed(True)

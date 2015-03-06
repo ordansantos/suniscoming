@@ -9,11 +9,11 @@ class Person:
     person_list = []
     
     @staticmethod
-    def getNewPerson(x, y, image = '../characters/kauan.png'):
+    def getNewPlayer(x, y, image = '../characters/kauan.png'):
         if (x > Person.CONST_MAX_WH / 4 or y > Person.CONST_MAX_WH / 4):
             return None
         
-        p = Character.Character((x, y), image)
+        p = Character.Player((x, y), image)
         
         p.setId(len(Person.person_list))
         if (Walls.Walls.pushPerson(x, y, p)):
@@ -22,7 +22,22 @@ class Person:
             return p
 
         return None
+    
+    @staticmethod
+    def getNewBot(x, y, image = '../characters/kauan.png'):
+        if (x > Person.CONST_MAX_WH / 4 or y > Person.CONST_MAX_WH / 4):
+            return None
         
+        p = Character.Bot((x, y), image)
+        
+        p.setId(len(Person.person_list))
+        if (Walls.Walls.pushPerson(x, y, p)):
+            Person.person_list.append(p)
+
+            return p
+
+        return None
+    
     @staticmethod
     def getPersonById(p_id):
         
