@@ -134,4 +134,11 @@ class Walls:
     @staticmethod
     def setDead((x, y)):
         Walls.Matrix[x][y] = None
+        
+    @staticmethod
+    def isAValidPosition(z):
+        if z < 0 or z > Walls.CONST_MAP_WH:
+            return False
+        return True
+    
     

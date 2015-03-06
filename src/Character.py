@@ -10,15 +10,14 @@ class Character:
 	SLASH = pygame.K_SPACE
 	REBUKE = pygame.K_e
 	
-	def __init__(self, image = '../characters/ordan.png'):
+	def __init__(self, (x, y) = (0, 0), image = '../characters/ordan.png', movement_range = 25):
 		# essential
+		self.setPosition((x, y))
+		self.initial_position = (x, y)
 		self.id = 0
 		self.name = 'Example'
 		self.life = 100
 		self.stranger = 5
-		# position
-		self.x = 0
-		self.y = 0
 		# speed
 		self.px = 1
 		self.fast = False
@@ -50,6 +49,8 @@ class Character:
 		self.death = pygame.time.get_ticks()
 		self.death_interval = 7000 # 7 seconds
 		
+		# bot
+		self.movement_range = movement_range
 	# utilities for the id
 	def setId(self, p_id):
 		self.id = p_id
@@ -65,10 +66,16 @@ class Character:
 	def getPosition(self):
 		return (self.x, self.y)
 	
+	def getInitialPosition(self):
+		return self.initial_position
+	
 	def setPosition(self, (x, y)):
 		self.x = x
 		self.y = y
-
+		
+	def getMovementRange(self):
+		return self.movement_range
+		
 	# handle images
 	def readSprites(self):
 		# one full day to do this function

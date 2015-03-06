@@ -13,8 +13,8 @@ class Person:
         if (x > Person.CONST_MAX_WH / 4 or y > Person.CONST_MAX_WH / 4):
             return None
         
-        p = Character.Character(image)
-        p.setPosition((x, y))
+        p = Character.Character((x, y), image)
+        
         p.setId(len(Person.person_list))
         if (Walls.Walls.pushPerson(x, y, p)):
             Person.person_list.append(p)

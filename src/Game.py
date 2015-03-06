@@ -39,11 +39,12 @@ class Game:
         self.sun = Sun.Sun()
         
         self.p = Person.Person.getNewPerson(150, 350, '../characters/ordan.png')
+        
         Person.Person.setMaster(self.p.getId())
         self.path_deque = deque()
         
         #Bot.Bot.putNewBot((1700, 1700), '../characters/skeleton.png')
-        #Bot.Bot.putNewBot((160, 300))
+        Bot.Bot.putNewBot((160, 300))
         """Bot.Bot.putNewBot((100, 350))
         Bot.Bot.putNewBot((120, 350))
         Bot.Bot.putNewBot((200, 300))
@@ -105,7 +106,7 @@ class Game:
                     self.sound.stopAll()
                     self.running = False
                     pygame.quit()
-            
+                    sys.exit()
 
             
             '''client_event = self.client.get()

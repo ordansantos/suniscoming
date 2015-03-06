@@ -5,6 +5,8 @@ import pygame
 import threading
 import PathFind
 import pygtk, gtk, gobject
+import random
+import Walls
 
 class Bot:
     
@@ -20,7 +22,7 @@ class Bot:
 class BotThread(threading.Thread):
     
     def run(self):
-
+        self.last_tick = 0
         self.p = self._Thread__kwargs['person']
         self.path_deque = deque()
         self.clock = pygame.time.Clock()
@@ -35,16 +37,13 @@ class BotThread(threading.Thread):
                     self.p.stopped()
             else:
                 x1, y1 = Person.Person.getMaster().getPosition()
-                x0, y0 = self.p.getPosition()
-
-                dist = PathFind.PathFind.euclidianDistance( (x0, y0), (x1, y1) )
-                
-                if (dist <= 100 and dist > 4):
-                    self.path_deque = PathFind.PathFind.getPath ((x0, y0), (x1, y1))
+                # if (not self.getPath((x1, y1))):
+                #    self.p.attack(pygame.K_SPACE)
+                if (pygame.time.get_ticks() - self.last_tick > 5000):
+                    self.getAnyPath()    
+                    self.last_tick = pygame.time.get_ticks()
                 else:
-                    
-                    self.p.attack(pygame.K_SPACE)
-                    
+                    self.p.stopped()
             if self.p.life == 0:
                 break
             
@@ -53,4 +52,30 @@ class BotThread(threading.Thread):
         self.p.doAMovement((x1, y1))
 
 
-
+    def getPath (self, (x1, y1)):
+        x0, y0 = self.p.getPosition()
+        dist = PathFind.PathFind.euclidianDistance( (x0, y0), (x1, y1) )
+        if (dist <= 100 and dist > 4):
+            self.path_deque = PathFind.PathFind.getPath ((x0, y0), (x1, y1))
+            return True
+        return False
+    
+    
+    def getAnyPath(self):
+        x0, y0 = self.p.getPosition()
+        
+        xi, yi = self.p.getInitialPosition()
+        
+        mr = self.p.getMovementRange()
+        
+        x1 = random.randint(xi - mr, xi + mr)
+        y1 = random.randint(yi - mr, yi + mr)
+        
+        if (not Walls.Walls.isAValidPosition(x1)):
+            x1 = x0
+            
+        if (not Walls.Walls.isAValidPosition(y1)):
+            y1 = x0
+        
+        self.path_deque = PathFind.PathFind.getPath ((x0, y0), (x1, y1))
+            
