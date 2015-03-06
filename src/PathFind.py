@@ -42,6 +42,8 @@ class PathFind():
     @staticmethod
     def aStar((x0, y0), (x1, y1), precise = False):
         
+        loops = 0
+        
         x_final, y_final = x0, y0
 
         parent_map = {}
@@ -55,6 +57,10 @@ class PathFind():
         q.put ( (0, (x0, y0) ) )
         
         while (not q.empty()):
+            
+            loops += 1
+            print loops
+            
             x0, y0 = q.get()[1]
             
             if (not precise):
@@ -62,10 +68,12 @@ class PathFind():
                     x_final, y_final = x0, y0
                     break;
             
+            
+            
             neighbors = PathFind.neighbors((x0, y0))
             
-            parent_cost = cost[(x0, y0)]
-            
+            #parent_cost = cost[(x0, y0)] is best-first search more faster than AStar for our problem? 
+            parent_cost = 0
             for x, y in neighbors:
                 
                 if ( parent_map.get((x, y)) == None or cost[(x, y)] > parent_cost + 1):
@@ -86,7 +94,7 @@ class PathFind():
             xy = parent_map[xy]
             
     @staticmethod
-    def getPath ((x0, y0), (x1, y1)):
+    def getPath ((x0, y0), (x1, y1), ):
         
         x_final, y_final, parent_map = PathFind.aStar((x0, y0), (x1, y1), False)
         
