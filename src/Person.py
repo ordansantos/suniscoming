@@ -98,4 +98,52 @@ class Person:
     @staticmethod
     def freeLocation(person):
         Walls.Walls.setDead(person.getPosition())
+        
+        
+    @staticmethod
+    def canHelpHim (person_a, person_b):
+        
+        xa, ya = person_a.getPosition()
+        xb, yb = person_b.getPosition()
+        
+        side = person_b.side
+        
+        x = xa - xb
+        y = ya - yb
+        
+        
+        if (x > 0 and y > 0 and side not in ('down', 'right')):
+            return False
+
+        if (x == 0 and y > 0 and side not in ('down')):
+            return False
+        
+        if (x < 0 and y > 0 and side not in ('down', 'left')):
+            return False
+        
+        if (x > 0 and y == 0 and side not in ('right')):
+            return False
+        
+        if (x < 0 and y == 0 and side not in ('left')):
+            return False
+        
+        if (x > 0 and y < 0 and side not in ('right', 'top')):
+            return False
+        
+        if (x == 0 and y < 0 and side not in ('top')):
+            return False
+        
+        if (x < 0 and y < 0 and side not in ('up', 'left')):
+            return False
+
+        return True
+    
+    
+    @staticmethod
+    def giveMeHelp (bot):
+        
+        for p in Person.person_list:
+            if (isinstance(p, Character.Bot)): 
+                if (Person.canHelpHim (bot, p)):
+                    p.setEnemy(bot.getEnemy);
     

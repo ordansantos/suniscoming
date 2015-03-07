@@ -38,10 +38,11 @@ class BotThread(threading.Thread):
                     self.p.stopped()
             else:
                 x1, y1 = Person.Person.getMaster().getPosition()
-             
+                
                 if (self.p.getEnemy() != None):
                     if (not self.getPath((x1, y1))):
                         self.p.attack(pygame.K_SPACE)
+                        Person.Person.giveMeHelp(self.p)
                 else:
                     if (pygame.time.get_ticks() - self.last_tick > 5000):
                         self.getAnyPath()    

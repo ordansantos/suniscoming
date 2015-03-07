@@ -2,12 +2,13 @@
 import Queue
 import Walls
 import math
+import pygame
 from collections import deque
 
 class PathFind():
 
     CONST_BOT_MIN_DISTANCE = 4
-    CONST_ERROR_NO_PATH = 150
+    CONST_ERROR_NO_PATH = 110000
     @staticmethod
     def neighbors((x, y)):
         
@@ -43,6 +44,7 @@ class PathFind():
     #A* eh velocidade mediana e inteligente, bfs muito lento eh inteligente, best first search rapido eh relativamente burro
     @staticmethod
     def bestFirstSearch((x0, y0), (x1, y1), precise):
+
         loops = 0
         x_inicial, y_inicial = x0, y0
         x_final, y_final = x0, y0
@@ -58,7 +60,7 @@ class PathFind():
         
         while (not q.empty()):
             loops +=1 
-            
+            #print loops
             x0, y0 = q.get()[1]
             
             if (not precise):
@@ -79,13 +81,17 @@ class PathFind():
             #parent_cost = cost[(x0, y0)]
             
             for x, y in neighbors:
-                
+                #a, b = PathFind.getObjectPosition((x, y), (x_inicial, y_inicial))
+                #print a, b
+                #pygame.draw.rect(pygame.display.get_surface(), (140,240,130), (a, b, 4, 4))
+                #pygame.display.flip()
+
                 #if ( parent_map.get((x, y)) == None or cost[(x, y)] > parent_cost + 1 ):
                 if ( parent_map.get((x, y)) == None):
                     parent_map[(x, y)] = (x0, y0)
                     #priority =  parent_cost + 1 + PathFind.manhattanDistance((x1, y1), (x, y))
                     priority =  PathFind.manhattanDistance((x1, y1), (x, y))
-                    #cost[(x, y)] = parent_cost + 1
+                    #cost[(x, y)] = parent_cost + 0.5
                     q.put( (priority, (x, y)) )
                     
         return (x_final, y_final, parent_map)
@@ -100,7 +106,7 @@ class PathFind():
             xy = parent_map[xy]
             
     @staticmethod
-    def getPath ((x0, y0), (x1, y1), precise = False):
+    def getPath ((x0, y0), (x1, y1),  precise = False):
         
         x_final, y_final, parent_map = PathFind.bestFirstSearch((x0, y0), (x1, y1), precise)
         
@@ -109,4 +115,10 @@ class PathFind():
         PathFind.buildPath (path_deque, parent_map, (x_final, y_final))
         
         return path_deque
+    
+    @staticmethod   
+    def getObjectPosition((objx, objy), (mx, my)):
+        x = -mx * 4 + objx * 4 + (800 / 2)
+        y = -my * 4 + objy * 4 + (600 / 2)
+        return (x, y)
         
