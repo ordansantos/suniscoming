@@ -19,7 +19,7 @@ class BotController:
         person_bot = BotThread(kwargs={'person': person})
         person_bot.setDaemon(True)
         person_bot.start()
-        
+
 class BotThread(threading.Thread):
     
     def run(self):
@@ -27,11 +27,19 @@ class BotThread(threading.Thread):
         self.p = self._Thread__kwargs['person']
         self.path_deque = deque()
         self.clock = pygame.time.Clock()
+        self.any_path = False
         
         while self.p.life != 0:
             
             self.clock.tick(30)
             
+            if (self.p.getEnemy() != None):
+                Person.Person.giveMeHelp(self.p)
+                
+            if (self.any_path and self.p.getEnemy() != None):
+                self.path_deque.clear()
+                self.any_path = False
+                
             if (len(self.path_deque)):
                 self.moveBot()
                 if (self.path_deque == 0):
@@ -47,6 +55,7 @@ class BotThread(threading.Thread):
                     if (pygame.time.get_ticks() - self.last_tick > 5000):
                         self.getAnyPath()    
                         self.last_tick = pygame.time.get_ticks()
+                        self.any_path = True
                     else:
                         self.p.stopped()
     

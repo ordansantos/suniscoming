@@ -2,6 +2,7 @@
 
 import Character
 import Walls
+import PathFind
 
 class Person:
     
@@ -105,6 +106,10 @@ class Person:
         
         xa, ya = person_a.getPosition()
         xb, yb = person_b.getPosition()
+        
+        dist = PathFind.PathFind.euclidianDistance( (xa, ya), (xb, yb) )
+        
+        if (dist > 100): return False
         
         side = person_b.side
         
