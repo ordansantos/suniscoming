@@ -11,10 +11,10 @@ height = 600 # gtk.gdk.screen_height() - 50
 screen = pygame.display.set_mode((width, height), pygame.HWSURFACE | pygame.DOUBLEBUF)
 
 menu = Menu.Menu(screen, width, height)
-menu.showMenu()
 
 while True:
-    
+    menu.showMenu()
+
     # close window
     if pygame.event.peek(pygame.QUIT):
         pygame.quit()
@@ -30,3 +30,10 @@ while True:
         game.run()
         # for now
         break
+    
+    elif op == 2:
+        r = menu.options()
+        if r == 'stop':
+            break
+        op = 0
+    

@@ -3,7 +3,11 @@
 import sys
 sys.path.append("../")
 
+import sys, os, traceback
+if sys.platform in ["win32","win64"]: os.environ["SDL_VIDEO_CENTERED"]="1"
+
 import pygame
+import reader.reader as reader
 import gtk
 
 class Menu:
@@ -27,7 +31,7 @@ class Menu:
         self.background = pygame.transform.scale(self.background, self.bg_size).convert()
         
         # menu
-        self.menu = pygame.image.load("../tiles/menu.png").convert_alpha()
+        self.menu = pygame.image.load("../tiles/menu.png").convert()
         self.menu_pos = int(self.edges / 2) , self.height - self.menu.get_height() - int(self.edges / 2)
     
     def showMenu(self):
@@ -46,7 +50,17 @@ class Menu:
         
         # functions
         def play(mouse_pos):
-            if (mouse_pos[0] > (self.menu_pos[0] + 12)) and (mouse_pos[1] > (self.menu_pos[1] + 7)) and (mouse_pos[0] < (self.menu_pos[0] + 68) and (mouse_pos[1]) < (self.menu_pos[1] + 65)):
+            if (mouse_pos[0] > (self.menu_pos[0])) and (mouse_pos[1] > (self.menu_pos[1] + 7)) and (mouse_pos[0] < (self.menu_pos[0] + 68) and (mouse_pos[1]) < (self.menu_pos[1] + 65)):
+                return True
+            return False
+        
+        def options(mouse_pos):
+            if (mouse_pos[0] > (self.menu_pos[0] + 69)) and (mouse_pos[1] > (self.menu_pos[1] + 7)) and (mouse_pos[0] < (self.menu_pos[0] + 125) and (mouse_pos[1]) < (self.menu_pos[1] + 65)):
+                return True
+            return False
+        
+        def _exit(mouse_pos):
+            if (mouse_pos[0] > (self.menu_pos[0] + 136)) and (mouse_pos[1] > (self.menu_pos[1] + 7)) and (mouse_pos[0] < (self.menu_pos[0] + 200) and (mouse_pos[1]) < (self.menu_pos[1] + 65)):
                 return True
             return False
         
@@ -54,6 +68,10 @@ class Menu:
             mouse_pos = pygame.mouse.get_pos()
             if play(mouse_pos):
                 return 1
+            if options(mouse_pos):
+                return 2
+            if _exit(mouse_pos):
+                return 3
     
     def loading(self):
         # loading
@@ -64,6 +82,42 @@ class Menu:
         
         #draw
         pygame.display.flip()
+    
+    def options(self):
+        self.screen.fill((0, 0, 0))
+        text = """-- ENREDO --
+
+Este é um jogo de mundo aberto.
+O personagem principal é um vampiro que luta para sobreviver na era medieval.
+A tarefa do jogador é não deixar seu personagem morrer (acabar seu sangue). 
+Para tanto é necessário se alimentar dos habitantes da vila. 
+
+Misturando o gênero de ação furtiva, o jogador deve tomar cuidado para não ser pego se alimentando nem muito menos transformado.
+O sol é um dos principais inimigos.
+
+-- INSTRUÇÕES --
+
+Você pode mover o personagem nas setas ou clicando no botão direito do mouse.
+Quando estiver em modo super, você será capaz de matar os bots com apenas um golpe.
+
+Divirta-se!
+
+Clique para voltar"""
+
+        txt = reader.Reader(unicode(text,'utf8'),(int(self.edges / 2), int(self.edges / 2)),self.width - self.edges,15,self.height - self.edges,font=os.path.join('../reader','MonospaceTypewriter.ttf'),fgcolor=(255,255,255),hlcolor=(250,190,150,50),split=True)
+        txt.show()
+        pygame.display.flip()
+        
+        while True:
+            # close window
+            if pygame.event.peek(pygame.QUIT):
+                self.running = False
+                pygame.quit()
+                return 'stop'
+            
+            for e in pygame.event.get():
+                if e.type == pygame.MOUSEBUTTONDOWN and e.button == 1:
+                    return 'continue'
     
 if __name__ == '__main__':
     width = gtk.gdk.screen_width() - 50

@@ -249,3 +249,4 @@ if __name__ == '__main__':
                     if txt.WORD == 'BLUE': txt.FGCOLOR = 180,200,255
                     if txt.WORD == 'WHITE': txt.FGCOLOR = 255,255,255
             txt.show()
+            pygame.display.flip()
