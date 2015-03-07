@@ -37,7 +37,7 @@ class Game:
         
         self.sun = Sun.Sun()
         
-        self.p = Person.Person.getNewPlayer(150, 350, '../characters/ordan.png')
+        self.p = Person.Person.getNewPlayer(150, 350, '../characters/sprites/ordan.png')
         
         Person.Person.setMaster(self.p.getId())
         self.path_deque = deque()

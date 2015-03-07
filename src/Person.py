@@ -9,7 +9,7 @@ class Person:
     person_list = []
     
     @staticmethod
-    def getNewPlayer(x, y, image = '../characters/kauan.png'):
+    def getNewPlayer(x, y, image = '../characters/sprites/ordan.png'):
         if (x > Person.CONST_MAX_WH / 4 or y > Person.CONST_MAX_WH / 4):
             return None
         
@@ -24,7 +24,7 @@ class Person:
         return None
     
     @staticmethod
-    def getNewBot(x, y, image = '../characters/kauan.png'):
+    def getNewBot(x, y, image = '../characters/img/blond_man.png'):
         if (x > Person.CONST_MAX_WH / 4 or y > Person.CONST_MAX_WH / 4):
             return None
         

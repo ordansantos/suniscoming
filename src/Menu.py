@@ -28,7 +28,7 @@ class Menu:
         
         # menu
         self.menu = pygame.image.load("../tiles/menu.png").convert()
-        self.menu_pos = int(self.width / 2) + int(self.bg_size[0] / 2), self.height - self.menu.get_height() - int(self.edges / 2)
+        self.menu_pos = int(self.edges / 2) , self.height - self.menu.get_height() - int(self.edges / 2)
     
     def showMenu(self):
 

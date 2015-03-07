@@ -22,9 +22,9 @@ class Character:
 		self.fast = False
 		# sprites
 		self.sprites = self.readSprites(path_image)
-		self.life_bar = pygame.image.load(file('../characters/blood.png')).convert()
+		self.life_bar = pygame.image.load(file('../characters/img/blood.png')).convert()
 		self.death_blood = pygame.image.load(file(death_blood)).convert_alpha()
-		self.blood_squirt = pygame.image.load(file('../characters/blood_squirt.png')).convert_alpha()
+		self.blood_squirt = pygame.image.load(file('../characters/img/blood_squirt.png')).convert_alpha()
 		# sprites control
 		self.interval = 100
 		self.cycletime = 0
@@ -337,7 +337,7 @@ class Character:
 
 class Player(Character):
 	
-	def __init__(self, (x, y)=(0, 0), normal_path='../characters/ordan.png', transform_path='../characters/skeleton.png', death_blood='../characters/death_blood.png'):
+	def __init__(self, (x, y)=(0, 0), normal_path='../characters/sprites/ordan.png', transform_path='../characters/sprites/skeleton.png', death_blood='../characters/img/death_blood.png'):
 		
 		Character.__init__(self, (x, y), normal_path, death_blood)
 		
@@ -447,7 +447,7 @@ class Player(Character):
 
 class Bot(Character):
 	
-	def __init__(self, (x, y)=(0, 0), image='../characters/ordan.png', death_blood='../characters/death_blood.png', movement_range=25):
+	def __init__(self, (x, y)=(0, 0), image='../characters/sprites/ordan.png', death_blood='../characters/img/death_blood.png', movement_range=25):
 		
 		Character.__init__(self, (x, y), image, death_blood)
 		

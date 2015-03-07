@@ -39,7 +39,7 @@ class Screen:
         # shadows
         self.surf_lighting = pygame.Surface((screen_width, screen_height))
         self.shad = shadow.Shadow()
-        self.surf_falloff = pygame.image.load("../characters/light_falloff100.png").convert()
+        self.surf_falloff = pygame.image.load("../characters/img/light_falloff100.png").convert()
         radius = 208
         self.shad.set_radius(radius)
         self.surf_falloff = pygame.transform.scale(self.surf_falloff, (radius * 2, radius * 2))
@@ -262,7 +262,7 @@ class Header:
     
     def __init__(self, width, height):
         self.src = pygame.display.get_surface()
-        self.life_bar = pygame.image.load(file('../characters/super_lifebar.png')).convert()
+        self.life_bar = pygame.image.load(file('../characters/img/super_lifebar.png')).convert()
         self.edges = int(width / 15), int(height / 15)
         
         gap = int(width / 1.7) - self.life_bar.get_width()

@@ -12,7 +12,7 @@ from Character import Bot
 class BotController:
     
     @staticmethod
-    def putNewBot ( (x, y), image = '../characters/kauan.png' ):
+    def putNewBot ( (x, y), image = '../characters/sprites/black_man.png' ):
         
         person = Person.Person.getNewBot(x, y, image)
         
