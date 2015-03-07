@@ -242,7 +242,7 @@ class Character:
 	
 	# attack handle
 	def attack(self, key):
-		if self.attack_key == Character.NO_ATTACK:
+		if self.attack_key == Character.NO_ATTACK and self.life != 0:
 			self.attack_keys[key] = True
 			self.attack_key = key
 			if key == Character.SLASH:
@@ -253,7 +253,7 @@ class Character:
 				self.rebuke()
 	
 	def updateAttack(self):
-		if self.attack_key != Character.NO_ATTACK:
+		if self.attack_key != Character.NO_ATTACK and self.life != 0:
 			if self.side == 'up':  # up
 				self.picnr = [0, 0]
 			elif self.side == 'left':  # left
@@ -369,13 +369,13 @@ class Player(Character):
 					self.life = 0
 					self.dying()
 				self.death = time
-			elif self.fast:
-				if time - self.death >= (self.death_interval / 5):
-					self.life -= 1
-					if self.life < 0:
-						self.life = 0
-						self.dying()
-					self.death = time
+		if self.fast and not self.transformed:
+			if time - self.death >= (self.death_interval / 5):
+				self.life -= 1
+				if self.life < 0:
+					self.life = 0
+					self.dying()
+				self.death = time
 	
 	# movement handle
 	def move(self, arrow):
@@ -406,16 +406,20 @@ class Player(Character):
 			
 			if enemy != None:
 				enemy.setEnemy(self)
-				if enemy.life >= self.stranger:
-					enemy.attacked = True
+				enemy.attacked = True
+				if self.transformed:
+					enemy.life = 0
+				else:
 					enemy.life -= self.stranger
-					if enemy.life == 0:
-						enemy.dying()
-						self.partial_killed += 1
-						self.all_killed += 1
+				if enemy.life <= 0:
+					enemy.life = 0
+					enemy.dying()
+					self.partial_killed += 1
+					self.all_killed += 1
 		
-				if self.life <= 100 - self.stranger:
-					self.life += self.stranger
+				self.life += self.stranger
+				if self.life > 100:
+					self.life = 100
 	
 	def updateTransform(self):
 		time = pygame.time.get_ticks()
@@ -424,14 +428,16 @@ class Player(Character):
 			self.last_transformation = time
 			self.partial_killed = 0
 			self.transformed = True
-			return True
+			return 'S'
 		
 		if self.transformed:
 			if time - self.last_transformation >= self.transform_interval:
 				self.sprites = self.normal_sprites
 				self.last_transformation = time
 				self.transformed = False
-		return False
+				return 'N'
+		
+		return None
 	
 	# life handle
 	def isDead(self):
@@ -453,16 +459,17 @@ class Bot(Character):
 	
 	def getMovementRange(self):
 		return self.movement_range
-
+	
 	def checkAttack(self, x, y):
 		if self.getPosition() != (x, y):
 			enemy = Person.Person.getPersonByPosition(x, y)
 			if enemy != None:
 				enemy.setEnemy(self)
-				if enemy.life >= self.stranger:
+				if not enemy.transformed:
 					enemy.attacked = True
 					enemy.life -= self.stranger
-					if enemy.life == 0:
+					if enemy.life <= 0:
+						enemy.life = 0
 						enemy.dying()
-
+	
 	

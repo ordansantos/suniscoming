@@ -10,15 +10,16 @@ class Sound:
         self.transformed = pygame.mixer.Sound('../sounds/transformed.wav')
         self.normal_background = pygame.mixer.Sound(background)
         self.normal_background.set_volume(volume)
+        self.bg_vol = volume
         self.swapped = False
     
     # background
     def updateBackground(self, master_transformed):
-        if master_transformed:
+        if master_transformed == 'S':
             self.normal_background.stop()
             self.transformed.play()
             self.swapped = True
-        else:
+        elif master_transformed == 'N':
             if self.swapped:
                 self.normal_background.play(-1)
                 self.swapped = False
@@ -37,14 +38,14 @@ class Sound:
     
     # attack
     @staticmethod
-    def attackPlay(sound = '../sounds/attack.wav', volume = 0.5):
+    def attackPlay(sound='../sounds/attack.wav', volume=0.5):
         attack = pygame.mixer.Sound(sound)
         attack.set_volume(volume)
         attack.play()
     
     # death
     @staticmethod
-    def deathPlay(sound = '../sounds/died.wav', volume = 1.0):
+    def deathPlay(sound='../sounds/died.wav', volume=1.0):
         death = pygame.mixer.Sound(sound)
         death.set_volume(volume)
         death.play()
