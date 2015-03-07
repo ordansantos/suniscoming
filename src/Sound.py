@@ -6,7 +6,7 @@ import pygame
 
 class Sound:
     
-    def __init__(self, background='../sounds/background.wav', volume=0.3):
+    def __init__(self, background='../sounds/background.ogg', volume=0.3):
         self.transformed = pygame.mixer.Sound('../sounds/transformed.wav')
         self.normal_background = pygame.mixer.Sound(background)
         self.normal_background.set_volume(volume)
