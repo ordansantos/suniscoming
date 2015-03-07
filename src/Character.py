@@ -465,7 +465,7 @@ class Bot(Character):
 			enemy = Person.Person.getPersonByPosition(x, y)
 			if enemy != None:
 				enemy.setEnemy(self)
-				if not enemy.transformed:
+				if isinstance(enemy, Player) and not enemy.transformed:
 					enemy.attacked = True
 					enemy.life -= self.stranger
 					if enemy.life <= 0:
