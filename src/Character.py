@@ -1,7 +1,9 @@
 
 import pygame, time
+
 import Person
 import Sound
+
 
 class Character:
 	
@@ -22,7 +24,7 @@ class Character:
 		self.fast = False
 		# sprites
 		self.sprites = self.readSprites(path_image)
-		self.life_bar = pygame.image.load(file('../characters/img/blood.png')).convert()
+		self.blood = pygame.image.load(file('../characters/img/blood.png')).convert()
 		self.death_blood = pygame.image.load(file(death_blood)).convert_alpha()
 		self.blood_squirt = pygame.image.load(file('../characters/img/blood_squirt.png')).convert_alpha()
 		# sprites control
@@ -138,7 +140,7 @@ class Character:
 		return False
 	
 	def getLifeBar(self):
-		return self.life_bar.subsurface(32 - int(self.life * 0.32), 0, 32, 3)
+		return self.blood.subsurface(32 - int(self.life * 0.32), 0, 32, 3)
 	
 	def getDeathBlood(self):
 		if self.life == 0:

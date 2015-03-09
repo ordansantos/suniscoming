@@ -262,24 +262,36 @@ class Header:
     
     def __init__(self, width, height):
         self.src = pygame.display.get_surface()
-        self.life_bar = pygame.image.load(file('../characters/img/super_lifebar.png')).convert()
-        self.edges = int(width / 15), int(height / 15)
+        self.frame = pygame.image.load(file('../characters/lifebar/frame.png')).convert_alpha()
+        self.life = pygame.image.load(file('../characters/lifebar/life.png')).convert_alpha()
         
-        gap = int(width / 1.7) - self.life_bar.get_width()
+        # frame size calculation
+        self.edges = int(width / 15), int(height / 15)
+        gap = int(width / 1.7) - self.frame.get_width()
+        perc = 0
         if gap < 0:
             gap = -gap + self.edges[0]
-            perc = gap * 100 / width
-            self.life_size = self.life_bar.get_width() - gap, self.life_bar.get_height() - int(self.life_bar.get_height() * perc / 100)
+            perc = gap * 100 / self.frame.get_width()
+            self.life_size = self.frame.get_width() - gap, self.frame.get_height() - int(self.frame.get_height() * perc / 100)
+            self.life_pos = 54 - int(54 * perc / 100) + self.edges[0], 80 - int(80 * perc / 100) + self.edges[1]
         else:
-            perc = gap * 100 / width
-            self.life_size = self.life_bar.get_width() + gap - self.edges[0], self.life_bar.get_height() + int(self.life_bar.get_height() * perc / 100)
+            perc = gap * 100 / self.frame.get_width()
+            self.life_size = self.frame.get_width() + gap - self.edges[0], self.frame.get_height() + int(self.frame.get_height() * perc / 100)
+            self.life_pos = 54 + int(54 * perc / 100) + self.edges[0], 80 + int(80 * perc / 100) + self.edges[1]
         
-        self.life_bar = pygame.transform.scale(self.life_bar, self.life_size).convert()
+        # resize frame
+        self.frame = pygame.transform.scale(self.frame, self.life_size).convert_alpha()
+        
+        # resize life
+        if gap < 0:
+            self.life_size = self.life.get_width() - int(self.life.get_width() * perc / 100), self.life.get_height() - int(self.life.get_height() * perc / 100)
+        else:
+            self.life_size = self.life.get_width() - int(self.life.get_width() * perc / 100), self.life.get_height() - int(self.life.get_height() * perc / 100)
+        
+        self.life = pygame.transform.scale(self.life, self.life_size).convert_alpha()
     
     def blitLifeBar(self, life):
-        surf = self.life_bar.subsurface(0, 0, int(life * self.life_size[0] / 100), self.life_size[1])
-        self.src.blit(surf, (self.edges[0], self.edges[1]))
-        
-        
-
+        surf = self.life.subsurface(0, 0, int(life * self.life.get_width() / 100), self.life.get_height())
+        self.src.blit(surf, self.life_pos)
+        self.src.blit(self.frame, (self.edges, self.edges))
     

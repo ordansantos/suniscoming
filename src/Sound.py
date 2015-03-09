@@ -28,7 +28,7 @@ class Sound:
         self.normal_background.play(-1)
     
     def backgroundStop(self):
-        self.normal_background.pause()
+        self.normal_background.stop()
     
     def backgroundGetVolume(self):
         return self.normal_background.get_volume()

@@ -1,9 +1,10 @@
 
-import pygame
 import gtk
+import pygame
 
-import Menu
 import Game
+import Menu
+
 
 width = 800 # gtk.gdk.screen_width() - 50
 height = 600 # gtk.gdk.screen_height() - 50
@@ -27,8 +28,8 @@ while True:
     if op == 1:
         menu.loading()
         game = Game.Game(screen, width, height)
-        game.run()
         # for now
+        game.run()
         break
     
     elif op == 2:
