@@ -1,5 +1,6 @@
 
 import pygame
+from pygame.locals import *
 
 import Game
 import Menu
@@ -11,15 +12,19 @@ info = pygame.display.Info()
 width = info.current_w
 height = info.current_h
 
-screen = pygame.display.set_mode((width, height), pygame.HWSURFACE | pygame.DOUBLEBUF | pygame.FULLSCREEN)
+screen = pygame.display.set_mode((width, height), FULLSCREEN | HWSURFACE | DOUBLEBUF)
 
 menu = Menu.Menu(screen, width, height)
 
+pygame.event.set_allowed([QUIT, KEYDOWN, KEYUP, MOUSEBUTTONDOWN, MOUSEBUTTONUP])
+
 while True:
+    
+    op = 0
     
     menu.showMenu()
 
-    # close window
+    # close game
     if pygame.event.peek(pygame.QUIT):
         pygame.quit()
         break
@@ -34,13 +39,11 @@ while True:
         switch = game.run()
         if switch == 'QUIT':
             break
-        op = 0
     
     elif op == 2:
         switch = menu.options()
         if switch == 'QUIT':
             break
-        op = 0
     
     elif op == 3:
         break

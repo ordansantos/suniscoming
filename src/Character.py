@@ -1,9 +1,8 @@
 
-import pygame, time
+import pygame
 
 import Person
 import Sound
-
 
 class Character:
 	

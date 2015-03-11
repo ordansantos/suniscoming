@@ -1,5 +1,6 @@
 
 import pygame
+from pygame.locals import *
 import Screen
 import Person
 import Sun
@@ -26,10 +27,10 @@ class Game:
         self.sound = Sound.Sound()
         
         self.arrow_states = {
-            pygame.K_UP: [False, -1],
-            pygame.K_DOWN: [False, 1],
-            pygame.K_LEFT: [False, -1],
-            pygame.K_RIGHT: [False, 1],
+            K_UP: [False, -1],
+            K_DOWN: [False, 1],
+            K_LEFT: [False, -1],
+            K_RIGHT: [False, 1],
         }
         
         self.arrow = [0, 0]
@@ -69,25 +70,24 @@ class Game:
         
         """ self.client = ClientSocket.ClientSocket() """
     
-    """
-    def setScreenWidth(self, width):
-        self.width = width
-    
-    def setScreenHeight(self, height):
-        self.height = height
-    """
-    
     def run(self):
+        
+        pygame.event.set_allowed([QUIT, KEYDOWN, KEYUP, MOUSEBUTTONDOWN, MOUSEBUTTONUP])
+        
         self.sound.backgroundPlay()
         died = False
+        
         while True:
             
-            self.clock.tick(30)
+            self.clock.tick(60)
             
             if self.p.life != 0:
             
                 # handle events
                 switch = self.doEvent()
+                
+                pygame.event.pump()
+                
                 if switch == 'ESCAPE':
                     self.sound.stopAll()
                     return 'ESCAPE'
@@ -129,14 +129,14 @@ class Game:
             '''client_event = self.client.get()
             
             for e in pygame.event.get():
-                if e.type == pygame.KEYDOWN:
-                    if e.key == pygame.K_LEFT:
+                if e.type == KEYDOWN:
+                    if e.key == K_LEFT:
                         self.client.sendMovement("left")
-                    if e.key == pygame.K_RIGHT:
+                    if e.key == K_RIGHT:
                         self.client.sendMovement("right")
-                    if e.key == pygame.K_DOWN:
+                    if e.key == K_DOWN:
                         self.client.sendMovement("down")
-                    if e.key == pygame.K_UP:
+                    if e.key == K_UP:
                         self.client.sendMovement("up")
 
             for e in client_event['moves']:
@@ -152,16 +152,16 @@ class Game:
     def doEvent(self):
         
         # close game
-        if pygame.event.peek(pygame.QUIT):
+        if pygame.event.peek(QUIT):
             pygame.quit()
             return 'QUIT'
         
         events = pygame.event.get()
-        # a = len(events)
+        
         for e in events:
             
-            # close window
-            if e.type == pygame.KEYDOWN and e.key == pygame.K_ESCAPE:
+            # return menu
+            if e.type == KEYDOWN and e.key == K_ESCAPE:
                 return 'ESCAPE'
             
             # check click and get mouse position
@@ -174,6 +174,7 @@ class Game:
             if (not pygame.mouse.get_pressed()[2] and self.mouse_pos_right_click != None):
                 self.updateMovementPath(self.mouse_pos_right_click)
                 self.mouse_pos_right_click = None
+            
             # handle writer box
             if self.txt.writing_now and self.arrow == [0, 0]:
                 self.txt.handleWriterBox(events)
@@ -184,7 +185,7 @@ class Game:
                 self.txt.handleReaderBox(e)
                 
                 # handle character movement
-                if e.type == pygame.KEYUP:
+                if e.type == KEYUP:
                     
                     if (len(self.path_deque)):
                         self.p.stopped
@@ -194,10 +195,10 @@ class Game:
                         self.arrow_states[e.key][0] = False
                         self.updateArrows()
                     
-                    if e.key == pygame.K_LSHIFT:
+                    if e.key == K_LSHIFT:
                         self.p.updateSpeed(False)
                 
-                elif e.type == pygame.KEYDOWN:
+                elif e.type == KEYDOWN:
                     
                     if (len(self.path_deque)):
                         self.p.stopped
@@ -210,26 +211,26 @@ class Game:
                     if e.key in self.p.attack_keys.keys():
                         self.p.attack(e.key)
                     
-                    if e.key == pygame.K_LSHIFT:
+                    if e.key == K_LSHIFT:
                         self.p.updateSpeed(True)
         
         return 'NEXT'
     
     def clicked(self, event):
-        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+        if event.type == MOUSEBUTTONDOWN and event.button == 1:
             self.txt.updateWriting()
         return True
     
     def updateArrows(self):
         self.arrow = [0, 0]
-        if self.arrow_states[pygame.K_UP][0]:
-            self.arrow[1] += self.arrow_states[pygame.K_UP][1]
-        if self.arrow_states[pygame.K_DOWN][0]:
-            self.arrow[1] += self.arrow_states[pygame.K_DOWN][1]
-        if self.arrow_states[pygame.K_LEFT][0]:
-            self.arrow[0] += self.arrow_states[pygame.K_LEFT][1]
-        if self.arrow_states[pygame.K_RIGHT][0]:
-            self.arrow[0] += self.arrow_states[pygame.K_RIGHT][1]
+        if self.arrow_states[K_UP][0]:
+            self.arrow[1] += self.arrow_states[K_UP][1]
+        if self.arrow_states[K_DOWN][0]:
+            self.arrow[1] += self.arrow_states[K_DOWN][1]
+        if self.arrow_states[K_LEFT][0]:
+            self.arrow[0] += self.arrow_states[K_LEFT][1]
+        if self.arrow_states[K_RIGHT][0]:
+            self.arrow[0] += self.arrow_states[K_RIGHT][1]
     
     def updateMovementPath(self, mouse_pos):
         x, y = self.frame.getMousePositionOnMap(self.p, mouse_pos)

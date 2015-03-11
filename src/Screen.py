@@ -2,6 +2,7 @@ import sys
 sys.path.append("../")
 
 import pygame
+from pygame.locals import *
 import pytmx
 from pytmx.util_pygame import load_pygame
 import Walls
@@ -31,9 +32,9 @@ class Screen:
         self.screen_height = screen_height
         
         # frame
-        self.frame_width = 800
-        self.frame_height = 600
-        self.frame = pygame.Surface((self.frame_width, self.frame_height)) # screen
+        self.frame_width = 1280
+        self.frame_height = 780
+        self.frame = pygame.Surface((self.frame_width, self.frame_height), FULLSCREEN | HWSURFACE | DOUBLEBUF) # screen
         self.background = pygame.image.load(file('../tiles/background.png')).convert()
         self.tile_map = load_pygame('tile_map.tmx')
         Walls.Walls.pushWalls(self.tile_map)    
@@ -49,13 +50,13 @@ class Screen:
         self.surf_falloff = pygame.transform.scale(self.surf_falloff, (radius * 2, radius * 2))
         self.surf_falloff.convert()
         self.mask = self.shad.get_mask()
-        self.mask.blit(self.surf_falloff, (0, 0), special_flags=pygame.BLEND_MULT)
+        self.mask.blit(self.surf_falloff, (0, 0), special_flags=BLEND_MULT)
         
         # textbox
         self.txt = TextBox.TextBox(self.screen_width, self.screen_height)
         
         # lifebar
-        self.life = Header(self.frame_width, self.frame_height)
+        self.life = Header()
     
     def draw(self, master, sun):
         self.clear(self.getRealPosition(master.getPosition()))
@@ -65,7 +66,7 @@ class Screen:
         # full screen
         surf = pygame.transform.scale(self.frame, (self.screen_width, self.screen_height)).convert()
         self.screen.blit(surf, (0,0))
-        #self.screen.blit(self.frame, self.frame_position)
+        # self.screen.blit(self.frame, frame_position)
         
         self.blitShadow(sun)
         self.txt.drawTextBox()
@@ -244,8 +245,8 @@ class Screen:
         self.surf_lighting.fill(sun.getColor())
         if sun.gray < 160:
             pos = self.shad.get_center_position(self.frame_width / 2, self.frame_height / 2 - 16)
-            self.surf_lighting.blit(self.mask, pos, special_flags=pygame.BLEND_MAX)
-        self.frame.blit(self.surf_lighting, (0, 0), special_flags=pygame.BLEND_MULT)
+            self.surf_lighting.blit(self.mask, pos, special_flags=BLEND_MAX)
+        self.frame.blit(self.surf_lighting, (0, 0), special_flags=BLEND_MULT)
                 
     def getMousePositionOnMap(self, master, mouse_position):
         mouse_x, mouse_y = mouse_position
@@ -270,7 +271,11 @@ class Screen:
 
 class Header:
     
-    def __init__(self, width, height):
+    def __init__(self):
+        
+        width = 800
+        height = 600
+        
         self.src = pygame.display.get_surface()
         self.frame = pygame.image.load(file('../characters/lifebar/frame.png')).convert_alpha()
         self.life = pygame.image.load(file('../characters/lifebar/life.png')).convert_alpha()
