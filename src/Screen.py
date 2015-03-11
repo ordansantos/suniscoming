@@ -31,8 +31,8 @@ class Screen:
         self.screen_height = screen_height
         
         # frame
-        self.frame_width = 1280
-        self.frame_height = screen_height
+        self.frame_width = 800
+        self.frame_height = 600
         self.frame = pygame.Surface((self.frame_width, self.frame_height)) # screen
         self.background = pygame.image.load(file('../tiles/background.png')).convert()
         self.tile_map = load_pygame('tile_map.tmx')
@@ -63,9 +63,9 @@ class Screen:
         self.renderTilesToScreen(master)
         self.renderPersonsAfter(master)
         # full screen
-        #surf = pygame.transform.scale(self.frame, (self.screen_width, self.screen_height)).convert()
-        #self.screen.blit(surf, (0,0))
-        self.screen.blit(self.frame, self.frame_position)
+        surf = pygame.transform.scale(self.frame, (self.screen_width, self.screen_height)).convert()
+        self.screen.blit(surf, (0,0))
+        #self.screen.blit(self.frame, self.frame_position)
         
         self.blitShadow(sun)
         self.txt.drawTextBox()
