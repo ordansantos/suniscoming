@@ -14,15 +14,14 @@ class Game:
     
     def __init__(self, screen, width, height):
         
-        pygame.init()
         self.mouse_pos_right_click = None
-    
+        
         self.width = width
         self.height = height
 
         self.clock = pygame.time.Clock()
-        self.screen = Screen.Screen(screen, self.width, self.height)
-        self.txt = self.screen.txt
+        self.frame = Screen.Screen(screen, width, height)
+        self.txt = self.frame.txt
         
         self.sound = Sound.Sound()
         
@@ -70,26 +69,37 @@ class Game:
         
         """ self.client = ClientSocket.ClientSocket() """
     
+    """
     def setScreenWidth(self, width):
         self.width = width
     
     def setScreenHeight(self, height):
         self.height = height
+    """
     
     def run(self):
         self.sound.backgroundPlay()
-        self.running = True
         died = False
-        while self.running:
+        while True:
+            
             self.clock.tick(30)
+            
             if self.p.life != 0:
+            
+                # handle events
+                switch = self.doEvent()
+                if switch == 'ESCAPE':
+                    self.sound.stopAll()
+                    return 'ESCAPE'
+                elif switch == 'QUIT':
+                    self.sound.stopAll()
+                    return 'QUIT'
                 
                 # update title
                 pygame.display.set_caption('%d %d - Sun Is Coming - Master(%d)' %(self.p.x, self.p.y, self.p.life))
                 
-                # draw screen and event handle
-                self.screen.draw(self.p, self.sun)
-                self.doEvent()
+                # draw frame
+                self.frame.draw(self.p, self.sun)
                 
                 # update player
                 self.p.updateDeath(self.sun.getPeriod())
@@ -110,12 +120,10 @@ class Game:
                     self.txt.updateReaderMessage(self.p.name + ' died!')
                     died = True
                 if self.p.death != -1:
-                    self.screen.draw(self.p, self.sun)
+                    self.frame.draw(self.p, self.sun)
                 else:
                     self.sound.stopAll()
-                    self.running = False
-                    pygame.quit()
-                    sys.exit()
+                    return 'DIED'
 
             
             '''client_event = self.client.get()
@@ -143,15 +151,19 @@ class Game:
                 
     def doEvent(self):
         
-        # close window
+        # close game
         if pygame.event.peek(pygame.QUIT):
-            self.running = False
             pygame.quit()
-            return
+            return 'QUIT'
         
         events = pygame.event.get()
-        a = len(events)
+        # a = len(events)
         for e in events:
+            
+            # close window
+            if e.type == pygame.KEYDOWN and e.key == pygame.K_ESCAPE:
+                return 'ESCAPE'
+            
             # check click and get mouse position
             self.clicked(e)
             mouse_pos = pygame.mouse.get_pos()
@@ -200,14 +212,9 @@ class Game:
                     
                     if e.key == pygame.K_LSHIFT:
                         self.p.updateSpeed(True)
-                
-                """
-                # resize screen: very very slow :(
-                elif e.type == pygame.VIDEORESIZE:
-                    self.width, self.height = e.dict['size']
-                    self.screen = Screen.Screen(self.width, self.height)
-                    self.txt = self.screen.txt """
-      
+        
+        return 'NEXT'
+    
     def clicked(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             self.txt.updateWriting()
@@ -225,6 +232,6 @@ class Game:
             self.arrow[0] += self.arrow_states[pygame.K_RIGHT][1]
     
     def updateMovementPath(self, mouse_pos):
-        x, y = self.screen.getMousePositionOnMap(self.p, mouse_pos)
+        x, y = self.frame.getMousePositionOnMap(self.p, mouse_pos)
         self.path_deque = PathFind.PathFind.getPath (self.p.getPosition(), (x, y), True)
         

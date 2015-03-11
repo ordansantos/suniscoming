@@ -1,19 +1,22 @@
 
-import gtk
 import pygame
 
 import Game
 import Menu
 
+pygame.init()
 
-width = 800 # gtk.gdk.screen_width() - 50
-height = 600 # gtk.gdk.screen_height() - 50
+info = pygame.display.Info()
 
-screen = pygame.display.set_mode((width, height), pygame.HWSURFACE | pygame.DOUBLEBUF)
+width = info.current_w
+height = info.current_h
+
+screen = pygame.display.set_mode((width, height), pygame.HWSURFACE | pygame.DOUBLEBUF | pygame.FULLSCREEN)
 
 menu = Menu.Menu(screen, width, height)
 
 while True:
+    
     menu.showMenu()
 
     # close window
@@ -28,13 +31,16 @@ while True:
     if op == 1:
         menu.loading()
         game = Game.Game(screen, width, height)
-        # for now
-        game.run()
-        break
-    
-    elif op == 2:
-        r = menu.options()
-        if r == 'stop':
+        switch = game.run()
+        if switch == 'QUIT':
             break
         op = 0
     
+    elif op == 2:
+        switch = menu.options()
+        if switch == 'QUIT':
+            break
+        op = 0
+    
+    elif op == 3:
+        break

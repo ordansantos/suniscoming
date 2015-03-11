@@ -13,8 +13,8 @@ import gtk
 class Menu:
     
     def __init__(self, screen, width, height):
-        # screen
-        self.screen = screen
+        # frame
+        self.frame = screen
         self.width = width
         self.height = height
         self.edges = int(self.height / 5)
@@ -37,11 +37,11 @@ class Menu:
     def showMenu(self):
 
         # background
-        self.screen.fill((0, 0, 0))
-        self.screen.blit(self.background, (int(self.width / 2) - int(self.bg_size[0] / 2), int(self.edges / 2)))
+        self.frame.fill((0, 0, 0))
+        self.frame.blit(self.background, (int(self.width / 2) - int(self.bg_size[0] / 2), int(self.edges / 2)))
         
         # menu
-        self.screen.blit(self.menu, (self.menu_pos))
+        self.frame.blit(self.menu, (self.menu_pos))
         
         #draw
         pygame.display.flip()
@@ -75,16 +75,16 @@ class Menu:
     
     def loading(self):
         # loading
-        self.screen.fill((0, 0, 0))
+        self.frame.fill((0, 0, 0))
         loading = pygame.image.load("../tiles/loading.jpeg").convert()
         loading = pygame.transform.scale(loading, (self.width, self.height))
-        self.screen.blit(loading, (0,0))
+        self.frame.blit(loading, (0,0))
         
         #draw
         pygame.display.flip()
     
     def options(self):
-        self.screen.fill((0, 0, 0))
+        self.frame.fill((0, 0, 0))
         text = """-- ENREDO --
 
 Este é um jogo de mundo aberto.
@@ -98,7 +98,8 @@ O sol é um dos principais inimigos.
 -- INSTRUÇÕES --
 
 Você pode mover o personagem nas setas ou clicando no botão direito do mouse.
-Quando estiver em modo super, você será capaz de matar os bots com apenas um golpe.
+Quando estiver em modo supremo, você será capaz de matar os bots com apenas um golpe.
+Para sair do jogo, pressione ESC a qualquer momento ;)
 
 Divirta-se!
 
@@ -113,15 +114,15 @@ Clique para voltar"""
             if pygame.event.peek(pygame.QUIT):
                 self.running = False
                 pygame.quit()
-                return 'stop'
+                return 'QUIT'
             
             for e in pygame.event.get():
                 if e.type == pygame.MOUSEBUTTONDOWN and e.button == 1:
-                    return 'continue'
+                    return 'NEXT'
     
 if __name__ == '__main__':
-    width = gtk.gdk.screen_width() - 50
-    height = gtk.gdk.screen_height() - 50
+    width = gtk.gdk.frame_width() - 50
+    height = gtk.gdk.frame_height() - 50
     screen = pygame.display.set_mode((width, height), pygame.HWSURFACE | pygame.DOUBLEBUF)
     menu = Menu(screen, width, height)
     menu.showMenu()

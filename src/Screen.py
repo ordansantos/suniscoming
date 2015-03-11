@@ -25,19 +25,23 @@ class Screen:
         
         self.objectMatrix = [[None for i in xrange(450)] for j in xrange(450)]
         
-        # self.screen = pygame.display.set_mode((screen_width, screen_height), pygame.HWSURFACE | pygame.DOUBLEBUF)
-        self.screen = screen
-        
         # screen
+        self.screen = screen
         self.screen_width = screen_width
         self.screen_height = screen_height
+        
+        # frame
+        self.frame_width = 1280
+        self.frame_height = screen_height
+        self.frame = pygame.Surface((self.frame_width, self.frame_height)) # screen
         self.background = pygame.image.load(file('../tiles/background.png')).convert()
         self.tile_map = load_pygame('tile_map.tmx')
         Walls.Walls.pushWalls(self.tile_map)    
         self.preLoadTiles()
+        self.frame_position = int(abs(self.screen_width - self.frame_width) / 2), int(abs(self.screen_height - self.frame_height) / 2)
         
         # shadows
-        self.surf_lighting = pygame.Surface((screen_width, screen_height))
+        self.surf_lighting = pygame.Surface((self.frame_width, self.frame_height))
         self.shad = shadow.Shadow()
         self.surf_falloff = pygame.image.load("../characters/img/light_falloff100.png").convert()
         radius = 208
@@ -48,19 +52,25 @@ class Screen:
         self.mask.blit(self.surf_falloff, (0, 0), special_flags=pygame.BLEND_MULT)
         
         # textbox
-        self.txt = TextBox.TextBox(screen_width, screen_height)
+        self.txt = TextBox.TextBox(self.screen_width, self.screen_height)
         
         # lifebar
-        self.life = Header(self.screen_width, self.screen_height)
+        self.life = Header(self.frame_width, self.frame_height)
     
     def draw(self, master, sun):
         self.clear(self.getRealPosition(master.getPosition()))
         self.renderPersonsToScreen(master)
         self.renderTilesToScreen(master)
         self.renderPersonsAfter(master)
+        # full screen
+        #surf = pygame.transform.scale(self.frame, (self.screen_width, self.screen_height)).convert()
+        #self.screen.blit(surf, (0,0))
+        self.screen.blit(self.frame, self.frame_position)
+        
         self.blitShadow(sun)
         self.txt.drawTextBox()
         self.life.blitLifeBar(master.life)
+        
         pygame.display.flip()
     
     def getRealPosition(self, (x, y)):
@@ -68,23 +78,23 @@ class Screen:
     
     # Use object real position
     def getObjectPosition(self, (objx, objy), (mx, my)):
-        x = -mx + objx + (self.screen_width / 2)
-        y = -my + objy + (self.screen_height / 2)
+        x = -mx + objx + (self.frame_width / 2)
+        y = -my + objy + (self.frame_height / 2)
         return (x, y)
     
     # Use object real position
     def getPersonPosition(self, (mx, my), (px, py)):
-        x = -32 - mx + px + (self.screen_width / 2)
-        y = -64 - my + py + (self.screen_height / 2)
+        x = -32 - mx + px + (self.frame_width / 2)
+        y = -64 - my + py + (self.frame_height / 2)
         return (x, y)
     
     # Use object real position
     def clear(self, (mx, my)):
-        self.screen.fill((0, 0, 0))
+        self.frame.fill((0, 0, 0))
         
         x, y = 0, 0
-        img_x, img_y = mx - self.screen_width / 2, my - self.screen_height / 2
-        img_width, img_height = self.screen_width, self.screen_height
+        img_x, img_y = mx - self.frame_width / 2, my - self.frame_height / 2
+        img_width, img_height = self.frame_width, self.frame_height
         
         if img_x < 0:
             x = 0 - img_x
@@ -94,24 +104,24 @@ class Screen:
             y = 0 - img_y  
             img_y = 0
             
-        if img_x + self.screen_width > self.CONST_MAX_WH:
-			img_width -= img_x + self.screen_width - self.CONST_MAX_WH
+        if img_x + self.frame_width > self.CONST_MAX_WH:
+			img_width -= img_x + self.frame_width - self.CONST_MAX_WH
 			
-        if img_y + self.screen_height > self.CONST_MAX_WH:
-			img_height -= img_y + self.screen_height - self.CONST_MAX_WH
+        if img_y + self.frame_height > self.CONST_MAX_WH:
+			img_height -= img_y + self.frame_height - self.CONST_MAX_WH
         
         subsurface = self.background.subsurface ((img_x, img_y, img_width, img_height))
-        self.screen.blit(subsurface, (x, y))
+        self.frame.blit(subsurface, (x, y))
     
     def blitMaster(self, person):
-        x, y = self.screen_width / 2, self.screen_height / 2
+        x, y = self.frame_width / 2, self.frame_height / 2
         
         img_person = person.getImage()
-        self.screen.blit(img_person, (-32 + x, -64 + y))
+        self.frame.blit(img_person, (-32 + x, -64 + y))
         
         img_life = person.getLifeBar()
         if person.life != 0:
-            self.screen.blit(img_life, (-16 + x, -60 + y))
+            self.frame.blit(img_life, (-16 + x, -60 + y))
     
     def blitPerson(self, master, person):
         if (master == person):
@@ -120,29 +130,22 @@ class Screen:
             x, y = self.getPersonPosition(self.getRealPosition(master.getPosition()), self.getRealPosition(person.getPosition()))
             
             img_person = person.getImage()
-            self.screen.blit(img_person, (x, y))
+            self.frame.blit(img_person, (x, y))
             
             img_life = person.getLifeBar()
             if person.life != 0:
-                self.screen.blit(img_life, (16 + x, 4 + y))
+                self.frame.blit(img_life, (16 + x, 4 + y))
             
             img_squirt = person.getBloodSquirt()
             if img_squirt != None:
-                self.screen.blit(img_squirt, (x + 8, y + 8))
-    
-    def blitShadow(self, sun):
-        self.surf_lighting.fill(sun.getColor())
-        if sun.gray < 160:
-            pos = self.shad.get_center_position(self.screen_width / 2, self.screen_height / 2 - 16)
-            self.surf_lighting.blit(self.mask, pos, special_flags=pygame.BLEND_MAX)
-        self.screen.blit(self.surf_lighting, (0, 0), special_flags=pygame.BLEND_MULT)
+                self.frame.blit(img_squirt, (x + 8, y + 8))
     
     def renderTilesToScreen(self, master):
         
         mx, my = self.getRealPosition(master.getPosition())
      
-        middlex = self.screen_width / 2
-        middley = self.screen_height / 2
+        middlex = self.frame_width / 2
+        middley = self.frame_height / 2
         
         inix = (mx - middlex) / 16 * 16 - 32  # -32 margin of error
         iniy = (my - middley) / 16 * 16 - 32
@@ -165,11 +168,11 @@ class Screen:
                 if (self.objectMatrix[xt][yt] != None):
                     if (isinstance(self.objectMatrix[xt][yt], tuple)):
                         img_1, img_2 = self.objectMatrix[xt][yt]
-                        self.screen.blit (img_1, (self.getObjectPosition((x, y), self.getRealPosition(master.getPosition()))))
-                        self.screen.blit (img_2, (self.getObjectPosition((x, y), self.getRealPosition(master.getPosition()))))
+                        self.frame.blit (img_1, (self.getObjectPosition((x, y), self.getRealPosition(master.getPosition()))))
+                        self.frame.blit (img_2, (self.getObjectPosition((x, y), self.getRealPosition(master.getPosition()))))
                         
                     else:
-                        self.screen.blit (self.objectMatrix[xt][yt], (self.getObjectPosition((x, y), self.getRealPosition(master.getPosition()))))
+                        self.frame.blit (self.objectMatrix[xt][yt], (self.getObjectPosition((x, y), self.getRealPosition(master.getPosition()))))
 
     # Map position
     def preLoadTiles(self):
@@ -218,8 +221,8 @@ class Screen:
         
         mx, my = self.getRealPosition(master.getPosition())
         px, py = self.getRealPosition(person.getPosition())
-        middlex = self.screen_width / 2
-        middley = self.screen_height / 2
+        middlex = self.frame_width / 2
+        middley = self.frame_height / 2
         
         if (math.fabs(px - mx) > middlex + 32):
             return False
@@ -232,16 +235,23 @@ class Screen:
         if img_death != None:
             if person != master:
                 x, y = self.getPersonPosition(self.getRealPosition(master.getPosition()), self.getRealPosition(person.getPosition()))
-                self.screen.blit(img_death, (x - 24, y - 16))
+                self.frame.blit(img_death, (x - 24, y - 16))
             else:
-                x, y = self.screen_width / 2, self.screen_height / 2
-                self.screen.blit(img_death, (x - 58, y - 80))
+                x, y = self.frame_width / 2, self.frame_height / 2
+                self.frame.blit(img_death, (x - 58, y - 80))
+
+    def blitShadow(self, sun):
+        self.surf_lighting.fill(sun.getColor())
+        if sun.gray < 160:
+            pos = self.shad.get_center_position(self.frame_width / 2, self.frame_height / 2 - 16)
+            self.surf_lighting.blit(self.mask, pos, special_flags=pygame.BLEND_MAX)
+        self.frame.blit(self.surf_lighting, (0, 0), special_flags=pygame.BLEND_MULT)
                 
     def getMousePositionOnMap(self, master, mouse_position):
         mouse_x, mouse_y = mouse_position
         
-        center_x = self.screen_width / 2
-        center_y = self.screen_height / 2
+        center_x = self.frame_width / 2
+        center_y = self.frame_height / 2
         
         master_x, master_y = master.getPosition()
         
