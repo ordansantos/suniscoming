@@ -4,7 +4,7 @@ from collections import deque
 import pygame
 import threading
 import PathFind
-import pygtk, gtk, gobject
+
 import random
 import Walls
 from Character import Bot

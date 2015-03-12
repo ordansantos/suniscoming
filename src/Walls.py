@@ -141,4 +141,7 @@ class Walls:
             return False
         return True
     
-    
+    @staticmethod
+    def isFree((x, y)):
+        return Walls.Matrix[x][y] == None
+        

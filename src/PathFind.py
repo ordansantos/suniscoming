@@ -9,26 +9,27 @@ class PathFind():
 
     CONST_BOT_MIN_DISTANCE = 4
     CONST_ERROR_NO_PATH = 110000
+    
     @staticmethod
     def neighbors((x, y)):
         
         l  = []
         
-        if not Walls.Walls.isThereWall((x - 1, y)) and not Walls.Walls.isTherePerson(x - 1, y):
+        if Walls.Walls.isFree((x - 1, y)):
             l.append((x - 1, y))   
-        if not Walls.Walls.isThereWall((x + 1, y)) and not Walls.Walls.isTherePerson(x + 1, y):
+        if Walls.Walls.isFree((x + 1, y)):
             l.append((x + 1, y))
-        if not Walls.Walls.isThereWall((x, y - 1)) and not Walls.Walls.isTherePerson(x, y - 1):
+        if Walls.Walls.isFree((x, y - 1)):
             l.append ((x, y - 1))
-        if not Walls.Walls.isThereWall((x, y + 1)) and not Walls.Walls.isTherePerson(x, y + 1):
+        if Walls.Walls.isFree((x, y + 1)):
             l.append ((x, y + 1))
-        if not Walls.Walls.isThereWall((x + 1, y - 1)) and not Walls.Walls.isTherePerson(x + 1, y - 1):
+        if Walls.Walls.isFree((x + 1, y - 1)):
             l.append ((x + 1, y - 1))
-        if not Walls.Walls.isThereWall((x + 1, y + 1)) and not Walls.Walls.isTherePerson(x + 1, y + 1):
+        if Walls.Walls.isFree((x + 1, y + 1)):
             l.append ((x + 1, y + 1))
-        if not Walls.Walls.isThereWall((x - 1, y + 1)) and not Walls.Walls.isTherePerson(x - 1, y + 1):
+        if Walls.Walls.isFree((x - 1, y + 1)):
             l.append ((x - 1, y + 1))
-        if not Walls.Walls.isThereWall((x - 1, y - 1)) and not Walls.Walls.isTherePerson(x - 1, y - 1):
+        if Walls.Walls.isFree((x - 1, y - 1)):
             l.append ((x - 1, y - 1))
 
         return l
@@ -44,21 +45,25 @@ class PathFind():
     #A* eh velocidade mediana e inteligente, bfs muito lento eh inteligente, best first search rapido eh relativamente burro
     @staticmethod
     def bestFirstSearch((x0, y0), (x1, y1), precise):
-
         loops = 0
-        x_inicial, y_inicial = x0, y0
-        x_final, y_final = x0, y0
-
+        x_final, y_final = x_inicial, y_inicial = x0, y0
+        discovered = set()
+        
         parent_map = {}
         #cost = {}
         #cost[(x0, y0)] = 0
         parent_map[(x0, y0)] = (x0, y0)
         
+        if Walls.Walls.isThereWall((x1, y1)):
+            return (x0, y0, parent_map)
+        
         q = Queue.PriorityQueue()
 
         q.put ( (0, (x0, y0) ) )
+        discovered.add((x0, y0))
         
         while (not q.empty()):
+
             loops +=1 
             #print loops
             x0, y0 = q.get()[1]
@@ -72,31 +77,32 @@ class PathFind():
                     x_final, y_final = x0, y0
                     break
                 else:
-                    if (PathFind.euclidianDistance( (x0, y0), (x1, y1) ) > PathFind.CONST_ERROR_NO_PATH or loops > 8000):
+                    if (PathFind.euclidianDistance( (x0, y0), (x1, y1) ) > PathFind.CONST_ERROR_NO_PATH or loops > 80000):
                         x_final, y_final = x_inicial, y_inicial
                         break
                     
             neighbors = PathFind.neighbors((x0, y0))
-            
+           
             #parent_cost = cost[(x0, y0)]
             
             for x, y in neighbors:
-                #a, b = PathFind.getObjectPosition((x, y), (x_inicial, y_inicial))
-                #print a, b
-                #pygame.draw.rect(pygame.display.get_surface(), (140,240,130), (a, b, 4, 4))
-                #pygame.display.flip()
-
+              
+                """"a, b = PathFind.getObjectPosition((x, y), (x_inicial, y_inicial))
+                print a, b
+                pygame.draw.rect(pygame.display.get_surface(), (140,240,0), (a, b, 4, 4))
+                pygame.display.flip()"""
+                
                 #if ( parent_map.get((x, y)) == None or cost[(x, y)] > parent_cost + 1 ):
-                if ( parent_map.get((x, y)) == None):
+                if ( (x, y) not in discovered):
                     parent_map[(x, y)] = (x0, y0)
                     #priority =  parent_cost + 1 + PathFind.manhattanDistance((x1, y1), (x, y))
                     priority =  PathFind.manhattanDistance((x1, y1), (x, y))
                     #cost[(x, y)] = parent_cost + 0.5
                     q.put( (priority, (x, y)) )
-                    
+                    discovered.add((x, y))
+        
         return (x_final, y_final, parent_map)
 
-   
     # There is no memory for recursive solution
     @staticmethod    
     def buildPath (deque_path, parent_map, xy):
