@@ -115,13 +115,15 @@ class Screen:
         self.frame.blit(subsurface, (x, y))
     
     def blitMaster(self, person):
-        x, y = self.frame_width / 2, self.frame_height / 2
         
         img_person = person.getImage()
-        self.frame.blit(img_person, (-32 + x, -64 + y))
         
-        img_life = person.getLifeBar()
         if person.life != 0:
+            x, y = self.frame_width / 2, self.frame_height / 2
+            
+            self.frame.blit(img_person, (-32 + x, -64 + y))
+            
+            img_life = person.getLifeBar()
             self.frame.blit(img_life, (-16 + x, -60 + y))
     
     def blitPerson(self, master, person):
@@ -239,7 +241,7 @@ class Screen:
                 self.frame.blit(img_death, (x - 24, y - 16))
             else:
                 x, y = self.frame_width / 2, self.frame_height / 2
-                self.frame.blit(img_death, (x - 58, y - 80))
+                self.frame.blit(img_death, (x - 50, y - 94))
 
     def blitShadow(self, sun):
         self.surf_lighting.fill(sun.getColor())

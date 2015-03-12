@@ -23,7 +23,7 @@ class Character:
 		self.fast = False
 		# sprites
 		self.sprites = self.readSprites(path_image)
-		self.blood = pygame.image.load(file('../characters/img/blood.png')).convert()
+		self.blood_bar = pygame.image.load(file('../characters/img/blood_bar.png')).convert()
 		self.death_blood = pygame.image.load(file(death_blood)).convert_alpha()
 		self.blood_squirt = pygame.image.load(file('../characters/img/blood_squirt.png')).convert_alpha()
 		# sprites control
@@ -80,26 +80,26 @@ class Character:
 		sprites = []
 		
 		# walk
-		for x in range(4):
+		for x in xrange(4):
 			sprites.append([])
-			for y in range(9):
+			for y in xrange(9):
 				sprites[x].append((spritesheet.subsurface((y * 64, (x + 8) * 64, 64, 64))))
 		
 		# slash
-		for x in range(4):
+		for x in xrange(4):
 			sprites.append([])
-			for y in range(6):
+			for y in xrange(6):
 				sprites[x + 4].append((spritesheet.subsurface((y * 64, (x + 12) * 64, 64, 64))))
 		
 		# rebuke
-		for x in range(4):
+		for x in xrange(4):
 			sprites.append([])
-			for y in range(7):
+			for y in xrange(7):
 				sprites[x + 8].append((spritesheet.subsurface((y * 64, x * 64, 64, 64))))
 		
 		# dying
 		sprites.append([])
-		for y in range(6):
+		for y in xrange(6):
 			sprites[12].append((spritesheet.subsurface((y * 64, 20 * 64, 64, 64))))
 		
 		return sprites
@@ -139,7 +139,7 @@ class Character:
 		return False
 	
 	def getLifeBar(self):
-		return self.blood.subsurface(32 - int(self.life * 0.32), 0, 32, 3)
+		return self.blood_bar.subsurface(32 - int(self.life * 0.32), 0, 32, 3)
 	
 	def getDeathBlood(self):
 		if self.life == 0:
@@ -338,7 +338,7 @@ class Character:
 
 class Player(Character):
 	
-	def __init__(self, (x, y)=(0, 0), normal_path='../characters/sprites/ordan.png', transform_path='../characters/sprites/skeleton.png', death_blood='../characters/img/death_blood.png'):
+	def __init__(self, (x, y)=(0, 0), normal_path='../characters/sprites/ordan.png', transform_path='../characters/sprites/skeleton.png', death_blood='../characters/img/death_vamp.png'):
 		
 		Character.__init__(self, (x, y), normal_path, death_blood)
 		

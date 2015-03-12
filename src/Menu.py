@@ -8,7 +8,6 @@ if sys.platform in ["win32","win64"]: os.environ["SDL_VIDEO_CENTERED"]="1"
 
 import pygame
 import reader.reader as reader
-import gtk
 
 class Menu:
     
@@ -121,8 +120,8 @@ Clique para voltar"""
                     return 'NEXT'
     
 if __name__ == '__main__':
-    width = gtk.gdk.frame_width() - 50
-    height = gtk.gdk.frame_height() - 50
+    width = 1280
+    height = 780
     screen = pygame.display.set_mode((width, height), pygame.HWSURFACE | pygame.DOUBLEBUF)
     menu = Menu(screen, width, height)
     menu.showMenu()
