@@ -150,5 +150,5 @@ class Person:
         for p in Person.person_list:
             if (isinstance(p, Character.Bot)): 
                 if (Person.canHelpHim (bot, p)):
-                    p.setEnemy(bot.getEnemy);
+                    p.setEnemy(bot.getEnemy());
     
