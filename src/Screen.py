@@ -32,8 +32,12 @@ class Screen:
         self.screen_height = screen_height
         
         # frame
-        self.frame_width = 1280
-        self.frame_height = 780
+        if screen_width == 800:
+            self.frame_width = 800
+            self.frame_height = 600
+        else:
+            self.frame_width = 1280
+            self.frame_height = 780
         self.frame = pygame.Surface((self.frame_width, self.frame_height), FULLSCREEN | HWSURFACE | DOUBLEBUF) # screen
         self.background = pygame.image.load(file('../tiles/background.png')).convert()
         self.tile_map = load_pygame('tile_map.tmx')
