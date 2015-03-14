@@ -70,7 +70,8 @@ class Character:
 		return self.enemy
 	
 	def setEnemy(self, enemy):
-		self.enemy = enemy
+		if (not isinstance(enemy, Bot)):
+			self.enemy = enemy
 		
 	# images handle
 	def readSprites(self, path):
