@@ -411,7 +411,6 @@ class Player(Character):
 					enemy.life -= self.stranger
 				if enemy.life <= 0:
 					enemy.life = 0
-					enemy.dying()
 					self.partial_killed += 1
 					self.all_killed += 1
 		
@@ -466,6 +465,4 @@ class Bot(Character):
 					enemy.life -= self.stranger
 					if enemy.life <= 0:
 						enemy.life = 0
-						enemy.dying()
-	
 	

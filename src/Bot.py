@@ -59,7 +59,9 @@ class BotThread(threading.Thread):
                         self.any_path = True
                     else:
                         self.p.stopped()
-        
+
+        self.p.dying()
+        pygame.time.delay(3000)
         self.p.dead()
     
     def moveBot(self):
