@@ -39,7 +39,7 @@ class Menu:
         if gap < 0:
             gap = -gap
             perc = gap * 100 / width
-            size = width - gap, height - int(height * perc / 100), 
+            size = width - gap, height - int(height * perc / 100) 
         else:
             perc = gap * 100 / width
             size = width + gap, height + int(height * perc / 100)

@@ -59,6 +59,8 @@ class BotThread(threading.Thread):
                         self.any_path = True
                     else:
                         self.p.stopped()
+        
+        self.p.dead()
     
     def moveBot(self):
         x1, y1 = self.path_deque.popleft()

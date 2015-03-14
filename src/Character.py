@@ -111,10 +111,7 @@ class Character:
 			if self.updateTime():
 				self.picnr[1] += 1
 				if self.picnr[1] == self.lenPic:
-					if self.picnr[0] == 12:
-						self.isDead()
-					elif self.life != 0:
-						self.updateAttack()
+					self.updateAttack()
 					self.picnr[1] = 0
 		return self.sprites[x][y]
 	
@@ -316,7 +313,7 @@ class Character:
 		self.hit()
 	
 	# life handle
-	def isDead(self):
+	def dead(self):
 		Person.Person.setDead(self)
 	
 	def dying(self):
@@ -441,10 +438,8 @@ class Player(Character):
 		return None
 	
 	# life handle
-	def isDead(self):
+	def dead(self):
 		Person.Person.setDead(self)
-		self.death = -1
-
 
 class Bot(Character):
 	

@@ -132,7 +132,7 @@ class Walls:
         return Walls.Matrix[x][y]
     
     @staticmethod
-    def setDead((x, y)):
+    def freeLocation((x, y)):
         Walls.Matrix[x][y] = None
         
     @staticmethod

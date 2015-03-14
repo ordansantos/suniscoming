@@ -93,14 +93,13 @@ class Person:
 
     @staticmethod
     def setDead(person):
-        # Walls.Walls.setDead(person.getPosition())
-        Person.person_list.remove(person)
+        if person in Person.person_list:
+            Person.person_list.remove(person)
     
     @staticmethod
     def freeLocation(person):
-        Walls.Walls.setDead(person.getPosition())
-        
-        
+        Walls.Walls.freeLocation(person.getPosition())
+    
     @staticmethod
     def canHelpHim (person_a, person_b):
         
@@ -151,4 +150,10 @@ class Person:
             if (isinstance(p, Character.Bot)): 
                 if (Person.canHelpHim (bot, p)):
                     p.setEnemy(bot.getEnemy());
+    @staticmethod
+    def restartPerson():
+        for p in Person.person_list:
+            Walls.Walls.freeLocation(p.getPosition())
+            p.life = 0
+        Person.person_list = []
     

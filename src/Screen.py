@@ -36,14 +36,13 @@ class Screen:
             self.frame_width = 800
             self.frame_height = 600
         else:
-            self.frame_width = 1280
-            self.frame_height = 780
+            self.frame_width = 1024
+            self.frame_height = 768
         self.frame = pygame.Surface((self.frame_width, self.frame_height), FULLSCREEN | HWSURFACE | DOUBLEBUF) # screen
         self.background = pygame.image.load(file('../tiles/background.png')).convert()
         self.tile_map = load_pygame('tile_map.tmx')
         Walls.Walls.pushWalls(self.tile_map)    
         self.preLoadTiles()
-        self.frame_position = int(abs(self.screen_width - self.frame_width) / 2), int(abs(self.screen_height - self.frame_height) / 2)
         
         # shadows
         self.surf_lighting = pygame.Surface((self.frame_width, self.frame_height))
@@ -61,7 +60,7 @@ class Screen:
         
         # lifebar
         self.life = Header()
-    
+        
     def draw(self, master, sun):
         self.clear(self.getRealPosition(master.getPosition()))
         self.renderPersonsToScreen(master)
@@ -70,7 +69,6 @@ class Screen:
         # full screen
         surf = pygame.transform.scale(self.frame, (self.screen_width, self.screen_height)).convert()
         self.screen.blit(surf, (0,0))
-        # self.screen.blit(self.frame, frame_position)
         
         self.blitShadow(sun)
         self.txt.drawTextBox()
@@ -255,7 +253,14 @@ class Screen:
         self.frame.blit(self.surf_lighting, (0, 0), special_flags=BLEND_MULT)
                 
     def getMousePositionOnMap(self, master, mouse_position):
-        mouse_x, mouse_y = mouse_position
+        
+        mouse_x, mouse_y = mouse_position[0] * 1.0, mouse_position[1] * 1.0
+        
+        mouse_x = (((mouse_x * 100.0) / self.screen_width) * self.frame_width) / 100.0
+        mouse_y = (((mouse_y * 100.0) / self.screen_height) * self.frame_height) / 100.0
+        
+        mouse_x = int(mouse_x)
+        mouse_y = int(mouse_y)
         
         center_x = self.frame_width / 2
         center_y = self.frame_height / 2

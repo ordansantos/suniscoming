@@ -79,7 +79,7 @@ class Game:
         
         while True:
             
-            self.clock.tick(60)
+            self.clock.tick(30)
             
             if self.p.life != 0:
             
@@ -116,10 +116,12 @@ class Game:
                     self.p.move(self.arrow)
                 
             else: # if player died...
+                time = pygame.time.get_ticks()
                 if died == False:
                     self.txt.updateReaderMessage(self.p.name + ' died!')
+                    time_died = time
                     died = True
-                if self.p.death != -1:
+                if time - time_died < 1500:
                     self.frame.draw(self.p, self.sun)
                 else:
                     self.sound.stopAll()

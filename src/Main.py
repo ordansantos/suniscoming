@@ -4,6 +4,7 @@ from pygame.locals import *
 
 import Game
 import Menu
+import Person
 
 pygame.init()
 
@@ -34,6 +35,7 @@ while True:
         op = menu.selectMenu(e)
     
     if op == 1:
+        Person.Person.restartPerson()
         menu.loading()
         game = Game.Game(screen, width[0], height[0])
         switch = game.run()
