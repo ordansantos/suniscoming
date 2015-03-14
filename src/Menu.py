@@ -1,3 +1,4 @@
+
 # coding: utf-8
 
 import sys
@@ -131,6 +132,13 @@ class Menu:
                 return True
             return False
         
+        color_in = (255, 0, 0)
+        color_out = (255, 255, 255)
+        small_color = color_out
+        full_color = color_out
+        
+        back = pygame.image.load('../tiles/menu/back.png').convert()
+        
         while True:
             
             # options init
@@ -145,7 +153,6 @@ class Menu:
             # buttons
     
             # back
-            back = pygame.image.load('../tiles/menu/back.png').convert()
             back_size = self.getSizeByHeight(int(self.width[0] / 15), back.get_width(), back.get_height())
             back = pygame.transform.scale(back, back_size).convert()
             back_pos = back.get_width() * 0.5, self.height[0] - back.get_height() * 1.5
@@ -155,11 +162,11 @@ class Menu:
             _text = pygame.font.Font('../tiles/menu/Purisa-Bold.ttf', font_size)
             
             # _text screen
-            screen = _text.render("     SCREEN     ", 1, (255, 255, 255))
+            screen = _text.render("     SCREEN     ", 1, color_out)
             screen_pos = screen.get_width() * 0.2, screen.get_height() * 0.5
-            small_screen = _text.render("  Small  ", 1, (255, 255, 255))
+            small_screen = _text.render("  Small  ", 1, small_color)
             small_pos = screen_pos[0], screen_pos[1] + screen.get_height()
-            full_screen = _text.render("  Full  ", 1, (255, 255, 255))
+            full_screen = _text.render("  Full  ", 1, full_color)
             full_pos = small_pos[0] + small_screen.get_width(), small_pos[1]
             
             # highlighted
@@ -189,8 +196,23 @@ class Menu:
                 return 'QUIT'
             
             for e in pygame.event.get():
+                
+                mouse_pos = pygame.mouse.get_pos()
+                
+                if _back(mouse_pos):
+                    back = pygame.image.load('../tiles/menu/back_red.png').convert()
+                else:
+                    back = pygame.image.load('../tiles/menu/back.png').convert()
+                if _small(mouse_pos):
+                    small_color = color_in
+                else:
+                    small_color = color_out
+                if _full(mouse_pos):
+                    full_color = color_in
+                else:
+                    full_color = color_out
+                
                 if e.type == pygame.MOUSEBUTTONDOWN and e.button == 1:
-                    mouse_pos = pygame.mouse.get_pos()
                     if _back(mouse_pos):
                         return 'NEXT'
                     elif _small(mouse_pos):
@@ -238,17 +260,4 @@ Clique para voltar"""
             for e in pygame.event.get():
                 if e.type == pygame.MOUSEBUTTONDOWN and e.button == 1:
                     return 'NEXT'
-    
-if __name__ == '__main__':
-    width = 1280
-    height = 780
-    screen = pygame.display.set_mode((width, height), pygame.HWSURFACE | pygame.DOUBLEBUF)
-    menu = Menu(screen, width, height)
-    menu.showMenu()
-    while True:
-        for e in pygame.event.get():
-            op = menu.selectMenu(e)
-        
-        if type(op) == type(0):
-            print op
     
