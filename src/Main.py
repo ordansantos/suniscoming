@@ -23,18 +23,9 @@ while True:
     
     op = 0
     
-    menu.showMenu()
-
-    # close game
-    if pygame.event.peek(pygame.QUIT):
-        pygame.quit()
-        break
+    op = menu.selectMenu()
     
-    # handle events
-    for e in pygame.event.get():
-        op = menu.selectMenu(e)
-    
-    if op == 1:
+    if op == 0:
         Person.Person.restartPerson()
         menu.loading()
         game = Game.Game(screen, width[0], height[0])
@@ -43,11 +34,15 @@ while True:
             pygame.quit()
             break
     
-    elif op == 2:
+    elif op == 1:
         switch = menu.options()
         if switch == 'QUIT':
             pygame.quit()
             break
+    
+    elif op == 2:
+        print 'Menu unexist'
+        break
     
     elif op == 3:
         pygame.quit()
