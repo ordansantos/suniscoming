@@ -4,6 +4,8 @@ import pygame
 import Person
 import Sound
 
+import math
+
 class Character:
 	
 	# attack_keys
@@ -11,12 +13,12 @@ class Character:
 	SLASH = pygame.K_SPACE
 	REBUKE = pygame.K_e
 	
-	def __init__(self, (x, y), path_image, death_blood):
+	def __init__(self, (x, y), name_master, path_image, death_blood):
 		# essential
 		self.setPosition((x, y))
 		self.initial_position = (x, y)
 		self.id = 0
-		self.name = 'Example'
+		self.name = name_master
 		self.life = 100
 		# speed
 		self.px = 1
@@ -26,6 +28,9 @@ class Character:
 		self.blood_bar = pygame.image.load(file('../characters/img/blood_bar.png')).convert()
 		self.death_blood = pygame.image.load(file(death_blood)).convert_alpha()
 		self.blood_squirt = pygame.image.load(file('../characters/img/blood_squirt.png')).convert_alpha()
+		_fontname = pygame.font.match_font('mono',1)
+		_text = pygame.font.Font(_fontname, 12)
+		self.name_pic = _text.render(self.name, 1, (0, 0, 0))
 		# sprites control
 		self.interval = 100
 		self.cycletime = 0
@@ -153,10 +158,18 @@ class Character:
 			return self.blood_squirt
 		return None
 	
+	def getNamePicture(self):
+		return self.name_pic
+	
 	# movement handle
 	def doAMovement(self, (x1, y1)):
 		x, y = self.getPosition()
-
+		
+		delay = 1
+		if (math.fabs(x1 - x) > delay or math.fabs(y1 - y) > delay ):
+			self.toPosition(x1, y1)
+			return
+		
 		if (x1 > x):
 			if (y1 > y):
 				self.downRight()
@@ -336,9 +349,9 @@ class Character:
 
 class Player(Character):
 	
-	def __init__(self, (x, y)=(0, 0), normal_path='../characters/sprites/ordan.png', transform_path='../characters/sprites/skeleton.png', death_blood='../characters/img/death_vamp.png'):
+	def __init__(self, (x, y)=(0, 0), name_master='Example', normal_path='../characters/sprites/ordan.png', transform_path='../characters/sprites/skeleton.png', death_blood='../characters/img/death_vamp.png'):
 		
-		Character.__init__(self, (x, y), normal_path, death_blood)
+		Character.__init__(self, (x, y), name_master, normal_path, death_blood)
 		
 		# sprites
 		self.normal_sprites = self.readSprites(normal_path)
@@ -443,9 +456,9 @@ class Player(Character):
 
 class Bot(Character):
 	
-	def __init__(self, (x, y)=(0, 0), image='../characters/sprites/ordan.png', death_blood='../characters/img/death_blood.png', movement_range=25):
+	def __init__(self, (x, y)=(0, 0), image='../characters/sprites/mohican_man.png', death_blood='../characters/img/death_blood.png', movement_range=25):
 		
-		Character.__init__(self, (x, y), image, death_blood)
+		Character.__init__(self, (x, y), 'Bot', image, death_blood)
 		
 		# attack control
 		self.stranger = 10

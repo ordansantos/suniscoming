@@ -104,23 +104,38 @@ class Menu:
                 return True
             return False
         
-        def _small(mouse_pos):
-            if (mouse_pos[0] > (small_pos[0])) and (mouse_pos[1] > (small_pos[1])) and (mouse_pos[0] < (small_pos[0] + small_screen.get_width()) and (mouse_pos[1]) < (small_pos[1] + small_screen.get_height())):
+        def _right_arrow(mouse_pos):
+            if (mouse_pos[0] > (right_arrow_pos[0])) and (mouse_pos[1] > (right_arrow_pos[1])) and (mouse_pos[0] < (right_arrow_pos[0] + right_arrow.get_width()) and (mouse_pos[1]) < (right_arrow_pos[1] + right_arrow.get_height())):
                 return True
             return False
         
-        def _full(mouse_pos):
-            if (mouse_pos[0] > (full_pos[0])) and (mouse_pos[1] > (full_pos[1])) and (mouse_pos[0] < (full_pos[0] + full_screen.get_width()) and (mouse_pos[1]) < (full_pos[1] + full_screen.get_height())):
+        def _left_arrow(mouse_pos):
+            if (mouse_pos[0] > (left_arrow_pos[0])) and (mouse_pos[1] > (left_arrow_pos[1])) and (mouse_pos[0] < (left_arrow_pos[0] + left_arrow.get_width()) and (mouse_pos[1]) < (left_arrow_pos[1] + left_arrow.get_height())):
                 return True
             return False
-        
-        color_in = (255, 0, 0)
-        color_out = (255, 255, 255)
-        
-        small_color = color_out
-        full_color = color_out
         
         back = pygame.image.load('../tiles/menu/back.png').convert()
+        right_arrow = pygame.image.load('../tiles/menu/options/arrow_white.png').convert_alpha()
+        right_arrow = pygame.transform.rotate(right_arrow, 180.0).convert_alpha()
+        left_arrow = pygame.image.load('../tiles/menu/options/arrow_white.png').convert_alpha()
+        
+        menus_size = [unicode('Pequena', 'utf8'), unicode('Grande', 'utf8')]
+
+        # character
+        sprites = [[None for j in xrange(2)] for i in xrange(4)]
+        
+        sprites[0][0] = ('../characters/sprites/ordan.png')
+        sprites[1][0] = ('../characters/sprites/pink_woman.png')
+        sprites[2][0] = ('../characters/sprites/black_man.png')
+        sprites[3][0] = ('../characters/sprites/blond_woman.png')
+        
+        size_sprite = int(self.height[0] / 4), int(self.height[0] / 4)
+        for i in xrange(len(sprites)):
+            pic = pygame.image.load(file(sprites[i][0])).convert()
+            sprites[i][1] = pic.subsurface((0, 2 * 64, 64, 64)).convert()
+            sprites[i][1] = pygame.transform.scale(sprites[i][j], size_sprite)
+        
+        master = 0
         
         while True:
             
@@ -141,33 +156,40 @@ class Menu:
             back_pos = back.get_width() * 0.5, self.height[0] - back.get_height() * 1.5
             
             # _text
-            font_size = int(self.height[0] / 20)
-            _text = pygame.font.Font('../tiles/menu/Purisa-Bold.ttf', font_size)
+            text_size = Choose(menus_size)
             
             # _text screen
-            screen = _text.render("Tela", 1, color_out)
-            screen_pos = screen.get_width() * 0.2, screen.get_height() * 0.5
-            small_screen = _text.render("Pequena", 1, small_color)
-            small_pos = screen_pos[0], screen_pos[1] + screen.get_height()
-            full_screen = _text.render("Grande", 1, full_color)
-            full_pos = small_pos[0] + small_screen.get_width(), small_pos[1]
+            x, y = int(self.width[0] / 15), int(self.height[0] / 15)
+            screen_pos = x, y - text_size.gap / 2
+            text_size.blitAvulseText('     TELA', screen_pos)
+            text_size.show_horizontal((x, y + text_size.gap))
             
             # highlighted
-            stain_screen = pygame.image.load('../tiles/menu/options/stain.png').convert()
+            stain_screen = pygame.image.load('../tiles/menu/options/stain.png').convert_alpha()
             if self.width[0] == 800:
-                stain_size = self.getSizeByWidth(int(small_screen.get_width() * 0.5), stain_screen.get_width(), stain_screen.get_height())
-                stain_pos = int(small_pos[0] * 1.6), small_pos[1] + int(small_screen.get_height() * 0.8)
+                stain_size = self.getSizeByWidth(int(text_size.getSizeMenu(0)[0]), stain_screen.get_width(), stain_screen.get_height())
+                stain_pos = int(text_size.getPosMenu(0)[0]), text_size.getPosMenu(0)[1] + int(text_size.getSizeMenu(0)[1])
             else:
-                stain_size = self.getSizeByWidth(int(full_screen.get_width() * 0.5), stain_screen.get_width(), stain_screen.get_height())
-                stain_pos = int(full_pos[0] * 1.15), full_pos[1] + int(full_screen.get_height() * 0.8)
-            stain_screen = pygame.transform.scale(stain_screen, stain_size).convert()
+                stain_size = self.getSizeByWidth(int(text_size.getSizeMenu(1)[0]), stain_screen.get_width(), stain_screen.get_height())
+                stain_pos = int(text_size.getPosMenu(1)[0]), text_size.getPosMenu(1)[1] + int(text_size.getSizeMenu(1)[1])
+            stain_screen = pygame.transform.scale(stain_screen, stain_size).convert_alpha()
             
             # blit buttons screen
             self.frame.blit(back, back_pos)
-            self.frame.blit(screen, screen_pos)
-            self.frame.blit(small_screen, small_pos)
-            self.frame.blit(full_screen, full_pos)
             self.frame.blit(stain_screen, stain_pos)
+            
+            # character
+            character_pos = int(self.width[0] / 10), int(self.height[0] / 2)
+            self.frame.blit(sprites[master][1], character_pos)
+            
+            left_arrow_pos = character_pos[0] - text_size.gap, character_pos[1] + int(character_pos[1] / 4)
+            right_arrow_pos = character_pos[0] + size_sprite[0], character_pos[1] + int(character_pos[1] / 4)
+            size_arrow = size_sprite[0] / 5, size_sprite[1] / 5
+            right_arrow = pygame.transform.scale(right_arrow, size_arrow).convert_alpha()
+            left_arrow = pygame.transform.scale(left_arrow, size_arrow).convert_alpha()
+            
+            self.frame.blit(right_arrow, right_arrow_pos)
+            self.frame.blit(left_arrow, left_arrow_pos)
             
             # draw
             pygame.display.flip()
@@ -176,7 +198,7 @@ class Menu:
             
             # close game
             if pygame.event.peek(pygame.QUIT):
-                return 'QUIT'
+                return ['QUIT']
             
             for e in pygame.event.get():
                 
@@ -186,29 +208,44 @@ class Menu:
                     back = pygame.image.load('../tiles/menu/back_red.png').convert()
                 else:
                     back = pygame.image.load('../tiles/menu/back.png').convert()
-                if _small(mouse_pos):
-                    small_color = color_in
+                
+                if _right_arrow(mouse_pos):
+                    right_arrow = pygame.image.load('../tiles/menu/options/arrow_red.png').convert_alpha()
+                    right_arrow = pygame.transform.rotate(right_arrow, 180.0).convert_alpha()
                 else:
-                    small_color = color_out
-                if _full(mouse_pos):
-                    full_color = color_in
+                    right_arrow = pygame.image.load('../tiles/menu/options/arrow_white.png').convert_alpha()
+                    right_arrow = pygame.transform.rotate(right_arrow, 180.0).convert_alpha()
+                
+                if _left_arrow(mouse_pos):
+                    left_arrow = pygame.image.load('../tiles/menu/options/arrow_red.png').convert_alpha()
                 else:
-                    full_color = color_out
+                    left_arrow = pygame.image.load('../tiles/menu/options/arrow_white.png').convert_alpha()
                 
                 # button clicked
                 if e.type == pygame.MOUSEBUTTONDOWN and e.button == 1:
                     if _back(mouse_pos):
-                        return 'NEXT'
-                    elif _small(mouse_pos):
+                        return ['MASTER', sprites[master][0]]
+                    # screensize
+                    elif text_size.isMouseInMenu(0):
                         if self.width[0] > self.width[1]:
                             self.width[0], self.width[1] = [self.width[1], self.width[0]]
                             self.height[0], self.height[1] = [self.height[1], self.height[0]]
                             self.frame = pygame.display.set_mode((self.width[0], self.height[0]), HWSURFACE | DOUBLEBUF)
-                    elif _full(mouse_pos):
+                    elif text_size.isMouseInMenu(1):
                         if self.width[0] < self.width[1]:
                             self.width[0], self.width[1] = [self.width[1], self.width[0]]
                             self.height[0], self.height[1] = [self.height[1], self.height[0]]
                             self.frame = pygame.display.set_mode((self.width[0], self.height[0]), FULLSCREEN | HWSURFACE | DOUBLEBUF)
+                    # character
+                    if _right_arrow(mouse_pos):
+                        master += 1
+                        if master > 3:
+                            master = 0
+                    elif _left_arrow(mouse_pos):
+                        master -= 1
+                        if master < 0:
+                            master = 3
+                    
     
     def instructions(self):
         self.frame.fill((0, 0, 0))
@@ -303,3 +340,15 @@ class Choose:
         if (mouse_pos[0] > (menu_pos[0])) and (mouse_pos[1] > (menu_pos[1])) and (mouse_pos[0] < (menu_pos[0] + menu_size[0]) and (mouse_pos[1]) < (menu_pos[1] + menu_size[1])):
             return True
         return False
+    
+    def blitAvulseText(self, text, pos, color= (255, 255, 255)):
+        show = self._text.render(text, 1, color)
+        pygame.display.get_surface().blit(show, pos)
+    
+    def getPosMenu(self, menu_number):
+        return self.menus[menu_number][2][0], self.menus[menu_number][2][1]
+    
+    def getSizeMenu(self, menu_number):
+        return self.menus[menu_number][0].get_width(), self.menus[menu_number][0].get_height()
+    
+    

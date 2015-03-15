@@ -6,14 +6,13 @@ import Person
 import Sun
 import Bot
 import Sound
-import ClientSocket
 import PathFind
 from collections import deque
 import sys
 
 class Game:
     
-    def __init__(self, screen, width, height):
+    def __init__(self, screen, width, height, master_name='Master Example', character_path='../characters/sprites/ordan.png'):
         
         self.mouse_pos_right_click = None
         
@@ -37,7 +36,7 @@ class Game:
         
         self.sun = Sun.Sun()
         
-        self.p = Person.Person.getNewPlayer(150, 350, '../characters/sprites/ordan.png')
+        self.p = Person.Person.getNewPlayer(150, 350, master_name, character_path)
         
         Person.Person.setMaster(self.p.getId())
         self.path_deque = deque()

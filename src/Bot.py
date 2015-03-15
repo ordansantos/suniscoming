@@ -7,7 +7,6 @@ import PathFind
 
 import random
 import Walls
-from Character import Bot
 
 class BotController:
     
