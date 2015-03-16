@@ -26,7 +26,7 @@ class TextBox:
         self.reader_pos = (self.edges, self.readerbox_height * 8 - self.writerbox_height)
         self.writer_pos = (self.reader_pos[0], self.reader_pos[1] + self.readerbox_height + int(height / 85.7))
         
-        self.reader = reader.Reader(unicode(self.text,'utf8'), self.reader_pos, self.readerbox_width, self.lenfont, self.readerbox_height + int(height / 100), font=os.path.join('../reader','MonospaceTypewriter.ttf'), fgcolor=(255,255,255), hlcolor=(250,190,150,50), split=False)
+        self.reader = reader.Reader(unicode(self.text,'utf8'), self.reader_pos, self.readerbox_width, self.lenfont, self.readerbox_height + int(height / 100), font=os.path.join('../reader','MonospaceTypewriter.ttf'), fgcolor=(255,255,255), hlcolor=(250,190,150,50), split=True)
         self.writer = form.Form(self.writer_pos, self.readerbox_width, self.lenfont, self.writerbox_height - int(height / 100), bg=(0,0,0), fgcolor=(0,255,0), hlcolor=(250,190,150,50), curscolor=(0,255,0))
         
         self.writing_now = False
@@ -35,21 +35,19 @@ class TextBox:
         for e in events:
             if self.writing_now:
                 if e.type == pygame.KEYDOWN:
-                    if e.key == pygame.K_KP_ENTER or e.key == pygame.K_RETURN:
+                    if e.key == pygame.K_RETURN or e.key == pygame.K_KP_ENTER:
                         message = self.writer.OUTPUT
-                        message = str(message)[2:len(message)]
+                        message = message[2:len(message)]
                         self.writer.setInitialMessage()
                         self.writing_now = False
-                        # just one test
-                        self.updateReaderMessage(message)
                         return message
                     else:
-                        if ((e.key == pygame.K_BACKSPACE or e.key == pygame.K_LEFT) and len(self.writer.OUTPUT) == 2) or e.key == pygame.K_QUOTEDBL:
+                        if ((e.key == pygame.K_BACKSPACE or e.key == pygame.K_LEFT) and self.writer._index <= 2):
                             continue
                         self.writer._cursor = True
                         self.writer.update(e)
             self.handleReaderBox(e)
-        return ''
+        return None
     
     def handleReaderBox(self, event):
         if self.onTextBox(pygame.mouse.get_pos()):

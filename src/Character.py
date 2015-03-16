@@ -28,7 +28,7 @@ class Character:
 		self.blood_bar = pygame.image.load(file('../characters/img/blood_bar.png')).convert()
 		self.death_blood = pygame.image.load(file(death_blood)).convert_alpha()
 		self.blood_squirt = pygame.image.load(file('../characters/img/blood_squirt.png')).convert_alpha()
-		_fontname = pygame.font.match_font('mono',1)
+		_fontname = pygame.font.match_font('mono',bold=True)
 		_text = pygame.font.Font(_fontname, 12)
 		self.name_pic = _text.render(self.name, 1, (0, 0, 0))
 		# sprites control
