@@ -289,3 +289,4 @@ class Text:
             _src = pygame.display.get_surface()
             y = (_src.get_height() / 2) - (show.get_height() / 2)
         pygame.display.get_surface().blit(show, (x, y))
+        return show

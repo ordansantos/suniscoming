@@ -7,7 +7,7 @@ import pytmx
 from pytmx.util_pygame import load_pygame
 import Walls
 import Person
-import TextBox
+import GameTextBox
 import math
 
 import sys, os, traceback
@@ -56,7 +56,7 @@ class Screen:
         self.mask.blit(self.surf_falloff, (0, 0), special_flags=BLEND_MULT)
         
         # textbox
-        self.txt = TextBox.TextBox(self.screen_width, self.screen_height)
+        self.txt = GameTextBox.GameTextBox(self.screen_width, self.screen_height)
         
         # lifebar
         self.life = Header()

@@ -10,7 +10,7 @@ import Game
 import reader.reader as reader
 import reader.form as form
 
-class TextBox:
+class GameTextBox:
     
     def __init__(self, width, height):
         
@@ -38,7 +38,7 @@ class TextBox:
                     if e.key == pygame.K_RETURN or e.key == pygame.K_KP_ENTER:
                         message = self.writer.OUTPUT
                         message = message[2:len(message)]
-                        self.writer.setInitialMessage()
+                        self.writer.setInitialGameTextBox()
                         self.writing_now = False
                         return message
                     else:
