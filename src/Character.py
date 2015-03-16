@@ -17,7 +17,7 @@ class Character:
 		# essential
 		self.setPosition((x, y))
 		self.initial_position = (x, y)
-		self.id = 0
+		self.idMaster = 0
 		self.name = name_master
 		self.life = 100
 		# speed
@@ -49,12 +49,12 @@ class Character:
 		self.attacked = False
 		self.enemy = None
 		
-	# utilities for the id
+	# utilities for the idMaster
 	def setId(self, p_id):
-		self.id = p_id
+		self.idMaster = p_id
 	
 	def getId(self):
-		return self.id
+		return self.idMaster
 	
 	# utilities for the position
 	def toPosition(self, x, y):	

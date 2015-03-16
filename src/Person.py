@@ -83,7 +83,7 @@ class Person:
     def getMaster():
         
         for p in Person.person_list:
-            if (p.id == Person.id_master):
+            if (p.idMaster == Person.id_master):
                 return p
         return None
     

@@ -65,7 +65,7 @@ class Main:
                 self.screen.blit(background, (int(width / 2) - int(bg_size[0] / 2), int(height / 2) - int(bg_size[1] / 2)))
                 
                 # menus
-                menus = [unicode('Jogar', 'utf8'), unicode('Opções', 'utf8'), unicode('Sobre', 'utf8'), unicode('Sair', 'utf8')]
+                menus = [unicode('Jogar', 'utf8'), unicode('Sobre', 'utf8'), unicode('Sair', 'utf8')]
                 menu = Text(menus, int(height / 15))
                 
                 # blit game name
@@ -143,19 +143,11 @@ class Main:
                     return 'QUIT'
             
             elif op == 1:
-                switch = Menu.options(width, height)
-                if switch[0] == 'QUIT':
-                    return 'QUIT'
-                elif switch[0] == 'MASTER':
-                    self.master_image = switch[1]
-                    # master_name = switch[2]
-            
-            elif op == 2:
                 switch = Menu.about(width, height)
                 if switch[0] == 'QUIT':
                     return 'QUIT'
             
-            elif op == 3:
+            elif op == 2:
                 return 'QUIT'
 
 class Login:
