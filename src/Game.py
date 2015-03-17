@@ -36,33 +36,19 @@ class Game:
         
         self.sun = Sun.Sun()
         
-        self.p = Person.Person.getNewPlayer(150, 350, master_name, character_path)
+        self.p = Person.Person.getNewPlayer(733, 896, master_name, character_path)
         
         Person.Person.setMaster(self.p.getId())
         self.path_deque = deque()
         
         # Bot.BotController.putNewBot((1700, 1700), '../characters/skeleton.png')
-        Bot.BotController.putNewBot((160, 320))
-        Bot.BotController.putNewBot((165, 350))
-        Bot.BotController.putNewBot((170, 370))
-        """Bot.BotController.putNewBot((200, 300))
-        Bot.BotController.putNewBot((100, 340))
-        Bot.BotController.putNewBot((250, 251))
-        Bot.BotController.putNewBot((130, 501))
-        Bot.BotController.putNewBot((166, 300))
-        Bot.BotController.putNewBot((131, 400))
-        Bot.BotController.putNewBot((122, 350))
-        Bot.BotController.putNewBot((203, 300))
-        Bot.BotController.putNewBot((104, 340))
-        Bot.BotController.putNewBot((255, 251))
-        Bot.BotController.putNewBot((138, 501))
-        Bot.BotController.putNewBot((169, 308))
-        Bot.BotController.putNewBot((139, 408))
-        Bot.BotController.putNewBot((129, 358))
-        Bot.BotController.putNewBot((209, 308))
-        Bot.BotController.putNewBot((109, 348))
-        Bot.BotController.putNewBot((259, 258))
-        Bot.BotController.putNewBot((139, 508))"""
+        Bot.BotController.putNewBot ((912, 482), '../characters/sprites/black_man.png')
+        
+        Bot.BotController.putNewBot ((739, 498), '../characters/sprites/blond_man.png')
+        Bot.BotController.putNewBot ((935, 602),  '../characters/sprites/dumb_woman.png')
+        Bot.BotController.putNewBot ((981, 633), '../characters/sprites/blond_man.png')
+        Bot.BotController.putNewBot ((975, 597), '../characters/sprites/blond_woman.png')
+        Bot.BotController.putNewBot ((1029, 622), '../characters/sprites/brunette_woman.png')
     
         # Bot.BotController.putNewBot((600, 800))
         # Bot.BotController.putNewBot((1000, 2000))
